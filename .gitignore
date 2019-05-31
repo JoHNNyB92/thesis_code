@@ -1,0 +1,9 @@
+*.o
+*.pyc
+*_git_repositories
+thesis/_git_repositories/
+thesis/old_keras
+*.txt
+*.idea/
+*thesis/_topologies/
+/thesis/git_repositories/
