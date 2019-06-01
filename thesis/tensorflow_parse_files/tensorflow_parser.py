@@ -23,8 +23,9 @@ def put_inputs_in_map(node):
         inputs.append(nodes.handler.entitiesHandler.node_map[rest])
     nodes.handler.entitiesHandler.node_map[node.name].inputs=inputs
 
-def parse_json(path,epoch,batch,part_name):
+def parse_pbtxt(path,epoch,batch,part_name):
     graph_def = graph_pb2.GraphDef()
+    print()
     with open(path, "rb") as f:
         text_format.Merge(f.read(), graph_def)
     for node in graph_def.node:
@@ -73,5 +74,5 @@ def begin_parsing(name,pbtxt_file,epoch,batch):
     rdfWrapper.new_init_new_network(part_name+"_net")
     rdfWrapper.new_init_new_evaluation(part_name+"_eval",part_name+"_net")
     nodes.handler.entitiesHandler.set_batch_epoch(batch,epoch)
-    parse_json(pbtxt_file,epoch,batch,part_name)
+    parse_pbtxt(pbtxt_file,epoch,batch,part_name)
     nodes.handler.entitiesHandler=""
