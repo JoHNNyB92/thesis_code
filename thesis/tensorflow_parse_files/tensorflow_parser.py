@@ -49,10 +49,12 @@ def parse_pbtxt(path,epoch,batch,part_name):
         return result
     #TODO FOR MULTIPLE NETWORKS WE NEED MULTIPLE EVALUATION RESULTS->THUS THIS SHOULD BE MOVED
 
-    if nodes.handler.entitiesHandler.check_multiple_networks()!=0:
+    if nodes.handler.entitiesHandler.check_multiple_networks()==0:
         nodes.handler.entitiesHandler.prepare_strategy(batch, epoch, part_name)
         nodes.handler.entitiesHandler.insert_to_evaluation_pipe()
-
+    elif nodes.handler.entitiesHandler.check_multiple_networks()==-1:
+        print("ERROR:Program not a network finally")
+        return "ERROR:This tensorflow program is not a network.No objective functions identified"
     print("Starting inserting to annetto.")
     print("-----------------------------------------------------")
     rdfWrapper.insert_ann_graph()

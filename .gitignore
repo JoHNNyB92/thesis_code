@@ -8,3 +8,4 @@ thesis/old_keras
 *thesis/_topologies/
 /thesis/git_repositories/
 *.pbtxt
+/thesis/git_repositories_temp/

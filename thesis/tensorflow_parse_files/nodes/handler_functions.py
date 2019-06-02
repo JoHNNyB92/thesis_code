@@ -248,22 +248,6 @@ def handle_out_layer(node):
 
 def handle_in_layer(node):
     return input_layer(node)
-    '''
-    if "_" in node.get_name():
-        nm = nodes.handler.entitiesHandler.node_map
-        for name in nm.keys():
-            if "Placeholder_" in nm[name].get_name() and nm[name].get_name() != node.get_name():
-                return find_input_or_output_placeholder(node)
-            else:
-                nodeReturn=output_layer(node)
-        if nodeReturn.num_layer=="":
-            print("WRONG TYPE OF PLACEHOLDER FOR INTERMEDIATE USAGE")
-            return None
-        else:
-            return nodeReturn
-    else:
-        return input_layer(node)
-    '''
 
 def handle_training_session(name,trStep,primaryTrStep):
     return training_session(name,trStep,primaryTrStep)

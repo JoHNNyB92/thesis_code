@@ -309,10 +309,10 @@ class handle_entities:
     def check_multiple_networks(self):
         if len(self.data.annConfiguration.networks[self.current_network].objective.keys())==1:
             print("Only one network presented,no more parsing.")
-            return -1
+            return 0
         if len(self.data.annConfiguration.networks[self.current_network].objective.keys())==0:
             print("There are no objective functions.Error occured.")
-            return -2
+            return -1
         print("Multiple objective functions presented into ann configuration.")
         net_cnt=0
         network_outputs=[]
@@ -329,7 +329,7 @@ class handle_entities:
 
         self.insert_training()
         del self.data.annConfiguration.networks[self.current_network]
-        return 0
+        return 1
 
 
 
@@ -507,14 +507,15 @@ class handle_entities:
         objs = list(self.data.annConfiguration.networks[self.current_network].objective)
         layer_names = list(self.data.annConfiguration.networks[self.current_network].layer.keys())
         print("Starting loss search for inner nodes")
-        while layer_names != []:
-            for obj in objs:
-                loss=self.data.annConfiguration.networks[self.current_network].objective[obj].cost_function.loss
-                while layer_names!=[]:
-                    print("Starting loss search for inner nodes=",loss.inner_nodes)
-                    if [ layer_names[0] for x in set(loss.inner_nodes) if layer_names[0]==x]!=[]:
-                        del self.data.annConfiguration.networks[self.current_network].layer[layer_names[0]]
-                    layer_names.remove(layer_names[0])
+        #while layer_names != []:
+        for obj in objs:
+            loss=self.data.annConfiguration.networks[self.current_network].objective[obj].cost_function.loss
+            while layer_names!=[]:
+                print("Starting loss search for inner nodes=",loss.inner_nodes)
+                if [ layer_names[0] for x in set(loss.inner_nodes) if layer_names[0]==x]!=[]:
+                    del self.data.annConfiguration.networks[self.current_network].layer[layer_names[0]]
+                layer_names.remove(layer_names[0])
+                print(len(layer_names))
 
 
     '''

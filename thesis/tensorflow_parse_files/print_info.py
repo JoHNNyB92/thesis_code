@@ -2,7 +2,7 @@ import nodes.handler
 def print_topology():
     curr = nodes.handler.entitiesHandler.current_network
     if len(nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer.keys())==0:
-        print("LOGGING:Program not a network finally")
+        print("ERROR:Program not a network finally")
         return "ERROR:This tensorflow program is not a network.0 layers were indentified."
 
     print("\n Layers \n")
@@ -33,7 +33,8 @@ def print_topology():
         print("\n evaluation \n")
         print("_____________________________________________________________________________________")
         print("NM:", nodes.handler.entitiesHandler.data.evaluationResult.name)
-        print("CF:", nodes.handler.entitiesHandler.data.evaluationResult.metric.name)
+        if nodes.handler.entitiesHandler.data.evaluationResult.metric!="":
+            print("CF:", nodes.handler.entitiesHandler.data.evaluationResult.metric.name)
         print("_____________________________________________________________________________________")
     else:
         print("\nno evaluation\n")
