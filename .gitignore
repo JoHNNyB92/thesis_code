@@ -7,3 +7,4 @@ thesis/old_keras
 *.idea/
 *thesis/_topologies/
 /thesis/git_repositories/
+*.pbtxt

@@ -43,28 +43,20 @@ def parse_pbtxt(path,epoch,batch,part_name):
         nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[elem].find_input_layer()
         print("=============================================")
         print("RESULT2=",elem,"-",nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[elem].previous_layer)
-    print_info.print_topology()
-    import sys
-    sys.exit()
+    result=print_info.print_topology()
+    if result!="":
+
+        return result
     #TODO FOR MULTIPLE NETWORKS WE NEED MULTIPLE EVALUATION RESULTS->THUS THIS SHOULD BE MOVED
-    #print_info.print_topology()
-    print("=============================================================")
 
     if nodes.handler.entitiesHandler.check_multiple_networks()!=0:
         nodes.handler.entitiesHandler.prepare_strategy(batch, epoch, part_name)
         nodes.handler.entitiesHandler.insert_to_evaluation_pipe()
-        print("=============================================================")
-    import sys
-    sys.exit()
 
-
-    #nodes.handler.entitiesHandler.check_if_ae()
     print("Starting inserting to annetto.")
     print("-----------------------------------------------------")
     rdfWrapper.insert_ann_graph()
-
-    #print_info.print_topology()
-    print("Finished inserting to annetto for file :",path,"\n\n\n\n\n\n\n\n")
+    return "Success for "+path
 
 def begin_parsing(name,pbtxt_file,epoch,batch):
     nodes.handler.entitiesHandler=handle_entities()
@@ -74,5 +66,6 @@ def begin_parsing(name,pbtxt_file,epoch,batch):
     rdfWrapper.new_init_new_network(part_name+"_net")
     rdfWrapper.new_init_new_evaluation(part_name+"_eval",part_name+"_net")
     nodes.handler.entitiesHandler.set_batch_epoch(batch,epoch)
-    parse_pbtxt(pbtxt_file,epoch,batch,part_name)
+    result=parse_pbtxt(pbtxt_file,epoch,batch,part_name)
     nodes.handler.entitiesHandler=""
+    return result

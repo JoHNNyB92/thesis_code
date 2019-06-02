@@ -41,6 +41,7 @@ with open('github/github.csv') as csv_file:
                             #Change directory in order to be appropriate for the folder that the pbtxt parser is located.
                             pbtxt_file=github.dirName+pbtxt_file.split(github.dirName)[1]
                             print("LOGGING:Begin parsing pbtxt file ", pbtxt_file)
-                            tensorflow_parser.begin_parsing(os.path.basename(total_path),pbtxt_file,batch_size,epoch)
-                            print("----------------------------------------------------------------------------")
-                            print("Finished parsing of file ",os.path.basename(total_path))
+                            result=tensorflow_parser.begin_parsing(os.path.basename(total_path),pbtxt_file,batch_size,epoch)
+                            print(" ----------------------------------------------------------------------------------------------------------------------")
+                            print("|Finished parsing of file ", os.path.basename(total_path), " Result:", result,"|")
+                            print( " ---------------------------------------------------------------------------------------------------------------------")

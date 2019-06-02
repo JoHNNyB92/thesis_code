@@ -299,25 +299,33 @@ def check_simple_layer( node,name):
                     matMul = node.inputs[0]
                     w = ""
                     x = ""
-                    if matMul.get_inputs()[0].get_op() == "Identity" or matMul.get_inputs()[
-                        0].get_op() == "Placeholder":
-                        x = matMul.get_inputs()[0]
-                        w = matMul.get_inputs()[1]
+                    if len(matMul.get_inputs())>=2:
+                        if matMul.get_inputs()[0].get_op() == "Identity" or matMul.get_inputs()[
+                            0].get_op() == "Placeholder":
+                            x = matMul.get_inputs()[0]
+                            w = matMul.get_inputs()[1]
+                        else:
+                            w = matMul.get_inputs()[0]
+                            x = matMul.get_inputs()[1]
+                        bias = node.inputs[1]
+                        node = simple_layer(w, x, matMul, bias, node,name)
                     else:
-                        w = matMul.get_inputs()[0]
-                        x = matMul.get_inputs()[1]
-                    bias = node.inputs[1]
-                    node = simple_layer(w, x, matMul, bias, node,name)
+                        print("LOGGING:matMul with name ",matMul.get_name()," has less than 2 inpus.")
+                        return (False,[])
                 else:
                     matMul = node.inputs[1]
-                    if matMul.get_inputs()[0].get_op() == "Identity" or matMul.get_inputs()[
-                        0].get_op() == "Placeholder":
-                        x = matMul.get_inputs()[0]
-                        w = matMul.get_inputs()[1]
+                    if len(matMul.get_inputs())>=2:
+                        if matMul.get_inputs()[0].get_op() == "Identity" or matMul.get_inputs()[
+                            0].get_op() == "Placeholder":
+                            x = matMul.get_inputs()[0]
+                            w = matMul.get_inputs()[1]
+                        else:
+                            w = matMul.get_inputs()[0]
+                            x = matMul.get_inputs()[1]
+                        bias = node.inputs[0]
+                        node = simple_layer(w, x, matMul, bias, node,name)
                     else:
-                        w = matMul.get_inputs()[0]
-                        x = matMul.get_inputs()[1]
-                    bias = node.inputs[0]
-                    node = simple_layer(w, x, matMul, bias, node,name)
+                        print("LOGGING:matMul with name ",matMul.get_name()," has less than 2 inpus.")
+                        return (False,[])
                 return (True, node)
     return (False, [])
