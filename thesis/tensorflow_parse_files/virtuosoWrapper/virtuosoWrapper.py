@@ -1,9 +1,9 @@
 import nodes.handler
 log_msg1="VirtuosoWrapper:Function to insert new "
 log_msg2=" with name "
-log_file="log.txt"
+log_file=""
 def log(str):
-    with open("log.txt", "a") as myfile:
+    with open(log_file, "a") as myfile:
         myfile.write(str+"\n")
 
 def insert_ann_graph():

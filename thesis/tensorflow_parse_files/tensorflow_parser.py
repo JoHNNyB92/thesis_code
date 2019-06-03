@@ -52,16 +52,15 @@ def parse_pbtxt(path,epoch,batch,part_name):
     elif nodes.handler.entitiesHandler.check_multiple_networks()==-1:
         print("ERROR:Program not a network finally")
         return "ERROR:This tensorflow program is not a network.No objective functions identified"
-    result = print_info.print_topology()
     print("Starting inserting to annetto.")
     print("-----------------------------------------------------")
     rdfWrapper.insert_ann_graph()
     return "Success for "+path
 
-def begin_parsing(name,pbtxt_file,epoch,batch):
+def begin_parsing(name,pbtxt_file,epoch,batch,log_file):
     nodes.handler.entitiesHandler=handle_entities()
     part_name=name.replace(".py","")
-    print("part_name=",part_name)
+    rdfWrapper.log_file=log_file
     rdfWrapper.new_init_data(part_name)
     rdfWrapper.new_init_new_network(part_name+"_net")
     rdfWrapper.new_init_new_evaluation(part_name+"_eval",part_name+"_net")
