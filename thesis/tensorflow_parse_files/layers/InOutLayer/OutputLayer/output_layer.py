@@ -24,5 +24,4 @@ class output_layer(in_out_layer):
         self.next_layer = "NONE"
         self.num_layer=""
         self.find_num_layers()
-        print("AFTER FIND LAYER RE MUNIA =",self.num_layer)
         self.type = "OutputLayer"

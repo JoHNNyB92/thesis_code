@@ -24,6 +24,8 @@ def execute_file(new_file,new_line_list,path_to_folder):
         traceback = str(e.output).split("Traceback")
         if "batch" in traceback:
             return "batch"
+        else:
+            return "error"
 
 def parse_file(path,skip):
     path_to_folder=os.path.dirname(path)

@@ -11,6 +11,7 @@ from layers.hidden.modification.flatten_layer import flatten_layer
 from functions.activation.non_diff.relu import relu
 from functions.activation.regularization.dropout import dropout
 from functions.metric.accuracy import accuracy
+from functions.metric.mean_squared_error import mean_squared_error
 from functions.activation.smooth.softmax import softmax
 from  layers.hidden.activation.rnn_layer.lstm_layer import lstm_layer
 from functions.metric.accuracy import accuracy
@@ -54,7 +55,10 @@ def check_if_acc(node):
             return check_if_acc(x)
     return False
 
-def handle_accuracy( node, ann_conf, network):
+def handle_mse_metric(node):
+    return mean_squared_error(node)
+
+def handle_accuracy(node):
     res=check_if_acc(node)
     if res==True:
         return accuracy(node)
@@ -133,8 +137,10 @@ def handle_pow(node,network):
     children=node.get_inputs()
     sub=False
     power_of_two=False
+    node_obj=None
     for elem in children:
         if elem.get_op()=="Sub":
+            node_obj=elem
             sub=True
         if elem.get_op()=="Const":
             num=elem.node_obj.attr["value"].tensor.float_val
@@ -142,7 +148,7 @@ def handle_pow(node,network):
             if int(num[0])==2:
                 power_of_two=True
     if sub==True and power_of_two==True:
-        return handle_mean_square_error(node,network)
+        return handle_mean_square_error(node_obj,network,node.get_name())
     else:
         return ""
 def handle_neg_for_log(node):
@@ -274,12 +280,13 @@ def handle_dropout( node,name):
 
 def check_simple_layer( node,name):
     #TODO:What happens if no bias in the node???
+    print("HOELELELELELLELEL")
     if len(node.inputs) == 2:
         if node.inputs[0].get_op() == "MatMul" or node.inputs[0].get_op() == "Identity" or node.inputs[
-            0].get_op() == "Placeholder":
+            0].get_op() == "Placeholder" or node.inputs[0].get_op() == "Mul":
             if node.inputs[1].get_op() == "MatMul" or node.inputs[1].get_op() == "Identity" or node.inputs[
-                1].get_op() == "Placeholder":
-                if node.inputs[0].get_op() == "MatMul":
+                1].get_op() == "Placeholder" or node.inputs[0].get_op() == "Mul":
+                if node.inputs[0].get_op() == "MatMul" or node.inputs[0].get_op() == "Mul":
                     matMul = node.inputs[0]
                     w = ""
                     x = ""
@@ -294,7 +301,7 @@ def check_simple_layer( node,name):
                         bias = node.inputs[1]
                         node = simple_layer(w, x, matMul, bias, node,name)
                     else:
-                        print("LOGGING:matMul with name ",matMul.get_name()," has less than 2 inpus.")
+                        print("LOGGING:multiplication with name ",matMul.get_name()," has less than 2 inpus.")
                         return (False,[])
                 else:
                     matMul = node.inputs[1]
@@ -312,4 +319,6 @@ def check_simple_layer( node,name):
                         print("LOGGING:matMul with name ",matMul.get_name()," has less than 2 inpus.")
                         return (False,[])
                 return (True, node)
+    else:
+        print("LOGGING:node ",node.get_name()," has less than 2 inpus.")
     return (False, [])

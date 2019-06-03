@@ -15,33 +15,41 @@ with open('github/github.csv') as csv_file:
         print("LOGGING:About to start processing repository into ",code_repository)
         for subdir, dirs, files in os.walk(code_repository):
             for file in files:
-                if file.endswith('.py'):
-                    total_path=os.path.join(subdir, file)
-                    with open(total_path, encoding="utf8",errors='ignore') as myfile:
-                        enter=0
-                        if '.run(' in myfile.read():
-                            enter=enter+1
-                        result=""
-                        skip=""
-                        if enter >= 1:
-                            batch_size = 0
-                            epoch = 0
-                            path = os.getcwd()
-                            while result!="error" and result!="success":
-                                wd=os.getcwd()
-                                (result,pbtxt_file,batch_size,epoch)=tranform_tf_file.parse_file(total_path,skip)
-                                if result=="batch":
-                                    print("LOGGING:Unable to find batch number for ", file,".Batch will be set as -1")
-                                    skip+=result
-                                    batch_size =-1
-                                os.chdir(path)
-                            print("LOGGING:Finished executing file :",os.path.basename(total_path))
-                            os.chdir(path)
-                            print("----------------------------------------------------------------------------")
-                            #Change directory in order to be appropriate for the folder that the pbtxt parser is located.
-                            pbtxt_file=github.dirName+pbtxt_file.split(github.dirName)[1]
-                            print("LOGGING:Begin parsing pbtxt file ", pbtxt_file)
-                            result=tensorflow_parser.begin_parsing(os.path.basename(total_path),pbtxt_file,batch_size,epoch)
-                            print(" ----------------------------------------------------------------------------------------------------------------------")
-                            print("|Finished parsing of file ", os.path.basename(total_path), " Result:", result,"|")
-                            print( " ---------------------------------------------------------------------------------------------------------------------")
+                if "linear_regression" in file:
+                    if file.endswith('.py'):
+                        total_path=os.path.join(subdir, file)
+                        with open(total_path, encoding="utf8",errors='ignore') as myfile:
+                            enter=0
+                            if '.run(' in myfile.read():
+                                enter=enter+1
+                            result=""
+                            skip=""
+                            if enter >= 1:
+                                batch_size = 0
+                                epoch = 0
+                                path = os.getcwd()
+                                '''
+                                while "ERROR" not in result and result!="success":
+                                    wd=os.getcwd()
+                                    (result,pbtxt_file,batch_size,epoch)=tranform_tf_file.parse_file(total_path,skip)
+                                    if result=="batch":
+                                        print("ERROR:Unable to find batch number for ", file,".Batch will be set as -1")
+                                        skip+=result
+                                        batch_size =-1
+                                    os.chdir(path)
+                                '''
+                                result="success"
+                                if "error" in result:
+                                    print("ERROR:Error occured when executing the program ", file)
+                                else:
+                                    print("LOGGING:Finished executing file :",os.path.basename(total_path))
+                                    os.chdir(path)
+                                    print("----------------------------------------------------------------------------")
+                                    #Change directory in order to be appropriate for the folder that the pbtxt parser is located.
+                                    #pbtxt_file=github.dirName+pbtxt_file.split(github.dirName)[1]
+                                    pbtxt_file="../git_repositories_temp\_tensorflow\pbtxt\linear_regression.py.pbtxt"
+                                    print("LOGGING:Begin parsing pbtxt file ", pbtxt_file)
+                                    result=tensorflow_parser.begin_parsing(os.path.basename(total_path),pbtxt_file,batch_size,epoch)
+                                    print(" ----------------------------------------------------------------------------------------------------------------------")
+                                    print("|Finished parsing of file ", os.path.basename(total_path), " Result:", result,"|")
+                                    print( " ---------------------------------------------------------------------------------------------------------------------")

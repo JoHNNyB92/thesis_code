@@ -25,7 +25,6 @@ def put_inputs_in_map(node):
 
 def parse_pbtxt(path,epoch,batch,part_name):
     graph_def = graph_pb2.GraphDef()
-    print()
     with open(path, "rb") as f:
         text_format.Merge(f.read(), graph_def)
     for node in graph_def.node:
@@ -42,10 +41,8 @@ def parse_pbtxt(path,epoch,batch,part_name):
         print("Finding input for layer=",elem)
         nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[elem].find_input_layer()
         print("=============================================")
-        print("RESULT2=",elem,"-",nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[elem].previous_layer)
     result=print_info.print_topology()
     if result!="":
-
         return result
     #TODO FOR MULTIPLE NETWORKS WE NEED MULTIPLE EVALUATION RESULTS->THUS THIS SHOULD BE MOVED
 
@@ -55,6 +52,7 @@ def parse_pbtxt(path,epoch,batch,part_name):
     elif nodes.handler.entitiesHandler.check_multiple_networks()==-1:
         print("ERROR:Program not a network finally")
         return "ERROR:This tensorflow program is not a network.No objective functions identified"
+    result = print_info.print_topology()
     print("Starting inserting to annetto.")
     print("-----------------------------------------------------")
     rdfWrapper.insert_ann_graph()

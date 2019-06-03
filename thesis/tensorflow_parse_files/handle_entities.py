@@ -186,7 +186,7 @@ class handle_entities:
                 self.insert_to_list(nodeReturn,name, "Objective")
         # TODO:MAKE ACCURACY(ITERATE EQUAL ALL THE WAY BACK UNTIL IT FINDS PLACEHOLDER AND NO OTHER LAYER IS BETWEEN(MAYBE DEPETH 2 LAYER ONLY?)
         elif self.node_map[e].get_op()=="Equal":
-            nodeReturn= handler_functions.handle_accuracy(self.node_map[e],self.data.AnnConfig,self.current_network)
+            nodeReturn= handler_functions.handle_accuracy(self.node_map[e])
             if nodeReturn!=None:
                 self.data.evaluationResult.metric=nodeReturn
             else:
@@ -238,25 +238,21 @@ class handle_entities:
         for layer in layers.keys():
             if self.data.annConfiguration.networks[self.current_network].layer[layer].previous_layer == [] or \
                     self.data.annConfiguration.networks[self.current_network].layer[layer].previous_layer == "":
-                print("Found layer=",layer)
-                # helper=self.data.annConfiguration.networks[self.current_network].layer[layer].node
                 if self.data.annConfiguration.networks[self.current_network].layer[layer].next_layer == [] or \
                         self.data.annConfiguration.networks[self.current_network].layer[layer].next_layer == "":
                     output_node=handler_functions.handle_out_layer(self.data.annConfiguration.networks[self.current_network].layer[layer].node)
                     self.output_layer.append(output_node)
-                    print("FOUND OUTPUT LAYER ",output_node.name)
+                    print("LOGGING:Found output layer ",output_node.name)
                     layers_del.append(layer)
                     self.data.annConfiguration.networks[self.current_network].output_layer.append(output_node)
                 else:
                     for layer_in in self.data.annConfiguration.networks[self.current_network].layer.keys():
                         for i,input in enumerate(self.data.annConfiguration.networks[self.current_network].layer[layer_in].previous_layer):
                             print(self.data.annConfiguration.networks[self.current_network].layer[layer_in].previous_layer)
-                            print("2====",input)
-                            print("3====",layer)
                             if layer==input:
                                 input_node = handler_functions.handle_in_layer(self.data.annConfiguration.networks[self.current_network].layer[layer].node)
                                 self.input_layer.append(input_node)
-                                print("FOUND INPUT LAYER ", input_node.name)
+                                print("LOGGING:Found input layer ", input_node.name)
                                 del self.data.annConfiguration.networks[self.current_network].layer[layer_in].previous_layer[i]
                                 self.input_layers.append(self.data.annConfiguration.networks[self.current_network].layer[layer_in])
                                 layers_del.append(layer)
@@ -314,6 +310,11 @@ class handle_entities:
             print("There are no objective functions.Error occured.")
             return -1
         print("Multiple objective functions presented into ann configuration.")
+        #TODO:check if the same objective have the same inputs,the one is metric the other one is loss func
+        res=self.check_loss_metric()
+        if res==True and len(self.data.annConfiguration.networks[self.current_network].objective.keys())==1:
+            print("Only one network presented,no more parsing.")
+            return 0
         net_cnt=0
         network_outputs=[]
         objectives=[]
@@ -331,6 +332,31 @@ class handle_entities:
         del self.data.annConfiguration.networks[self.current_network]
         return 1
 
+    def check_loss_metric(self):
+        #TODO:If found two loss functions with same input ,one of them
+        for obj in self.data.annConfiguration.networks[self.current_network].objective.keys():
+            inputs=self.data.annConfiguration.networks[self.current_network].objective[obj].cost_function.loss.node.get_inputs()
+            inputs=[x.get_name() for x in inputs]
+            for obj_in in self.data.annConfiguration.networks[self.current_network].objective.keys():
+                if obj_in!=obj:
+                    inputs_in=[]
+                    inputs_=self.data.annConfiguration.networks[self.current_network].objective[obj_in].cost_function.loss.node.get_inputs()
+                    for input_ in inputs_:
+                        inputs_in.append(input_.get_name())
+                    if len(set(inputs_in).intersection(set(inputs))) > 0:
+                        print("LOGGING:Found 2 loss function with same input.One of them is evaluation metric.")
+                        type=self.data.annConfiguration.networks[self.current_network].objective[obj_in].cost_function.loss.type
+                        node=self.data.annConfiguration.networks[self.current_network].objective[obj_in].cost_function.loss.node
+                        if type=="MSE":
+                            nodeReturn = handler_functions.handle_mse_metric(node)
+                            self.data.evaluationResult.metric = nodeReturn
+                        else:
+                            print("ERROR:Cannot find type of loss function to make it evaluation")
+                            import sys
+                            sys.exit()
+                        del self.data.annConfiguration.networks[self.current_network].objective[obj_in]
+                        return True
+        return False
 
 
     def find_network(self,obj_func,net_outputs,network):
