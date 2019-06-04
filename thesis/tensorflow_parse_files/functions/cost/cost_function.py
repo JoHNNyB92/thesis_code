@@ -6,7 +6,7 @@ from functions.function import function
 class cost_function(function):
 
     def insert_in_annetto(self):
-        print("Annetto::cost_function-", self.name)
+        #print("Annetto::cost_function-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         self.loss.insert_in_annetto()

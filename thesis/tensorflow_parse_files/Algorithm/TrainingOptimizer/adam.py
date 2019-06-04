@@ -6,7 +6,7 @@ import nodes.handler
 class adam(training_optimizer):
 
     def insert_in_annetto(self):
-        print("Annetto::adam-", self.name)
+        #print("Annetto::adam-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         rdfWrapper.new_learning_rate(self.name, self.learning_rate)

@@ -3,7 +3,7 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class function:
 
     def insert_in_annetto(self):
-        print("Annetto::function-", self.name)
+        #print("Annetto::function-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
 

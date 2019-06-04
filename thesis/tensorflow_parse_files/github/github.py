@@ -8,21 +8,21 @@ proxy_url='https://10.144.1.10:8080'
 proxies = {
   'https': proxy_url
 }
-dirName = "../git_repositories_temp"
-
+dirName = "git_repositories_temp"
+folder="..\\"
 def create_folder(dirName):
     try:
         # Create target Directory
         os.mkdir(dirName)
-        print("LOGGING:Directory " , dirName ,  " Created ")
+        print("LOGGING:Directory " , folder+dirName ,  " Created ")
     except FileExistsError:
-        print("LOGGING:Directory " , dirName ,  " already exists")
+        print("LOGGING:Directory " , folder+dirName ,  " already exists")
 
 
 def get_github_repository(url):
-    create_folder(dirName)
+    create_folder(folder+dirName)
     repository_folder=os.path.basename(url)
-    repository_path=dirName+"/"+repository_folder
+    repository_path=folder+dirName+"/"+repository_folder
     create_folder(repository_path)
     if len(os.listdir(repository_path)) == 0:
         git.Git(repository_path).clone(url)

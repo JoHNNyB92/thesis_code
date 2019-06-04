@@ -5,7 +5,7 @@ import nodes.handler
 class gradient_descent(training_optimizer):
 
     def insert_in_annetto(self):
-        print("Annetto::gradient_descent-", self.name)
+        #print("Annetto::gradient_descent-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         rdfWrapper.new_learning_rate(self.name, self.learning_rate)
@@ -19,6 +19,6 @@ class gradient_descent(training_optimizer):
     def __init__(self,node):
         super(gradient_descent, self).__init__(node,node.get_name())
         name=self.name.split("/")[0]
-        print("GradientDescentName is =",name)
+        #print("GradientDescentName is =",name)
         self.type="GradientDescent"
         self.find_learning_rate(name)

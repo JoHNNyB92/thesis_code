@@ -1,0 +1,812 @@
+VirtuosoWrapper:Function to insert new init_data with name bidirectional_rnn
+VirtuosoWrapper:Function to insert new init network with name bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new init evaluation with name bidirectional_rnn_eval:bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new named individual with name concat_23
+VirtuosoWrapper:Function to insert new type with name concat_23->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_23->256
+VirtuosoWrapper:Function to insert new next layer with name concat_23->Placeholder_1
+VirtuosoWrapper:Function to insert new previous layer with name concat_23->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_23
+VirtuosoWrapper:Function to insert new named individual with name concat_11
+VirtuosoWrapper:Function to insert new type with name concat_11->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_11->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_11->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_11
+VirtuosoWrapper:Function to insert new named individual with name concat_2
+VirtuosoWrapper:Function to insert new type with name concat_2->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_2->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_2->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_2
+VirtuosoWrapper:Function to insert new named individual with name concat_25
+VirtuosoWrapper:Function to insert new type with name concat_25->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_25->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_25->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_25
+VirtuosoWrapper:Function to insert new named individual with name concat_12
+VirtuosoWrapper:Function to insert new type with name concat_12->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_12->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_12->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_12
+VirtuosoWrapper:Function to insert new named individual with name concat_14
+VirtuosoWrapper:Function to insert new type with name concat_14->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_14->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_14->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_14
+VirtuosoWrapper:Function to insert new named individual with name concat_15
+VirtuosoWrapper:Function to insert new type with name concat_15->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_15->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_15->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_15
+VirtuosoWrapper:Function to insert new named individual with name concat_19
+VirtuosoWrapper:Function to insert new type with name concat_19->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_19->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_19->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_19
+VirtuosoWrapper:Function to insert new named individual with name concat_17
+VirtuosoWrapper:Function to insert new type with name concat_17->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_17->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_17->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_17
+VirtuosoWrapper:Function to insert new named individual with name concat_22
+VirtuosoWrapper:Function to insert new type with name concat_22->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_22->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_22->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_22
+VirtuosoWrapper:Function to insert new named individual with name concat_18
+VirtuosoWrapper:Function to insert new type with name concat_18->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_18->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_18->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_18
+VirtuosoWrapper:Function to insert new named individual with name concat_16
+VirtuosoWrapper:Function to insert new type with name concat_16->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_16->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_16->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_16
+VirtuosoWrapper:Function to insert new named individual with name concat
+VirtuosoWrapper:Function to insert new type with name concat->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat->256
+VirtuosoWrapper:Function to insert new previous layer with name concat->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat
+VirtuosoWrapper:Function to insert new named individual with name concat_20
+VirtuosoWrapper:Function to insert new type with name concat_20->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_20->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_20->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_20
+VirtuosoWrapper:Function to insert new named individual with name concat_9
+VirtuosoWrapper:Function to insert new type with name concat_9->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_9->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_9->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_9
+VirtuosoWrapper:Function to insert new named individual with name concat_5
+VirtuosoWrapper:Function to insert new type with name concat_5->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_5->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_5->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_5
+VirtuosoWrapper:Function to insert new named individual with name concat_1
+VirtuosoWrapper:Function to insert new type with name concat_1->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_1->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_1->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_1
+VirtuosoWrapper:Function to insert new named individual with name concat_24
+VirtuosoWrapper:Function to insert new type with name concat_24->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_24->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_24->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_24
+VirtuosoWrapper:Function to insert new named individual with name add
+VirtuosoWrapper:Function to insert new type with name add->FullyConnected
+VirtuosoWrapper:Function to insert new named individual with name Softmax
+VirtuosoWrapper:Function to insert new type with name Softmax->Softmax
+VirtuosoWrapper:Function to insert new has activation with name add->Softmax
+VirtuosoWrapper:Function to insert new has bias with name add->True
+VirtuosoWrapper:Function to insert new layer num with name add->10
+VirtuosoWrapper:Function to insert new previous layer with name add->concat_27
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->add
+VirtuosoWrapper:Function to insert new named individual with name concat_13
+VirtuosoWrapper:Function to insert new type with name concat_13->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_13->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_13->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_13
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn->LSTMLayer
+VirtuosoWrapper:Function to insert new layer num with name bidirectional_rnn->1
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_23
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_11
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_2
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_25
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_12
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_14
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_15
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_19
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_17
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_22
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_18
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_16
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_20
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_9
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_5
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_1
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_24
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_13
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_21
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_6
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_10
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_3
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_7
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_27
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_26
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_8
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_4
+VirtuosoWrapper:Function to insert new previous layer with name bidirectional_rnn->Placeholder
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->bidirectional_rnn
+VirtuosoWrapper:Function to insert new named individual with name concat_21
+VirtuosoWrapper:Function to insert new type with name concat_21->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_21->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_21->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_21
+VirtuosoWrapper:Function to insert new named individual with name concat_6
+VirtuosoWrapper:Function to insert new type with name concat_6->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_6->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_6->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_6
+VirtuosoWrapper:Function to insert new named individual with name concat_10
+VirtuosoWrapper:Function to insert new type with name concat_10->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_10->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_10->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_10
+VirtuosoWrapper:Function to insert new named individual with name concat_3
+VirtuosoWrapper:Function to insert new type with name concat_3->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_3->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_3->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_3
+VirtuosoWrapper:Function to insert new named individual with name concat_7
+VirtuosoWrapper:Function to insert new type with name concat_7->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_7->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_7->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_7
+VirtuosoWrapper:Function to insert new named individual with name concat_27
+VirtuosoWrapper:Function to insert new type with name concat_27->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_27->256
+VirtuosoWrapper:Function to insert new next layer with name concat_27->add
+VirtuosoWrapper:Function to insert new previous layer with name concat_27->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_27
+VirtuosoWrapper:Function to insert new named individual with name concat_26
+VirtuosoWrapper:Function to insert new type with name concat_26->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_26->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_26->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_26
+VirtuosoWrapper:Function to insert new named individual with name concat_8
+VirtuosoWrapper:Function to insert new type with name concat_8->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_8->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_8->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_8
+VirtuosoWrapper:Function to insert new named individual with name concat_4
+VirtuosoWrapper:Function to insert new type with name concat_4->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_4->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_4->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_4
+VirtuosoWrapper:Function to insert new named individual with name softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new type with name softmax_cross_entropy_with_logits_sg->MinObjectiveFunction
+VirtuosoWrapper:Function to insert new named individual with name cost_function
+VirtuosoWrapper:Function to insert new type with name cost_function->CostFunction
+VirtuosoWrapper:Function to insert new named individual with name softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new type with name softmax_cross_entropy_with_logits_sg->categorical
+VirtuosoWrapper:Function to insert new has loss with name cost_function->softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new has cost with name softmax_cross_entropy_with_logits_sg->cost_function
+VirtuosoWrapper:Function to insert new named individual with name cost_function
+VirtuosoWrapper:Function to insert new type with name cost_function->CostFunction
+VirtuosoWrapper:Function to insert new named individual with name softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new type with name softmax_cross_entropy_with_logits_sg->categorical
+VirtuosoWrapper:Function to insert new has loss with name cost_function->softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new has cost with name softmax_cross_entropy_with_logits_sg->cost_function
+VirtuosoWrapper:Function to insert new has objective with name bidirectional_rnn_net->softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_net->Network
+VirtuosoWrapper:Function to insert new network with name bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new named individual with name Placeholder
+VirtuosoWrapper:Function to insert new type with name Placeholder->InputLayer
+VirtuosoWrapper:Function to insert new layer num with name Placeholder->28
+VirtuosoWrapper:Function to insert new input layer with name bidirectional_rnn_net->Placeholder
+VirtuosoWrapper:Function to insert new named individual with name Placeholder_1
+VirtuosoWrapper:Function to insert new type with name Placeholder_1->OutputLayer
+VirtuosoWrapper:Function to insert new layer num with name Placeholder_1->10
+VirtuosoWrapper:Function to insert new previous layer with name Placeholder_1->concat_23
+VirtuosoWrapper:Function to insert new output layer with name bidirectional_rnn_net->Placeholder_1
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_training_session
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_training_session->TrainingSession
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_training_step
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_training_step->TrainingSingle
+VirtuosoWrapper:Function to insert new trains network with name bidirectional_rnn_training_step->bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_net_INP_0
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_net_INP_0->DatasetPipe
+VirtuosoWrapper:Function to insert new joins layer with name bidirectional_rnn_net_INP_0->Placeholder
+VirtuosoWrapper:Function to insert new joins dataset with name bidirectional_rnn_net_INP_0->Placeholder
+VirtuosoWrapper:Function to insert new hasIOPipe with name bidirectional_rnn_training_step->bidirectional_rnn_net_INP_0
+VirtuosoWrapper:Function to insert new named individual with name GradientDescent/update_bidirectional_rnn/bw/basic_lstm_cell/kernel/ApplyGradientDescent
+VirtuosoWrapper:Function to insert new type with name GradientDescent/update_bidirectional_rnn/bw/basic_lstm_cell/kernel/ApplyGradientDescent->GradientDescent
+VirtuosoWrapper:Function to insert new new_learning_rate with name GradientDescent/update_bidirectional_rnn/bw/basic_lstm_cell/kernel/ApplyGradientDescent->0.0010000000474974513
+VirtuosoWrapper:Function to insert new  has optimizer  with name bidirectional_rnn_training_step->GradientDescent/update_bidirectional_rnn/bw/basic_lstm_cell/kernel/ApplyGradientDescent
+VirtuosoWrapper:Function to insert new batch size with name bidirectional_rnn_training_step->100
+VirtuosoWrapper:Function to insert new epoch num with name bidirectional_rnn_training_step->128
+VirtuosoWrapper:Function to insert new training step with name bidirectional_rnn_training_session->bidirectional_rnn_training_step
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_trained_model
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_trained_model->TrainedModel
+VirtuosoWrapper:Function to insert new named individual with name W1
+VirtuosoWrapper:Function to insert new type with name W1->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W1->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W1->concat_23
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W1
+VirtuosoWrapper:Function to insert new named individual with name W2
+VirtuosoWrapper:Function to insert new type with name W2->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W2->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W2->concat_11
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W2
+VirtuosoWrapper:Function to insert new named individual with name W3
+VirtuosoWrapper:Function to insert new type with name W3->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W3->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W3->concat_2
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W3
+VirtuosoWrapper:Function to insert new named individual with name W4
+VirtuosoWrapper:Function to insert new type with name W4->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W4->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W4->concat_25
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W4
+VirtuosoWrapper:Function to insert new named individual with name W5
+VirtuosoWrapper:Function to insert new type with name W5->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W5->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W5->concat_12
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W5
+VirtuosoWrapper:Function to insert new named individual with name W6
+VirtuosoWrapper:Function to insert new type with name W6->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W6->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W6->concat_14
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W6
+VirtuosoWrapper:Function to insert new named individual with name W7
+VirtuosoWrapper:Function to insert new type with name W7->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W7->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W7->concat_15
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W7
+VirtuosoWrapper:Function to insert new named individual with name W8
+VirtuosoWrapper:Function to insert new type with name W8->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W8->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W8->concat_19
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W8
+VirtuosoWrapper:Function to insert new named individual with name W9
+VirtuosoWrapper:Function to insert new type with name W9->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W9->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W9->concat_17
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W9
+VirtuosoWrapper:Function to insert new named individual with name W10
+VirtuosoWrapper:Function to insert new type with name W10->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W10->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W10->concat_22
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W10
+VirtuosoWrapper:Function to insert new named individual with name W11
+VirtuosoWrapper:Function to insert new type with name W11->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W11->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W11->concat_18
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W11
+VirtuosoWrapper:Function to insert new named individual with name W12
+VirtuosoWrapper:Function to insert new type with name W12->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W12->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W12->concat_16
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W12
+VirtuosoWrapper:Function to insert new named individual with name W13
+VirtuosoWrapper:Function to insert new type with name W13->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W13->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W13->concat
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W13
+VirtuosoWrapper:Function to insert new named individual with name W14
+VirtuosoWrapper:Function to insert new type with name W14->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W14->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W14->concat_20
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W14
+VirtuosoWrapper:Function to insert new named individual with name W15
+VirtuosoWrapper:Function to insert new type with name W15->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W15->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W15->concat_9
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W15
+VirtuosoWrapper:Function to insert new named individual with name W16
+VirtuosoWrapper:Function to insert new type with name W16->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W16->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W16->concat_5
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W16
+VirtuosoWrapper:Function to insert new named individual with name W17
+VirtuosoWrapper:Function to insert new type with name W17->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W17->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W17->concat_1
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W17
+VirtuosoWrapper:Function to insert new named individual with name W18
+VirtuosoWrapper:Function to insert new type with name W18->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W18->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W18->concat_24
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W18
+VirtuosoWrapper:Function to insert new named individual with name W19
+VirtuosoWrapper:Function to insert new type with name W19->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W19->concat_27
+VirtuosoWrapper:Function to insert new trained out with name W19->add
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W19
+VirtuosoWrapper:Function to insert new named individual with name W20
+VirtuosoWrapper:Function to insert new type with name W20->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W20->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W20->concat_13
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W20
+VirtuosoWrapper:Function to insert new named individual with name W21
+VirtuosoWrapper:Function to insert new type with name W21->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W21->Placeholder
+VirtuosoWrapper:Function to insert new trained out with name W21->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W21
+VirtuosoWrapper:Function to insert new named individual with name W22
+VirtuosoWrapper:Function to insert new type with name W22->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W22->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W22->concat_21
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W22
+VirtuosoWrapper:Function to insert new named individual with name W23
+VirtuosoWrapper:Function to insert new type with name W23->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W23->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W23->concat_6
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W23
+VirtuosoWrapper:Function to insert new named individual with name W24
+VirtuosoWrapper:Function to insert new type with name W24->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W24->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W24->concat_10
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W24
+VirtuosoWrapper:Function to insert new named individual with name W25
+VirtuosoWrapper:Function to insert new type with name W25->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W25->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W25->concat_3
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W25
+VirtuosoWrapper:Function to insert new named individual with name W26
+VirtuosoWrapper:Function to insert new type with name W26->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W26->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W26->concat_7
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W26
+VirtuosoWrapper:Function to insert new named individual with name W27
+VirtuosoWrapper:Function to insert new type with name W27->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W27->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W27->concat_27
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W27
+VirtuosoWrapper:Function to insert new named individual with name W28
+VirtuosoWrapper:Function to insert new type with name W28->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W28->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W28->concat_26
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W28
+VirtuosoWrapper:Function to insert new named individual with name W29
+VirtuosoWrapper:Function to insert new type with name W29->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W29->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W29->concat_8
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W29
+VirtuosoWrapper:Function to insert new named individual with name W30
+VirtuosoWrapper:Function to insert new type with name W30->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W30->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W30->concat_4
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W30
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_training_strategy
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_training_strategy->TrainingStrategy
+VirtuosoWrapper:Function to insert new training_strategy with name bidirectional_rnn_training_strategy
+VirtuosoWrapper:Function to insert new has primary training session with name bidirectional_rnn_training_strategy->bidirectional_rnn_training_session
+VirtuosoWrapper:Function to insert new has trained model with name bidirectional_rnn_training_strategy->bidirectional_rnn_trained_model
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn->AnnConfiguration
+VirtuosoWrapper:Function to insert new ann configuration with name bidirectional_rnn
+VirtuosoWrapper:Function to insert new has network with name bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new training_strategy with name bidirectional_rnn_training_strategy
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_eval
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_eval->EvaluationResult
+VirtuosoWrapper:Function to insert new evaluates ann conf with name bidirectional_rnn_eval->bidirectional_rnn
+VirtuosoWrapper:Function to insert new evaluates network with name bidirectional_rnn_eval->bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_net_EVP_0
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_net_EVP_0->DatasetPipe
+VirtuosoWrapper:Function to insert new joins layer with name bidirectional_rnn_net_EVP_0->Placeholder_1
+VirtuosoWrapper:Function to insert new joins dataset with name bidirectional_rnn_net_EVP_0->Placeholder_1
+VirtuosoWrapper:Function to insert new evaluates using io with name bidirectional_rnn_eval->bidirectional_rnn_net_EVP_0
+VirtuosoWrapper:Function to insert new named individual with name Equal
+VirtuosoWrapper:Function to insert new type with name Equal->Accuracy
+VirtuosoWrapper:Function to insert new has metric with name bidirectional_rnn_eval->Equal
+VirtuosoWrapper:Function to insert new has training strategy with name bidirectional_rnn_eval->bidirectional_rnn_training_strategy
+VirtuosoWrapper:Function to insert new init_data with name bidirectional_rnn
+VirtuosoWrapper:Function to insert new init network with name bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new init evaluation with name bidirectional_rnn_eval:bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new named individual with name concat_27
+VirtuosoWrapper:Function to insert new type with name concat_27->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_27->256
+VirtuosoWrapper:Function to insert new next layer with name concat_27->add
+VirtuosoWrapper:Function to insert new previous layer with name concat_27->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_27
+VirtuosoWrapper:Function to insert new named individual with name concat_7
+VirtuosoWrapper:Function to insert new type with name concat_7->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_7->256
+VirtuosoWrapper:Function to insert new next layer with name concat_7->Placeholder_1
+VirtuosoWrapper:Function to insert new previous layer with name concat_7->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_7
+VirtuosoWrapper:Function to insert new named individual with name concat_5
+VirtuosoWrapper:Function to insert new type with name concat_5->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_5->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_5->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_5
+VirtuosoWrapper:Function to insert new named individual with name concat_13
+VirtuosoWrapper:Function to insert new type with name concat_13->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_13->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_13->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_13
+VirtuosoWrapper:Function to insert new named individual with name concat
+VirtuosoWrapper:Function to insert new type with name concat->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat->256
+VirtuosoWrapper:Function to insert new previous layer with name concat->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat
+VirtuosoWrapper:Function to insert new named individual with name concat_23
+VirtuosoWrapper:Function to insert new type with name concat_23->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_23->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_23->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_23
+VirtuosoWrapper:Function to insert new named individual with name concat_21
+VirtuosoWrapper:Function to insert new type with name concat_21->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_21->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_21->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_21
+VirtuosoWrapper:Function to insert new named individual with name concat_17
+VirtuosoWrapper:Function to insert new type with name concat_17->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_17->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_17->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_17
+VirtuosoWrapper:Function to insert new named individual with name concat_20
+VirtuosoWrapper:Function to insert new type with name concat_20->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_20->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_20->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_20
+VirtuosoWrapper:Function to insert new named individual with name concat_12
+VirtuosoWrapper:Function to insert new type with name concat_12->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_12->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_12->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_12
+VirtuosoWrapper:Function to insert new named individual with name concat_15
+VirtuosoWrapper:Function to insert new type with name concat_15->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_15->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_15->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_15
+VirtuosoWrapper:Function to insert new named individual with name concat_1
+VirtuosoWrapper:Function to insert new type with name concat_1->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_1->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_1->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_1
+VirtuosoWrapper:Function to insert new named individual with name concat_3
+VirtuosoWrapper:Function to insert new type with name concat_3->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_3->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_3->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_3
+VirtuosoWrapper:Function to insert new named individual with name concat_25
+VirtuosoWrapper:Function to insert new type with name concat_25->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_25->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_25->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_25
+VirtuosoWrapper:Function to insert new named individual with name concat_24
+VirtuosoWrapper:Function to insert new type with name concat_24->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_24->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_24->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_24
+VirtuosoWrapper:Function to insert new named individual with name concat_10
+VirtuosoWrapper:Function to insert new type with name concat_10->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_10->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_10->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_10
+VirtuosoWrapper:Function to insert new named individual with name concat_16
+VirtuosoWrapper:Function to insert new type with name concat_16->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_16->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_16->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_16
+VirtuosoWrapper:Function to insert new named individual with name concat_22
+VirtuosoWrapper:Function to insert new type with name concat_22->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_22->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_22->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_22
+VirtuosoWrapper:Function to insert new named individual with name concat_8
+VirtuosoWrapper:Function to insert new type with name concat_8->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_8->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_8->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_8
+VirtuosoWrapper:Function to insert new named individual with name concat_6
+VirtuosoWrapper:Function to insert new type with name concat_6->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_6->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_6->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_6
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn->LSTMLayer
+VirtuosoWrapper:Function to insert new layer num with name bidirectional_rnn->128
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_27
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_7
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_5
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_13
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_23
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_21
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_17
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_20
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_12
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_15
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_1
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_3
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_25
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_24
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_10
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_16
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_22
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_8
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_6
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_9
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_11
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_18
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_19
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_2
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_14
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_4
+VirtuosoWrapper:Function to insert new next layer with name bidirectional_rnn->concat_26
+VirtuosoWrapper:Function to insert new previous layer with name bidirectional_rnn->Placeholder
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->bidirectional_rnn
+VirtuosoWrapper:Function to insert new named individual with name concat_9
+VirtuosoWrapper:Function to insert new type with name concat_9->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_9->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_9->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_9
+VirtuosoWrapper:Function to insert new named individual with name concat_11
+VirtuosoWrapper:Function to insert new type with name concat_11->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_11->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_11->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_11
+VirtuosoWrapper:Function to insert new named individual with name concat_18
+VirtuosoWrapper:Function to insert new type with name concat_18->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_18->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_18->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_18
+VirtuosoWrapper:Function to insert new named individual with name concat_19
+VirtuosoWrapper:Function to insert new type with name concat_19->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_19->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_19->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_19
+VirtuosoWrapper:Function to insert new named individual with name concat_2
+VirtuosoWrapper:Function to insert new type with name concat_2->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_2->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_2->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_2
+VirtuosoWrapper:Function to insert new named individual with name concat_14
+VirtuosoWrapper:Function to insert new type with name concat_14->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_14->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_14->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_14
+VirtuosoWrapper:Function to insert new named individual with name add
+VirtuosoWrapper:Function to insert new type with name add->FullyConnected
+VirtuosoWrapper:Function to insert new named individual with name Softmax
+VirtuosoWrapper:Function to insert new type with name Softmax->Softmax
+VirtuosoWrapper:Function to insert new has activation with name add->Softmax
+VirtuosoWrapper:Function to insert new has bias with name add->True
+VirtuosoWrapper:Function to insert new layer num with name add->10
+VirtuosoWrapper:Function to insert new previous layer with name add->concat_27
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->add
+VirtuosoWrapper:Function to insert new named individual with name concat_4
+VirtuosoWrapper:Function to insert new type with name concat_4->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_4->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_4->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_4
+VirtuosoWrapper:Function to insert new named individual with name concat_26
+VirtuosoWrapper:Function to insert new type with name concat_26->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name concat_26->256
+VirtuosoWrapper:Function to insert new previous layer with name concat_26->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has layer with name bidirectional_rnn_net->concat_26
+VirtuosoWrapper:Function to insert new named individual with name softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new type with name softmax_cross_entropy_with_logits_sg->MinObjectiveFunction
+VirtuosoWrapper:Function to insert new named individual with name cost_function
+VirtuosoWrapper:Function to insert new type with name cost_function->CostFunction
+VirtuosoWrapper:Function to insert new named individual with name softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new type with name softmax_cross_entropy_with_logits_sg->categorical
+VirtuosoWrapper:Function to insert new has loss with name cost_function->softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new has cost with name softmax_cross_entropy_with_logits_sg->cost_function
+VirtuosoWrapper:Function to insert new named individual with name cost_function
+VirtuosoWrapper:Function to insert new type with name cost_function->CostFunction
+VirtuosoWrapper:Function to insert new named individual with name softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new type with name softmax_cross_entropy_with_logits_sg->categorical
+VirtuosoWrapper:Function to insert new has loss with name cost_function->softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new has cost with name softmax_cross_entropy_with_logits_sg->cost_function
+VirtuosoWrapper:Function to insert new has objective with name bidirectional_rnn_net->softmax_cross_entropy_with_logits_sg
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_net->Network
+VirtuosoWrapper:Function to insert new network with name bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new named individual with name Placeholder
+VirtuosoWrapper:Function to insert new type with name Placeholder->InputLayer
+VirtuosoWrapper:Function to insert new layer num with name Placeholder->28
+VirtuosoWrapper:Function to insert new input layer with name bidirectional_rnn_net->Placeholder
+VirtuosoWrapper:Function to insert new named individual with name Placeholder_1
+VirtuosoWrapper:Function to insert new type with name Placeholder_1->OutputLayer
+VirtuosoWrapper:Function to insert new layer num with name Placeholder_1->10
+VirtuosoWrapper:Function to insert new previous layer with name Placeholder_1->concat_7
+VirtuosoWrapper:Function to insert new output layer with name bidirectional_rnn_net->Placeholder_1
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_training_session
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_training_session->TrainingSession
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_training_step
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_training_step->TrainingSingle
+VirtuosoWrapper:Function to insert new trains network with name bidirectional_rnn_training_step->bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_net_INP_0
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_net_INP_0->DatasetPipe
+VirtuosoWrapper:Function to insert new joins layer with name bidirectional_rnn_net_INP_0->Placeholder
+VirtuosoWrapper:Function to insert new joins dataset with name bidirectional_rnn_net_INP_0->Placeholder
+VirtuosoWrapper:Function to insert new hasIOPipe with name bidirectional_rnn_training_step->bidirectional_rnn_net_INP_0
+VirtuosoWrapper:Function to insert new named individual with name GradientDescent/update_Variable_1/ApplyGradientDescent
+VirtuosoWrapper:Function to insert new type with name GradientDescent/update_Variable_1/ApplyGradientDescent->GradientDescent
+VirtuosoWrapper:Function to insert new new_learning_rate with name GradientDescent/update_Variable_1/ApplyGradientDescent->0.0010000000474974513
+VirtuosoWrapper:Function to insert new  has optimizer  with name bidirectional_rnn_training_step->GradientDescent/update_Variable_1/ApplyGradientDescent
+VirtuosoWrapper:Function to insert new batch size with name bidirectional_rnn_training_step->100
+VirtuosoWrapper:Function to insert new epoch num with name bidirectional_rnn_training_step->128
+VirtuosoWrapper:Function to insert new training step with name bidirectional_rnn_training_session->bidirectional_rnn_training_step
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_trained_model
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_trained_model->TrainedModel
+VirtuosoWrapper:Function to insert new named individual with name W1
+VirtuosoWrapper:Function to insert new type with name W1->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W1->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W1->concat_27
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W1
+VirtuosoWrapper:Function to insert new named individual with name W2
+VirtuosoWrapper:Function to insert new type with name W2->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W2->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W2->concat_7
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W2
+VirtuosoWrapper:Function to insert new named individual with name W3
+VirtuosoWrapper:Function to insert new type with name W3->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W3->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W3->concat_5
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W3
+VirtuosoWrapper:Function to insert new named individual with name W4
+VirtuosoWrapper:Function to insert new type with name W4->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W4->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W4->concat_13
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W4
+VirtuosoWrapper:Function to insert new named individual with name W5
+VirtuosoWrapper:Function to insert new type with name W5->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W5->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W5->concat
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W5
+VirtuosoWrapper:Function to insert new named individual with name W6
+VirtuosoWrapper:Function to insert new type with name W6->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W6->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W6->concat_23
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W6
+VirtuosoWrapper:Function to insert new named individual with name W7
+VirtuosoWrapper:Function to insert new type with name W7->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W7->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W7->concat_21
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W7
+VirtuosoWrapper:Function to insert new named individual with name W8
+VirtuosoWrapper:Function to insert new type with name W8->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W8->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W8->concat_17
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W8
+VirtuosoWrapper:Function to insert new named individual with name W9
+VirtuosoWrapper:Function to insert new type with name W9->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W9->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W9->concat_20
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W9
+VirtuosoWrapper:Function to insert new named individual with name W10
+VirtuosoWrapper:Function to insert new type with name W10->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W10->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W10->concat_12
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W10
+VirtuosoWrapper:Function to insert new named individual with name W11
+VirtuosoWrapper:Function to insert new type with name W11->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W11->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W11->concat_15
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W11
+VirtuosoWrapper:Function to insert new named individual with name W12
+VirtuosoWrapper:Function to insert new type with name W12->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W12->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W12->concat_1
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W12
+VirtuosoWrapper:Function to insert new named individual with name W13
+VirtuosoWrapper:Function to insert new type with name W13->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W13->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W13->concat_3
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W13
+VirtuosoWrapper:Function to insert new named individual with name W14
+VirtuosoWrapper:Function to insert new type with name W14->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W14->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W14->concat_25
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W14
+VirtuosoWrapper:Function to insert new named individual with name W15
+VirtuosoWrapper:Function to insert new type with name W15->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W15->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W15->concat_24
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W15
+VirtuosoWrapper:Function to insert new named individual with name W16
+VirtuosoWrapper:Function to insert new type with name W16->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W16->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W16->concat_10
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W16
+VirtuosoWrapper:Function to insert new named individual with name W17
+VirtuosoWrapper:Function to insert new type with name W17->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W17->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W17->concat_16
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W17
+VirtuosoWrapper:Function to insert new named individual with name W18
+VirtuosoWrapper:Function to insert new type with name W18->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W18->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W18->concat_22
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W18
+VirtuosoWrapper:Function to insert new named individual with name W19
+VirtuosoWrapper:Function to insert new type with name W19->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W19->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W19->concat_8
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W19
+VirtuosoWrapper:Function to insert new named individual with name W20
+VirtuosoWrapper:Function to insert new type with name W20->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W20->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W20->concat_6
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W20
+VirtuosoWrapper:Function to insert new named individual with name W21
+VirtuosoWrapper:Function to insert new type with name W21->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W21->Placeholder
+VirtuosoWrapper:Function to insert new trained out with name W21->bidirectional_rnn
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W21
+VirtuosoWrapper:Function to insert new named individual with name W22
+VirtuosoWrapper:Function to insert new type with name W22->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W22->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W22->concat_9
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W22
+VirtuosoWrapper:Function to insert new named individual with name W23
+VirtuosoWrapper:Function to insert new type with name W23->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W23->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W23->concat_11
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W23
+VirtuosoWrapper:Function to insert new named individual with name W24
+VirtuosoWrapper:Function to insert new type with name W24->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W24->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W24->concat_18
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W24
+VirtuosoWrapper:Function to insert new named individual with name W25
+VirtuosoWrapper:Function to insert new type with name W25->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W25->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W25->concat_19
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W25
+VirtuosoWrapper:Function to insert new named individual with name W26
+VirtuosoWrapper:Function to insert new type with name W26->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W26->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W26->concat_2
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W26
+VirtuosoWrapper:Function to insert new named individual with name W27
+VirtuosoWrapper:Function to insert new type with name W27->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W27->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W27->concat_14
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W27
+VirtuosoWrapper:Function to insert new named individual with name W28
+VirtuosoWrapper:Function to insert new type with name W28->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W28->concat_27
+VirtuosoWrapper:Function to insert new trained out with name W28->add
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W28
+VirtuosoWrapper:Function to insert new named individual with name W29
+VirtuosoWrapper:Function to insert new type with name W29->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W29->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W29->concat_4
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W29
+VirtuosoWrapper:Function to insert new named individual with name W30
+VirtuosoWrapper:Function to insert new type with name W30->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W30->bidirectional_rnn
+VirtuosoWrapper:Function to insert new trained out with name W30->concat_26
+VirtuosoWrapper:Function to insert new has weights with name bidirectional_rnn_trained_model->W30
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_training_strategy
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_training_strategy->TrainingStrategy
+VirtuosoWrapper:Function to insert new training_strategy with name bidirectional_rnn_training_strategy
+VirtuosoWrapper:Function to insert new has primary training session with name bidirectional_rnn_training_strategy->bidirectional_rnn_training_session
+VirtuosoWrapper:Function to insert new has trained model with name bidirectional_rnn_training_strategy->bidirectional_rnn_trained_model
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn->AnnConfiguration
+VirtuosoWrapper:Function to insert new ann configuration with name bidirectional_rnn
+VirtuosoWrapper:Function to insert new has network with name bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new training_strategy with name bidirectional_rnn_training_strategy
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_eval
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_eval->EvaluationResult
+VirtuosoWrapper:Function to insert new evaluates ann conf with name bidirectional_rnn_eval->bidirectional_rnn
+VirtuosoWrapper:Function to insert new evaluates network with name bidirectional_rnn_eval->bidirectional_rnn_net
+VirtuosoWrapper:Function to insert new named individual with name bidirectional_rnn_net_EVP_0
+VirtuosoWrapper:Function to insert new type with name bidirectional_rnn_net_EVP_0->DatasetPipe
+VirtuosoWrapper:Function to insert new joins layer with name bidirectional_rnn_net_EVP_0->Placeholder_1
+VirtuosoWrapper:Function to insert new joins dataset with name bidirectional_rnn_net_EVP_0->Placeholder_1
+VirtuosoWrapper:Function to insert new evaluates using io with name bidirectional_rnn_eval->bidirectional_rnn_net_EVP_0
+VirtuosoWrapper:Function to insert new named individual with name Equal
+VirtuosoWrapper:Function to insert new type with name Equal->Accuracy
+VirtuosoWrapper:Function to insert new has metric with name bidirectional_rnn_eval->Equal
+VirtuosoWrapper:Function to insert new has training strategy with name bidirectional_rnn_eval->bidirectional_rnn_training_strategy

@@ -22,6 +22,7 @@ def execute_file(new_file,new_line_list,path_to_folder):
         return file_to_execute
     except subprocess.CalledProcessError as e:
         traceback = str(e.output).split("Traceback")
+        print("Traceback:",traceback)
         if "batch" in traceback:
             return "batch"
         else:
@@ -109,17 +110,17 @@ def create_new_file(line_list,path,file,skip):
     real_path = os.path.dirname(path)
     real_path = os.getcwd() + "\\" + real_path
     os.chdir(real_path)
-    while os.path.basename(os.getcwd())!="thesis_code":
+    while os.path.basename(os.getcwd())!="thesis":
         os.chdir("..")
+        print("PATH",os.getcwd())
         backwards_dir=backwards_dir+"..\\"
     #This happend because the path contains unicode escape characters \a ,\t etc.We needed to make sure the produced path string,
     #would not contain any escape characters.
-
     num_of_space = min_space
     str_1="\n"+num_of_space*" "+"with tf.Session() as sess:\n"
     num_of_space=num_of_space+1
     str_2=num_of_space*" "+"graph_def = sess.graph.as_graph_def(add_shapes=True)\n"
-    str_3=num_of_space*" "+"tf.train.write_graph(graph_def,\" "+backwards_dir+github.dirName+"\_tensorflow\pbtxt\""+",\""+file+".pbtxt\")\n"
+    str_3=num_of_space*" "+"tf.train.write_graph(graph_def,\""+backwards_dir+github.dirName+"\_tensorflow\pbtxt\""+",\""+file+".pbtxt\")\n"
     folder=file.replace(".py","")
     str_4=num_of_space*" "+"tfFileWriter = tf.summary.FileWriter(\""+folder+"\")\n"
     str_5=num_of_space*" "+"tfFileWriter.add_graph(graph_def)\n"

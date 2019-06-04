@@ -14,5 +14,4 @@ class loss(function):
     def __init__(self,name,node):
         super(loss, self).__init__(name,node)
         self.inner_nodes=[]
-        print("TROUBOUKI=",self.name)
         self.get_all_inner_nodes()

@@ -8,7 +8,7 @@ from functions.activation.smooth.sigmoid import sigmoid
 class layer:
 
     def insert_in_annetto(self):
-        print("Annetto::layer-", self.name)
+        #print("Annetto::layer-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         if self.activation!=None:
@@ -20,7 +20,6 @@ class layer:
             print("ERROR:"+self.name+" NOT AVAILABLE NUM LAYER")
         else:
             rdfWrapper.layer_num_units(self.name, self.num_layer)
-        print("self=",self.name)
         for elem in self.next_layer:
             rdfWrapper.new_next_layer(self.name, elem)
         for elem in self.previous_layer:
@@ -64,12 +63,12 @@ class layer:
         elif node.get_op()=="Sigmoid":
             self.activation = sigmoid(node)
         else:
-            print("NOT HANDLED ACTIVATION=",node.get_op())
+            print("ERROR:NOT HANDLED ACTIVATION=",node.get_op())
             import sys
             sys.exit()
 
     def find_output_node(self,name):
-        print("FINDING OUTPUT FOR ",name)
+        print("LOGGING:Finding output for ",name)
         nm = nodes.handler.entitiesHandler.node_map
         for node_name in nm.keys():
             #print("Name=",node_name," result ",nm[node_name].search_inputs(name))
@@ -95,7 +94,6 @@ class layer:
         if self.activation=="":
             for node_name in nm.keys():
                 if nm[node_name].search_inputs(self.name) == True:
-                    print("INPUT NODE RE MALAKA =",node_name)
                     if nm[node_name].get_op() in nodes.handler.entitiesHandler.activation_operations:
                         self.init_activation(nm[node_name])
                         return
@@ -104,16 +102,13 @@ class layer:
         nm = nodes.handler.entitiesHandler.node_map
         for node_name in nodes.handler.entitiesHandler.node_map.keys():
             if nm[node_name].search_inputs(name) == True:
-                print("ELELELELEL=",name)
                 if "gradient" not in nm[node_name].get_name():
-                    print("ELELELELEL2=", name)
                     if nm[node_name].get_op() in nodes.handler.entitiesHandler.activation_operations or \
                             nm[node_name].get_op() in nodes.handler.entitiesHandler.intermediate_operations:
-                        print("about to call=",node_name)
+
                         self.find_output_with_activation(node_name)
                         return
                     else:
-                        print("output is =",node_name)
                         self.output_nodes.append(node_name)
 
     def find_input_layer(self,input_node):

@@ -46,7 +46,6 @@ def handle_gradient_descent( node):
 def check_if_acc(node):
     children=[x for x in node.get_inputs()]
     for x in children:
-        print(x.get_name())
         if x.get_op()=="Placeholder" \
                 or x.get_op()=="ArgMax"\
                 or x.get_op()=="Softmax":
@@ -107,9 +106,7 @@ def handle_adam(node,name):
     return adam(node,name)
 
 def handle_sparse_cross_entropy(node,c_name):
-    print(node.get_name())
     for dim in node.get_output():
-        print(dim)
         for i,elem in enumerate(dim.dim):
             if elem.size != -1:
                 if elem.size > 2:
@@ -144,7 +141,6 @@ def handle_pow(node,network):
             sub=True
         if elem.get_op()=="Const":
             num=elem.node_obj.attr["value"].tensor.float_val
-            print(int(num[0]))
             if int(num[0])==2:
                 power_of_two=True
     if sub==True and power_of_two==True:
@@ -156,7 +152,6 @@ def handle_neg_for_log(node):
     while inputs!=[]:
         tmp=[]
         for input in inputs:
-            print("GKYRTIS=",input.get_name())
             if input.get_op()=="Log":
                 return handle_log(node)
             else:
@@ -170,7 +165,6 @@ def handle_neg_for_log(node):
             if input.get_op() in nodes.handler.entitiesHandler.intermediate_operations or input.get_op()=="Add":
                 for elem in input.get_inputs():
                     tmp.append(elem)
-        print("GKYRTIS=", [x.get_name() for x in tmp])
         inputs=tmp
 
     return ""
@@ -258,6 +252,29 @@ def handle_in_layer(node):
 def handle_training_session(name,trStep,primaryTrStep):
     return training_session(name,trStep,primaryTrStep)
 
+def handle_mul_as_cross_entropy(node,c_name):
+    children = node.get_inputs()
+    log = False
+    placeholder = False
+    type = None
+    for elem in children:
+        if elem.get_op() == "Log":
+            log = True
+        if elem.get_op() == "Placeholder":
+            placeholder=True
+            for dim in elem.get_attr()["shape"].shape.dim:
+                if dim.size != -1:
+                    if dim.size > 2:
+                        type="b"
+                    else:
+                        type="c"
+    if log == True and placeholder == True:
+        if type=="b":
+            return cost_function(c_name, binary_cross_entropy(node.get_name(), node))
+        else:
+            return cost_function(c_name, categorical_cross_entropy(node.get_name(), node))
+    else:
+        return ""
 
 def handle_objective(name,cost):
     return minimize_objective(name,cost)
@@ -279,8 +296,10 @@ def handle_dropout( node,name):
     return dropout_layer(node,name)
 
 def check_simple_layer( node,name):
+    if "random_" in name:
+        return (False, [])
+
     #TODO:What happens if no bias in the node???
-    print("HOELELELELELLELEL")
     if len(node.inputs) == 2:
         if node.inputs[0].get_op() == "MatMul" or node.inputs[0].get_op() == "Identity" or node.inputs[
             0].get_op() == "Placeholder" or node.inputs[0].get_op() == "Mul":

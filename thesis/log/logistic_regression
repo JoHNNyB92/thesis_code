@@ -1,0 +1,90 @@
+VirtuosoWrapper:Function to insert new init_data with name logistic_regression
+VirtuosoWrapper:Function to insert new init network with name logistic_regression_net
+VirtuosoWrapper:Function to insert new init evaluation with name logistic_regression_eval:logistic_regression_net
+VirtuosoWrapper:Function to insert new init_data with name logistic_regression
+VirtuosoWrapper:Function to insert new init network with name logistic_regression_net
+VirtuosoWrapper:Function to insert new init evaluation with name logistic_regression_eval:logistic_regression_net
+VirtuosoWrapper:Function to insert new named individual with name add
+VirtuosoWrapper:Function to insert new type with name add->FullyConnected
+VirtuosoWrapper:Function to insert new named individual with name Softmax
+VirtuosoWrapper:Function to insert new type with name Softmax->Softmax
+VirtuosoWrapper:Function to insert new has activation with name add->Softmax
+VirtuosoWrapper:Function to insert new has bias with name add->True
+VirtuosoWrapper:Function to insert new layer num with name add->10
+VirtuosoWrapper:Function to insert new next layer with name add->Placeholder_1
+VirtuosoWrapper:Function to insert new previous layer with name add->Placeholder
+VirtuosoWrapper:Function to insert new has layer with name logistic_regression_net->add
+VirtuosoWrapper:Function to insert new named individual with name objective_function_0
+VirtuosoWrapper:Function to insert new type with name objective_function_0->MinObjectiveFunction
+VirtuosoWrapper:Function to insert new named individual with name cost_function_0
+VirtuosoWrapper:Function to insert new type with name cost_function_0->CostFunction
+VirtuosoWrapper:Function to insert new named individual with name mul
+VirtuosoWrapper:Function to insert new type with name mul->binary
+VirtuosoWrapper:Function to insert new has loss with name cost_function_0->mul
+VirtuosoWrapper:Function to insert new has cost with name objective_function_0->cost_function_0
+VirtuosoWrapper:Function to insert new named individual with name cost_function_0
+VirtuosoWrapper:Function to insert new type with name cost_function_0->CostFunction
+VirtuosoWrapper:Function to insert new named individual with name mul
+VirtuosoWrapper:Function to insert new type with name mul->binary
+VirtuosoWrapper:Function to insert new has loss with name cost_function_0->mul
+VirtuosoWrapper:Function to insert new has cost with name objective_function_0->cost_function_0
+VirtuosoWrapper:Function to insert new has objective with name logistic_regression_net->objective_function_0
+VirtuosoWrapper:Function to insert new named individual with name logistic_regression_net
+VirtuosoWrapper:Function to insert new type with name logistic_regression_net->Network
+VirtuosoWrapper:Function to insert new network with name logistic_regression_net
+VirtuosoWrapper:Function to insert new named individual with name Placeholder
+VirtuosoWrapper:Function to insert new type with name Placeholder->InputLayer
+VirtuosoWrapper:Function to insert new layer num with name Placeholder->784
+VirtuosoWrapper:Function to insert new input layer with name logistic_regression_net->Placeholder
+VirtuosoWrapper:Function to insert new named individual with name Placeholder_1
+VirtuosoWrapper:Function to insert new type with name Placeholder_1->OutputLayer
+VirtuosoWrapper:Function to insert new layer num with name Placeholder_1->10
+VirtuosoWrapper:Function to insert new previous layer with name Placeholder_1->add
+VirtuosoWrapper:Function to insert new output layer with name logistic_regression_net->Placeholder_1
+VirtuosoWrapper:Function to insert new named individual with name logistic_regression_training_session
+VirtuosoWrapper:Function to insert new type with name logistic_regression_training_session->TrainingSession
+VirtuosoWrapper:Function to insert new named individual with name logistic_regression_training_step
+VirtuosoWrapper:Function to insert new type with name logistic_regression_training_step->TrainingSingle
+VirtuosoWrapper:Function to insert new trains network with name logistic_regression_training_step->logistic_regression_net
+VirtuosoWrapper:Function to insert new named individual with name logistic_regression_net_INP_0
+VirtuosoWrapper:Function to insert new type with name logistic_regression_net_INP_0->DatasetPipe
+VirtuosoWrapper:Function to insert new joins layer with name logistic_regression_net_INP_0->Placeholder
+VirtuosoWrapper:Function to insert new joins dataset with name logistic_regression_net_INP_0->Placeholder
+VirtuosoWrapper:Function to insert new hasIOPipe with name logistic_regression_training_step->logistic_regression_net_INP_0
+VirtuosoWrapper:Function to insert new named individual with name GradientDescent
+VirtuosoWrapper:Function to insert new type with name GradientDescent->GradientDescent
+VirtuosoWrapper:Function to insert new new_learning_rate with name GradientDescent->0.009999999776482582
+VirtuosoWrapper:Function to insert new  has optimizer  with name logistic_regression_training_step->GradientDescent
+VirtuosoWrapper:Function to insert new batch size with name logistic_regression_training_step->0
+VirtuosoWrapper:Function to insert new epoch num with name logistic_regression_training_step->0
+VirtuosoWrapper:Function to insert new training step with name logistic_regression_training_session->logistic_regression_training_step
+VirtuosoWrapper:Function to insert new named individual with name logistic_regression_trained_model
+VirtuosoWrapper:Function to insert new type with name logistic_regression_trained_model->TrainedModel
+VirtuosoWrapper:Function to insert new named individual with name W1
+VirtuosoWrapper:Function to insert new type with name W1->TrainedWeights
+VirtuosoWrapper:Function to insert new trained in with name W1->Placeholder
+VirtuosoWrapper:Function to insert new trained out with name W1->add
+VirtuosoWrapper:Function to insert new has weights with name logistic_regression_trained_model->W1
+VirtuosoWrapper:Function to insert new named individual with name logistic_regression_training_strategy
+VirtuosoWrapper:Function to insert new type with name logistic_regression_training_strategy->TrainingStrategy
+VirtuosoWrapper:Function to insert new training_strategy with name logistic_regression_training_strategy
+VirtuosoWrapper:Function to insert new has primary training session with name logistic_regression_training_strategy->logistic_regression_training_session
+VirtuosoWrapper:Function to insert new has trained model with name logistic_regression_training_strategy->logistic_regression_trained_model
+VirtuosoWrapper:Function to insert new named individual with name logistic_regression
+VirtuosoWrapper:Function to insert new type with name logistic_regression->AnnConfiguration
+VirtuosoWrapper:Function to insert new ann configuration with name logistic_regression
+VirtuosoWrapper:Function to insert new has network with name logistic_regression_net
+VirtuosoWrapper:Function to insert new training_strategy with name logistic_regression_training_strategy
+VirtuosoWrapper:Function to insert new named individual with name logistic_regression_eval
+VirtuosoWrapper:Function to insert new type with name logistic_regression_eval->EvaluationResult
+VirtuosoWrapper:Function to insert new evaluates ann conf with name logistic_regression_eval->logistic_regression
+VirtuosoWrapper:Function to insert new evaluates network with name logistic_regression_eval->logistic_regression_net
+VirtuosoWrapper:Function to insert new named individual with name logistic_regression_net_EVP_0
+VirtuosoWrapper:Function to insert new type with name logistic_regression_net_EVP_0->DatasetPipe
+VirtuosoWrapper:Function to insert new joins layer with name logistic_regression_net_EVP_0->Placeholder_1
+VirtuosoWrapper:Function to insert new joins dataset with name logistic_regression_net_EVP_0->Placeholder_1
+VirtuosoWrapper:Function to insert new evaluates using io with name logistic_regression_eval->logistic_regression_net_EVP_0
+VirtuosoWrapper:Function to insert new named individual with name Equal
+VirtuosoWrapper:Function to insert new type with name Equal->Accuracy
+VirtuosoWrapper:Function to insert new has metric with name logistic_regression_eval->Equal
+VirtuosoWrapper:Function to insert new has training strategy with name logistic_regression_eval->logistic_regression_training_strategy

@@ -5,8 +5,6 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class ANNConfiguration:
 
     def insert_in_annetto(self):
-        print("Annetto::ANNConfiguration-",self.name)
-        print("networks=",nodes.handler.entitiesHandler.data.annConfiguration.networks.keys())
         for network in nodes.handler.entitiesHandler.data.annConfiguration.networks.keys():
             print("network=",network)
             network_node = nodes.handler.entitiesHandler.data.annConfiguration.networks[network]

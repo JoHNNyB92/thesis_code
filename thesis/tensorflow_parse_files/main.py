@@ -11,11 +11,11 @@ with open('github/github.csv') as csv_file:
     for url in csv_reader:
         print("LOGGING:Url for repository is ",url[0])
         repository_path=github.get_github_repository(url[0])
-        code_repository=github.dirName+"/"+repository_path
+        code_repository=github.folder+github.dirName+"/"+repository_path
         print("LOGGING:About to start processing repository into ",code_repository)
         for subdir, dirs, files in os.walk(code_repository):
             for file in files:
-                if "linear_regression" in file:
+                if "dcgan" in file:
                     if file.endswith('.py'):
                         total_path=os.path.join(subdir, file)
                         with open(total_path, encoding="utf8",errors='ignore') as myfile:
@@ -28,7 +28,7 @@ with open('github/github.csv') as csv_file:
                                 batch_size = 0
                                 epoch = 0
                                 path = os.getcwd()
-                                '''
+
                                 while "ERROR" not in result and result!="success":
                                     wd=os.getcwd()
                                     (result,pbtxt_file,batch_size,epoch)=tranform_tf_file.parse_file(total_path,skip)
@@ -37,7 +37,7 @@ with open('github/github.csv') as csv_file:
                                         skip+=result
                                         batch_size =-1
                                     os.chdir(path)
-                                '''
+
                                 if "error" in result:
                                     print("ERROR:Error occured when executing the program ", file)
                                 else:
@@ -45,8 +45,8 @@ with open('github/github.csv') as csv_file:
                                     os.chdir(path)
                                     print("----------------------------------------------------------------------------")
                                     #Change directory in order to be appropriate for the folder that the pbtxt parser is located.
-                                    pbtxt_file=github.dirName+pbtxt_file.split(github.dirName)[1]
-                                    #pbtxt_file="../git_repositories_temp\_tensorflow\pbtxt\linear_regression.py.pbtxt"
+                                    pbtxt_file=github.folder+github.dirName+pbtxt_file.split(github.dirName)[1]
+                                    #pbtxt_file="../git_repositories_temp\_tensorflow\pbtxt\\autoencoder.py.pbtxt"
                                     #Windows OS
                                     log_file=pbtxt_file.split("\\")[-1].replace(".py.pbtxt","")
                                     #Unix OS
