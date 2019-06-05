@@ -48,17 +48,25 @@ def parse_file(path,skip):
     else:
         print("LOGGING:Successfully executed.")
         (batch_size,epoch)=get_batch_epoch(batch_epoch)
-        return ("success",pbtxt_file,batch_size,epoch)
+        if batch_size==-2 and epoch==-2:
+            return ("batch_epoch_file_not_found","",-2,-2)
+        else:
+            return ("success",pbtxt_file,batch_size,epoch)
 
 def get_batch_epoch(file):
     batch_size=-1
     epoch=-1
-    for line in open(file):
-        if "BATCH SIZE" in line:
-            batch_size=int(line.split(":")[1])
-        elif "EPOCH COUNTER" in line:
-            epoch=int(line.split(":")[1])
-    return(batch_size,epoch)
+    try:
+        for line in open(file):
+            if "BATCH SIZE" in line:
+                batch_size=int(line.split(":")[1])
+            elif "EPOCH COUNTER" in line:
+                epoch=int(line.split(":")[1])
+        if epoch==-1:
+            return (-3,-3)
+        return(batch_size,epoch)
+    except FileNotFoundError:
+        return (-2,-2)
 
 def find_epoch_size(line_list):
     new_line_list = []
@@ -112,7 +120,6 @@ def create_new_file(line_list,path,file,skip):
     os.chdir(real_path)
     while os.path.basename(os.getcwd())!="thesis":
         os.chdir("..")
-        print("PATH",os.getcwd())
         backwards_dir=backwards_dir+"..\\"
     #This happend because the path contains unicode escape characters \a ,\t etc.We needed to make sure the produced path string,
     #would not contain any escape characters.
