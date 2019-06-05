@@ -324,12 +324,11 @@ class handle_entities:
         for l in self.data.annConfiguration.networks[self.current_network].objective.keys():
             objectives.append(l)
         for obj in sorted(objectives):
-            network=self.current_network+"_"+str(net_cnt)
-            net_cnt+=1
             print("Encountered objective ",self.data.annConfiguration.networks[self.current_network].objective[obj].name)
             obj_func=self.data.annConfiguration.networks[self.current_network].objective[obj]
-            output=self.find_network(obj_func,network_outputs,network)
-            network_outputs.append(output)
+            (output,net_cnt)=self.find_network(obj_func,network_outputs,self.current_network,net_cnt)
+            for name in output:
+                network_outputs.append(name)
 
         self.insert_training()
         del self.data.annConfiguration.networks[self.current_network]
@@ -362,20 +361,24 @@ class handle_entities:
         return False
 
 
-    def find_network(self,obj_func,net_outputs,network):
+    def find_network(self,obj_func,net_outputs,network,counter):
         loss=obj_func.cost_function.loss
         node_loss = self.node_map[loss.node.get_name()]
         output=self.find_network_output_layer(node_loss)
-        (input,layers)=self.find_network_input_layer_and_layers(output,net_outputs)
-        self.insert_network(layers, network, input, output, obj_func)
-        return output
+        for name in output:
+            (input,layers)=self.find_network_input_layer_and_layers(name,net_outputs)
+            self.insert_network(layers, network+"_"+str(counter), input, name, obj_func)
+            counter+=1
+        return (output,counter)
 
     def find_network_input_layer_and_layers(self,output,net_outputs):
         layers = self.data.annConfiguration.networks[self.current_network].layer
         prev=output
+        print("Start searching from output ",output)
         if prev not in layers.keys():
-            print(prev)
+            print("Previous layer not in keys ",prev)
             prev=self.nodes_to_layers[prev]
+            print("Previous translated to ",prev)
         prev=layers[prev].previous_layer
         net_layers={}
         while prev!=[]:
@@ -386,39 +389,51 @@ class handle_entities:
                         or layers[prev_layer].previous_layer==""\
                         or layers[prev_layer].previous_layer==[] \
                         or layers[prev_layer].name in net_outputs:
-                            #print("found input=",prev_layer)
-                            #print("class=",layers[prev_layer].__class__.__name__ )
-                            #print("previous=", layers[prev_layer].previous_layer)
+                            print("found input=",prev_layer)
+                            print("class=",layers[prev_layer].__class__.__name__ )
+                            print("previous=", layers[prev_layer].previous_layer)
+                            print("RETURNING LAYERS =",layers)
                             return (prev_layer,net_layers)
                 else:
                     net_layers[prev_layer]=layers[prev_layer]
                     for elem in layers[prev_layer].previous_layer:
                         temp.append(elem)
-            print("gousios=", temp)
             prev=temp
 
 
     def find_network_output_layer(self,node):
         children=node.get_inputs()
-        show=False
+        print("LOGGING:Start searching for output node of ",node.get_name())
+        outputs=[]
         while children!=[]:
             tmp=[]
             for elem in children:
-                for layer in self.data.annConfiguration.networks[self.current_network].layer.keys():
-                    in_=self.data.annConfiguration.networks[self.current_network].layer[elem.get_name()].input
-                    out=self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes
-                    elems_in_both_lists = set(in_) & set(out)
-                    if elem.get_name() in self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes or \
-                        elem.get_name==layer or elem.get_name()==self.data.annConfiguration.networks[self.current_network].layer[layer].activation\
-                            or len(elems_in_both_lists)!=0:
-                        return layer
-                    elif elem.get_op() in self.intermediate_operations or elem.get_op() in self.activation_operations or elem.get_op()=="Add"\
-                           or elem.get_op()=="Log":
-                        for input in elem.get_inputs():
-                            if input not in tmp:
-                                tmp.append(input)
-                show = True
+                print("Children node ",elem.get_name())
+                if elem.get_name() in self.data.annConfiguration.networks[self.current_network].layer.keys():
+                    outputs.append(elem.get_name())
+                    print("LOGGING:Found output layer = ",elem.get_name())
+                    #for layer in self.data.annConfiguration.networks[self.current_network].layer.keys():
+                        #in_=self.data.annConfiguration.networks[self.current_network].layer[elem.get_name()].input
+                        #out=self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes
+                        #elems_in_both_lists = set(in_) & set(out)
+                        #if elem.get_name() in self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes or \
+                            #elem.get_name==layer or elem.get_name()==self.data.annConfiguration.networks[self.current_network].layer[layer].activation\
+                                #or len(elems_in_both_lists)!=0:
+                            #print("Returning layer ",layer)
+                            #return layer
+                elif elem.get_op() in self.intermediate_operations or elem.get_op() in self.activation_operations or elem.get_op()=="Add"\
+                       or elem.get_op()=="Log":
+                    for input in elem.get_inputs():
+                        if input not in tmp:
+                            tmp.append(input)
+                else:
+                    print("LOGGING:Encountered intermediate node ",elem.get_name(),".Children added.")
+                    for input in elem.get_inputs():
+                        tmp.append(input)
+
             children=tmp
+        print("LOGGING:Find the following output layers:",outputs)
+        return outputs
 
 
     def insert_network(self,layers,name,input,output,objective_func):
@@ -443,8 +458,9 @@ class handle_entities:
                 for layer in self.data.annConfiguration.networks[network].layer.keys():
                     layers.append(layer)
                 optimizer=self.find_optimizer(layers)
+                self.data.annConfiguration.networks[network].optimizer[optimizer.name]=optimizer
                 input_layer=self.data.annConfiguration.networks[network].input_layer
-                print("LOGGING:Input_layer ",input_layer," Optimizer ",optimizer)
+                print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer.name)
                 IOPipe = handler_functions.handle_dataset_pipe(network, input_layer, "train")
                 #TODO:EDW TI NA KANW POU XRIAZONTE POLLAPLA EPOCH AND BATCHES???????
                 tr_step = handler_functions.handle_training_single(network + "_training_step", network, IOPipe,optimizer, 0, 0)
@@ -472,12 +488,15 @@ class handle_entities:
         for optimizer in self.data.annConfiguration.networks[self.current_network].optimizer.keys():
             found_gradient = False
             gradient=""
+            print("Start searching for ",optimizer)
             for name in self.node_map.keys():
-                if name.startswith(optimizer):
+                if name.startswith(optimizer+"/"):
                     for input in self.node_map[name].get_inputs():
+                        #Try to match the optimizer with input that contain gradient word.This will lead us to a layer that we can afterwards
+                        #assume that the optimizer is connected with the respective network.
                         if input.get_name().startswith("gradient"):
                             print(name,"---",input.get_name())
-                            print("LOGGING:FOUND-------\nOptimizer=",optimizer,"\nGradient=",input.get_name().split("/")[0])
+                            print("LOGGING:Successfuly matched optimizer to gradient. Information:\nOptimizer=",optimizer,"\nGradient=",input.get_name().split("/")[0])
                             gradient=input.get_name().split("/")[0]
                             found_gradient=True
                             break
@@ -485,28 +504,33 @@ class handle_entities:
                     break
             node_layers=[]
             for layer in layers:
+                #Attempt to find all layers of a network and add their respective names into one list to form the
+                #node name that contains gradient+layer name
                 if layer not in self.data.annConfiguration.networks[self.current_network].layer.keys():
                     for elem in self.layers_to_nodes[layer]:
                         node_layers.append(elem)
                 else:
                     node_layers.append(layer)
             grad_layers_names=[x+"_grad" for x in node_layers]
-            #print("grad_layers=",grad_layers_names)
+            print("gradient list layer =",grad_layers_names)
             for name in self.node_map.keys():
                 name_list=name.split("/")
                 found=False
                 for name_l in name_list:
                     for elem in grad_layers_names:
+                        elem_list=[]
                         if "/" in elem:
                             elem_list=elem.split("/")
-                            elems_in_both_lists = set(name_list) & set(elem_list)
-                            if len(elems_in_both_lists)==len(elem_list):
-                                found=True
-                                break
+                        else:
+                            elem_list=elem
+                        elems_in_both_lists = set(name_list) & set(elem_list)
+                        if len(elems_in_both_lists)==len(elem_list):
+                            found=True
+                            break
 
                     if (found==True) or (name_l in grad_layers_names and gradient==name.split("/")[0]):
-                        #print("name=",name)
                         print("FOUND:\nOptimizer=",optimizer,"\nLname=",grad_layers_names,"\ngradient=",gradient)
+                        print(self.data.annConfiguration.networks[self.current_network].optimizer[optimizer])
                         return self.data.annConfiguration.networks[self.current_network].optimizer[optimizer]
 
 

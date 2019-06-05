@@ -15,7 +15,7 @@ with open('github/github.csv') as csv_file:
         print("LOGGING:About to start processing repository into ",code_repository)
         for subdir, dirs, files in os.walk(code_repository):
             for file in files:
-                if "dcgan" in file:
+                if "gan.py"==file:
                     if file.endswith('.py'):
                         total_path=os.path.join(subdir, file)
                         with open(total_path, encoding="utf8",errors='ignore') as myfile:
