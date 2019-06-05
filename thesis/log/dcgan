@@ -1,72 +1,15 @@
 VirtuosoWrapper:Function to insert new init_data with name dcgan
 VirtuosoWrapper:Function to insert new init network with name dcgan_net
 VirtuosoWrapper:Function to insert new init evaluation with name dcgan_eval:dcgan_net
-VirtuosoWrapper:Function to insert new init_data with name dcgan
-VirtuosoWrapper:Function to insert new init network with name dcgan_net
-VirtuosoWrapper:Function to insert new init evaluation with name dcgan_eval:dcgan_net
-VirtuosoWrapper:Function to insert new init_data with name dcgan
-VirtuosoWrapper:Function to insert new init network with name dcgan_net
-VirtuosoWrapper:Function to insert new init evaluation with name dcgan_eval:dcgan_net
-VirtuosoWrapper:Function to insert new init_data with name dcgan
-VirtuosoWrapper:Function to insert new init network with name dcgan_net
-VirtuosoWrapper:Function to insert new init evaluation with name dcgan_eval:dcgan_net
-VirtuosoWrapper:Function to insert new init_data with name dcgan
-VirtuosoWrapper:Function to insert new init network with name dcgan_net
-VirtuosoWrapper:Function to insert new init evaluation with name dcgan_eval:dcgan_net
-VirtuosoWrapper:Function to insert new init_data with name dcgan
-VirtuosoWrapper:Function to insert new init network with name dcgan_net
-VirtuosoWrapper:Function to insert new init evaluation with name dcgan_eval:dcgan_net
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new type with name Discriminator_1/conv2d_1/Conv2D->ConvolutionLayer
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/Tanh_1
-VirtuosoWrapper:Function to insert new type with name Discriminator_1/Tanh_1->Tanh
-VirtuosoWrapper:Function to insert new has activation with name Discriminator_1/conv2d_1/Conv2D->Discriminator_1/Tanh_1
-VirtuosoWrapper:Function to insert new has bias with name Discriminator_1/conv2d_1/Conv2D->True
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_1/conv2d_1/Conv2D->8
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/conv2d_1/Conv2D->Discriminator_1/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/conv2d_1/Conv2D->Discriminator_1/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_1/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new named individual with name Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new type with name Generator/conv2d_transpose_1/conv2d_transpose->DeconvolutionLayer
-VirtuosoWrapper:Function to insert new named individual with name Generator/Sigmoid
-VirtuosoWrapper:Function to insert new type with name Generator/Sigmoid->Sigmoid
-VirtuosoWrapper:Function to insert new has activation with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/Sigmoid
-VirtuosoWrapper:Function to insert new has bias with name Generator/conv2d_transpose_1/conv2d_transpose->True
-VirtuosoWrapper:Function to insert new layer num with name Generator/conv2d_transpose_1/conv2d_transpose->28
-VirtuosoWrapper:Function to insert new next layer with name Generator/conv2d_transpose_1/conv2d_transpose->Discriminator_1/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new next layer with name Generator/conv2d_transpose_1/conv2d_transpose->Discriminator_2/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose_1/add_1
-VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose_1/add
-VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose/conv2d_transpose
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/dense/BiasAdd
-VirtuosoWrapper:Function to insert new type with name Discriminator_1/dense/BiasAdd->FullyConnected
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/Tanh_2
-VirtuosoWrapper:Function to insert new type with name Discriminator_1/Tanh_2->Tanh
-VirtuosoWrapper:Function to insert new has activation with name Discriminator_1/dense/BiasAdd->Discriminator_1/Tanh_2
-VirtuosoWrapper:Function to insert new has bias with name Discriminator_1/dense/BiasAdd->True
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_1/dense/BiasAdd->1024
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/dense/BiasAdd->Discriminator_1/dense_1/BiasAdd
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/dense/BiasAdd->Discriminator_1/Flatten/flatten
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_1/dense/BiasAdd
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/Flatten/flatten
-VirtuosoWrapper:Function to insert new type with name Discriminator_1/Flatten/flatten->FlattenLayer
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_1/Flatten/flatten->1
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/Flatten/flatten->Discriminator_1/dense/BiasAdd
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/Flatten/flatten->Discriminator_1/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_1/Flatten/flatten
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new type with name Discriminator_1/average_pooling2d_1/AvgPool->PoolingLayer
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_1/average_pooling2d_1/AvgPool->4
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/average_pooling2d_1/AvgPool->Discriminator_1/Flatten/flatten
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/average_pooling2d_1/AvgPool->Discriminator_1/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_1/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new type with name Discriminator_1/average_pooling2d/AvgPool->PoolingLayer
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_1/average_pooling2d/AvgPool->12
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/average_pooling2d/AvgPool->Discriminator_1/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/average_pooling2d/AvgPool->Discriminator_1/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_1/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new named individual with name Generator/conv2d_transpose/conv2d_transpose
+VirtuosoWrapper:Function to insert new type with name Generator/conv2d_transpose/conv2d_transpose->DeconvolutionLayer
+VirtuosoWrapper:Function to insert new has bias with name Generator/conv2d_transpose/conv2d_transpose->True
+VirtuosoWrapper:Function to insert new layer num with name Generator/conv2d_transpose/conv2d_transpose->14
+VirtuosoWrapper:Function to insert new next layer with name Generator/conv2d_transpose/conv2d_transpose->Generator/conv2d_transpose_1/conv2d_transpose
+VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose/conv2d_transpose->Generator/conv2d_transpose/add_1
+VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose/conv2d_transpose->Generator/conv2d_transpose/add
+VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose/conv2d_transpose->Generator/dense/BiasAdd
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Generator/conv2d_transpose/conv2d_transpose
 VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/conv2d/Conv2D
 VirtuosoWrapper:Function to insert new type with name Discriminator_1/conv2d/Conv2D->ConvolutionLayer
 VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/Tanh
@@ -76,28 +19,7 @@ VirtuosoWrapper:Function to insert new has bias with name Discriminator_1/conv2d
 VirtuosoWrapper:Function to insert new layer num with name Discriminator_1/conv2d/Conv2D->24
 VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/conv2d/Conv2D->Discriminator_1/average_pooling2d/AvgPool
 VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/conv2d/Conv2D->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_1/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new named individual with name objective_function_1
-VirtuosoWrapper:Function to insert new type with name objective_function_1->MinObjectiveFunction
-VirtuosoWrapper:Function to insert new named individual with name cost_function_1
-VirtuosoWrapper:Function to insert new type with name cost_function_1->CostFunction
-VirtuosoWrapper:Function to insert new named individual with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new type with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits->binary
-VirtuosoWrapper:Function to insert new has loss with name cost_function_1->SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new has cost with name objective_function_1->cost_function_1
-VirtuosoWrapper:Function to insert new named individual with name cost_function_1
-VirtuosoWrapper:Function to insert new type with name cost_function_1->CostFunction
-VirtuosoWrapper:Function to insert new named individual with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new type with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits->binary
-VirtuosoWrapper:Function to insert new has loss with name cost_function_1->SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new has cost with name objective_function_1->cost_function_1
-VirtuosoWrapper:Function to insert new has objective with name dcgan_net_1->objective_function_1
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_1
-VirtuosoWrapper:Function to insert new type with name dcgan_net_1->Network
-VirtuosoWrapper:Function to insert new network with name dcgan_net_1
-VirtuosoWrapper:Function to insert new named individual with name Generator/conv2d_transpose_1/add_1
-VirtuosoWrapper:Function to insert new type with name Generator/conv2d_transpose_1/add_1->InputLayer
-VirtuosoWrapper:Function to insert new input layer with name dcgan_net_1->Generator/conv2d_transpose_1/add_1
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_1/conv2d/Conv2D
 VirtuosoWrapper:Function to insert new named individual with name Generator/conv2d_transpose_1/conv2d_transpose
 VirtuosoWrapper:Function to insert new type with name Generator/conv2d_transpose_1/conv2d_transpose->DeconvolutionLayer
 VirtuosoWrapper:Function to insert new named individual with name Generator/Sigmoid
@@ -107,10 +29,68 @@ VirtuosoWrapper:Function to insert new has bias with name Generator/conv2d_trans
 VirtuosoWrapper:Function to insert new layer num with name Generator/conv2d_transpose_1/conv2d_transpose->28
 VirtuosoWrapper:Function to insert new next layer with name Generator/conv2d_transpose_1/conv2d_transpose->Discriminator_1/conv2d/Conv2D
 VirtuosoWrapper:Function to insert new next layer with name Generator/conv2d_transpose_1/conv2d_transpose->Discriminator_2/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose/conv2d_transpose
 VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose_1/add_1
 VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose_1/add
-VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose/conv2d_transpose
 VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Generator/conv2d_transpose_1/conv2d_transpose
+VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/Flatten/flatten
+VirtuosoWrapper:Function to insert new type with name Discriminator_1/Flatten/flatten->FlattenLayer
+VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/Flatten/flatten->Discriminator_1/dense/BiasAdd
+VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/Flatten/flatten->Discriminator_1/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_1/Flatten/flatten
+VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/dense/BiasAdd
+VirtuosoWrapper:Function to insert new type with name Discriminator_1/dense/BiasAdd->FullyConnected
+VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/Tanh_2
+VirtuosoWrapper:Function to insert new type with name Discriminator_1/Tanh_2->Tanh
+VirtuosoWrapper:Function to insert new has activation with name Discriminator_1/dense/BiasAdd->Discriminator_1/Tanh_2
+VirtuosoWrapper:Function to insert new has bias with name Discriminator_1/dense/BiasAdd->True
+VirtuosoWrapper:Function to insert new layer num with name Discriminator_1/dense/BiasAdd->1024
+VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/dense/BiasAdd->Discriminator_1/dense_1/BiasAdd
+VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/dense/BiasAdd->Discriminator_1/Flatten/flatten
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_1/dense/BiasAdd
+VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new type with name Discriminator_1/average_pooling2d_1/AvgPool->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name Discriminator_1/average_pooling2d_1/AvgPool->4
+VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/average_pooling2d_1/AvgPool->Discriminator_1/Flatten/flatten
+VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/average_pooling2d_1/AvgPool->Discriminator_1/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_1/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new type with name Discriminator_1/conv2d_1/Conv2D->ConvolutionLayer
+VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/Tanh_1
+VirtuosoWrapper:Function to insert new type with name Discriminator_1/Tanh_1->Tanh
+VirtuosoWrapper:Function to insert new has activation with name Discriminator_1/conv2d_1/Conv2D->Discriminator_1/Tanh_1
+VirtuosoWrapper:Function to insert new has bias with name Discriminator_1/conv2d_1/Conv2D->True
+VirtuosoWrapper:Function to insert new layer num with name Discriminator_1/conv2d_1/Conv2D->8
+VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/conv2d_1/Conv2D->Discriminator_1/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/conv2d_1/Conv2D->Discriminator_1/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_1/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new named individual with name Discriminator_1/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new type with name Discriminator_1/average_pooling2d/AvgPool->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name Discriminator_1/average_pooling2d/AvgPool->12
+VirtuosoWrapper:Function to insert new next layer with name Discriminator_1/average_pooling2d/AvgPool->Discriminator_1/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new previous layer with name Discriminator_1/average_pooling2d/AvgPool->Discriminator_1/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_1/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new named individual with name objective_function
+VirtuosoWrapper:Function to insert new type with name objective_function->MinObjectiveFunction
+VirtuosoWrapper:Function to insert new named individual with name cost_function
+VirtuosoWrapper:Function to insert new type with name cost_function->CostFunction
+VirtuosoWrapper:Function to insert new named individual with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
+VirtuosoWrapper:Function to insert new type with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits->binary
+VirtuosoWrapper:Function to insert new has loss with name cost_function->SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
+VirtuosoWrapper:Function to insert new has cost with name objective_function->cost_function
+VirtuosoWrapper:Function to insert new named individual with name cost_function
+VirtuosoWrapper:Function to insert new type with name cost_function->CostFunction
+VirtuosoWrapper:Function to insert new named individual with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
+VirtuosoWrapper:Function to insert new type with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits->binary
+VirtuosoWrapper:Function to insert new has loss with name cost_function->SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
+VirtuosoWrapper:Function to insert new has cost with name objective_function->cost_function
+VirtuosoWrapper:Function to insert new has objective with name dcgan_net_0->objective_function
+VirtuosoWrapper:Function to insert new named individual with name dcgan_net_0
+VirtuosoWrapper:Function to insert new type with name dcgan_net_0->Network
+VirtuosoWrapper:Function to insert new network with name dcgan_net_0
+VirtuosoWrapper:Function to insert new named individual with name Generator/conv2d_transpose_1/add_1
+VirtuosoWrapper:Function to insert new type with name Generator/conv2d_transpose_1/add_1->InputLayer
+VirtuosoWrapper:Function to insert new input layer with name dcgan_net_0->Generator/conv2d_transpose_1/add_1
 VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/conv2d/Conv2D
 VirtuosoWrapper:Function to insert new type with name Discriminator_2/conv2d/Conv2D->ConvolutionLayer
 VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/Tanh
@@ -120,12 +100,47 @@ VirtuosoWrapper:Function to insert new has bias with name Discriminator_2/conv2d
 VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/conv2d/Conv2D->24
 VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/conv2d/Conv2D->Discriminator_2/average_pooling2d/AvgPool
 VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/conv2d/Conv2D->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_2/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_2/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new named individual with name Generator/conv2d_transpose/conv2d_transpose
+VirtuosoWrapper:Function to insert new type with name Generator/conv2d_transpose/conv2d_transpose->DeconvolutionLayer
+VirtuosoWrapper:Function to insert new has bias with name Generator/conv2d_transpose/conv2d_transpose->True
+VirtuosoWrapper:Function to insert new layer num with name Generator/conv2d_transpose/conv2d_transpose->14
+VirtuosoWrapper:Function to insert new next layer with name Generator/conv2d_transpose/conv2d_transpose->Generator/conv2d_transpose_1/conv2d_transpose
+VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose/conv2d_transpose->Generator/conv2d_transpose/add_1
+VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose/conv2d_transpose->Generator/conv2d_transpose/add
+VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose/conv2d_transpose->Generator/dense/BiasAdd
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Generator/conv2d_transpose/conv2d_transpose
+VirtuosoWrapper:Function to insert new named individual with name Generator/conv2d_transpose_1/conv2d_transpose
+VirtuosoWrapper:Function to insert new type with name Generator/conv2d_transpose_1/conv2d_transpose->DeconvolutionLayer
+VirtuosoWrapper:Function to insert new named individual with name Generator/Sigmoid
+VirtuosoWrapper:Function to insert new type with name Generator/Sigmoid->Sigmoid
+VirtuosoWrapper:Function to insert new has activation with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/Sigmoid
+VirtuosoWrapper:Function to insert new has bias with name Generator/conv2d_transpose_1/conv2d_transpose->True
+VirtuosoWrapper:Function to insert new layer num with name Generator/conv2d_transpose_1/conv2d_transpose->28
+VirtuosoWrapper:Function to insert new next layer with name Generator/conv2d_transpose_1/conv2d_transpose->Discriminator_1/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new next layer with name Generator/conv2d_transpose_1/conv2d_transpose->Discriminator_2/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose/conv2d_transpose
+VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose_1/add_1
+VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose_1/add
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Generator/conv2d_transpose_1/conv2d_transpose
+VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new type with name Discriminator_2/average_pooling2d/AvgPool->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/average_pooling2d/AvgPool->12
+VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/average_pooling2d/AvgPool->Discriminator_2/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/average_pooling2d/AvgPool->Discriminator_2/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_2/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new type with name Discriminator_2/average_pooling2d_1/AvgPool->PoolingLayer
+VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/average_pooling2d_1/AvgPool->4
+VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/average_pooling2d_1/AvgPool->Discriminator_2/Flatten/flatten
+VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/average_pooling2d_1/AvgPool->Discriminator_2/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_2/average_pooling2d_1/AvgPool
 VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/Flatten/flatten
 VirtuosoWrapper:Function to insert new type with name Discriminator_2/Flatten/flatten->FlattenLayer
+VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/Flatten/flatten->1
 VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/Flatten/flatten->Discriminator_2/dense/BiasAdd
 VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/Flatten/flatten->Discriminator_2/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_2/Flatten/flatten
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_2/Flatten/flatten
 VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/conv2d_1/Conv2D
 VirtuosoWrapper:Function to insert new type with name Discriminator_2/conv2d_1/Conv2D->ConvolutionLayer
 VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/Tanh_1
@@ -135,57 +150,30 @@ VirtuosoWrapper:Function to insert new has bias with name Discriminator_2/conv2d
 VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/conv2d_1/Conv2D->8
 VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/conv2d_1/Conv2D->Discriminator_2/average_pooling2d_1/AvgPool
 VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/conv2d_1/Conv2D->Discriminator_2/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_2/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new type with name Discriminator_2/average_pooling2d_1/AvgPool->PoolingLayer
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/average_pooling2d_1/AvgPool->4
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/average_pooling2d_1/AvgPool->Discriminator_2/Flatten/flatten
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/average_pooling2d_1/AvgPool->Discriminator_2/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_2/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new type with name Discriminator_2/average_pooling2d/AvgPool->PoolingLayer
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/average_pooling2d/AvgPool->12
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/average_pooling2d/AvgPool->Discriminator_2/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/average_pooling2d/AvgPool->Discriminator_2/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_2/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new named individual with name objective_function
-VirtuosoWrapper:Function to insert new type with name objective_function->MinObjectiveFunction
-VirtuosoWrapper:Function to insert new named individual with name cost_function
-VirtuosoWrapper:Function to insert new type with name cost_function->CostFunction
+VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator_2/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new named individual with name objective_function_1
+VirtuosoWrapper:Function to insert new type with name objective_function_1->MinObjectiveFunction
+VirtuosoWrapper:Function to insert new named individual with name cost_function_1
+VirtuosoWrapper:Function to insert new type with name cost_function_1->CostFunction
 VirtuosoWrapper:Function to insert new named individual with name SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits
 VirtuosoWrapper:Function to insert new type with name SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits->binary
-VirtuosoWrapper:Function to insert new has loss with name cost_function->SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new has cost with name objective_function->cost_function
-VirtuosoWrapper:Function to insert new named individual with name cost_function
-VirtuosoWrapper:Function to insert new type with name cost_function->CostFunction
+VirtuosoWrapper:Function to insert new has loss with name cost_function_1->SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits
+VirtuosoWrapper:Function to insert new has cost with name objective_function_1->cost_function_1
+VirtuosoWrapper:Function to insert new named individual with name cost_function_1
+VirtuosoWrapper:Function to insert new type with name cost_function_1->CostFunction
 VirtuosoWrapper:Function to insert new named individual with name SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits
 VirtuosoWrapper:Function to insert new type with name SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits->binary
-VirtuosoWrapper:Function to insert new has loss with name cost_function->SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new has cost with name objective_function->cost_function
-VirtuosoWrapper:Function to insert new has objective with name dcgan_net_0->objective_function
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_0
-VirtuosoWrapper:Function to insert new type with name dcgan_net_0->Network
-VirtuosoWrapper:Function to insert new network with name dcgan_net_0
+VirtuosoWrapper:Function to insert new has loss with name cost_function_1->SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits
+VirtuosoWrapper:Function to insert new has cost with name objective_function_1->cost_function_1
+VirtuosoWrapper:Function to insert new has objective with name dcgan_net_1->objective_function_1
+VirtuosoWrapper:Function to insert new named individual with name dcgan_net_1
+VirtuosoWrapper:Function to insert new type with name dcgan_net_1->Network
+VirtuosoWrapper:Function to insert new network with name dcgan_net_1
 VirtuosoWrapper:Function to insert new named individual with name Generator/conv2d_transpose_1/add_1
 VirtuosoWrapper:Function to insert new type with name Generator/conv2d_transpose_1/add_1->InputLayer
-VirtuosoWrapper:Function to insert new input layer with name dcgan_net_0->Generator/conv2d_transpose_1/add_1
+VirtuosoWrapper:Function to insert new input layer with name dcgan_net_1->Generator/conv2d_transpose_1/add_1
 VirtuosoWrapper:Function to insert new named individual with name dcgan_net_training_session
 VirtuosoWrapper:Function to insert new type with name dcgan_net_training_session->TrainingSession
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_1_training_step
-VirtuosoWrapper:Function to insert new type with name dcgan_net_1_training_step->TrainingSingle
-VirtuosoWrapper:Function to insert new trains network with name dcgan_net_1_training_step->dcgan_net_1
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_1_INP_0
-VirtuosoWrapper:Function to insert new type with name dcgan_net_1_INP_0->DatasetPipe
-VirtuosoWrapper:Function to insert new joins layer with name dcgan_net_1_INP_0->Generator/conv2d_transpose_1/add_1
-VirtuosoWrapper:Function to insert new joins dataset with name dcgan_net_1_INP_0->Placeholder
-VirtuosoWrapper:Function to insert new hasIOPipe with name dcgan_net_1_training_step->dcgan_net_1_INP_0
-VirtuosoWrapper:Function to insert new named individual with name Adam_1
-VirtuosoWrapper:Function to insert new type with name Adam_1->Adam
-VirtuosoWrapper:Function to insert new new_learning_rate with name Adam_1->0.0010000000474974513
-VirtuosoWrapper:Function to insert new  has optimizer  with name dcgan_net_1_training_step->Adam_1
-VirtuosoWrapper:Function to insert new batch size with name dcgan_net_1_training_step->0
-VirtuosoWrapper:Function to insert new epoch num with name dcgan_net_1_training_step->0
-VirtuosoWrapper:Function to insert new training step with name dcgan_net_training_session->dcgan_net_1_training_step
 VirtuosoWrapper:Function to insert new named individual with name dcgan_net_0_training_step
 VirtuosoWrapper:Function to insert new type with name dcgan_net_0_training_step->TrainingSingle
 VirtuosoWrapper:Function to insert new trains network with name dcgan_net_0_training_step->dcgan_net_0
@@ -194,88 +182,103 @@ VirtuosoWrapper:Function to insert new type with name dcgan_net_0_INP_0->Dataset
 VirtuosoWrapper:Function to insert new joins layer with name dcgan_net_0_INP_0->Generator/conv2d_transpose_1/add_1
 VirtuosoWrapper:Function to insert new joins dataset with name dcgan_net_0_INP_0->Placeholder
 VirtuosoWrapper:Function to insert new hasIOPipe with name dcgan_net_0_training_step->dcgan_net_0_INP_0
-VirtuosoWrapper:Function to insert new named individual with name Adam_1
-VirtuosoWrapper:Function to insert new type with name Adam_1->Adam
-VirtuosoWrapper:Function to insert new new_learning_rate with name Adam_1->0.0010000000474974513
-VirtuosoWrapper:Function to insert new  has optimizer  with name dcgan_net_0_training_step->Adam_1
+VirtuosoWrapper:Function to insert new named individual with name Adam
+VirtuosoWrapper:Function to insert new type with name Adam->Adam
+VirtuosoWrapper:Function to insert new new_learning_rate with name Adam->0.0010000000474974513
+VirtuosoWrapper:Function to insert new  has optimizer  with name dcgan_net_0_training_step->Adam
 VirtuosoWrapper:Function to insert new batch size with name dcgan_net_0_training_step->0
 VirtuosoWrapper:Function to insert new epoch num with name dcgan_net_0_training_step->0
 VirtuosoWrapper:Function to insert new training step with name dcgan_net_training_session->dcgan_net_0_training_step
+VirtuosoWrapper:Function to insert new named individual with name dcgan_net_1_training_step
+VirtuosoWrapper:Function to insert new type with name dcgan_net_1_training_step->TrainingSingle
+VirtuosoWrapper:Function to insert new trains network with name dcgan_net_1_training_step->dcgan_net_1
+VirtuosoWrapper:Function to insert new named individual with name dcgan_net_1_INP_0
+VirtuosoWrapper:Function to insert new type with name dcgan_net_1_INP_0->DatasetPipe
+VirtuosoWrapper:Function to insert new joins layer with name dcgan_net_1_INP_0->Generator/conv2d_transpose_1/add_1
+VirtuosoWrapper:Function to insert new joins dataset with name dcgan_net_1_INP_0->Placeholder
+VirtuosoWrapper:Function to insert new hasIOPipe with name dcgan_net_1_training_step->dcgan_net_1_INP_0
+VirtuosoWrapper:Function to insert new named individual with name Adam
+VirtuosoWrapper:Function to insert new type with name Adam->Adam
+VirtuosoWrapper:Function to insert new new_learning_rate with name Adam->0.0010000000474974513
+VirtuosoWrapper:Function to insert new  has optimizer  with name dcgan_net_1_training_step->Adam
+VirtuosoWrapper:Function to insert new batch size with name dcgan_net_1_training_step->0
+VirtuosoWrapper:Function to insert new epoch num with name dcgan_net_1_training_step->0
+VirtuosoWrapper:Function to insert new training step with name dcgan_net_training_session->dcgan_net_1_training_step
 VirtuosoWrapper:Function to insert new named individual with name dcgan_trained_model
 VirtuosoWrapper:Function to insert new type with name dcgan_trained_model->TrainedModel
 VirtuosoWrapper:Function to insert new named individual with name W1
 VirtuosoWrapper:Function to insert new type with name W1->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W1->Placeholder_1
-VirtuosoWrapper:Function to insert new trained out with name W1->Discriminator/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new trained in with name W1->Discriminator_2/dense/BiasAdd
+VirtuosoWrapper:Function to insert new trained out with name W1->Discriminator_2/dense_1/BiasAdd
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W1
 VirtuosoWrapper:Function to insert new named individual with name W2
 VirtuosoWrapper:Function to insert new type with name W2->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W2->Discriminator_1/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W2->Discriminator_1/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new trained in with name W2->Generator/conv2d_transpose/conv2d_transpose
+VirtuosoWrapper:Function to insert new trained out with name W2->Generator/conv2d_transpose_1/conv2d_transpose
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W2
 VirtuosoWrapper:Function to insert new named individual with name W3
 VirtuosoWrapper:Function to insert new type with name W3->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W3->Discriminator_1/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W3->Discriminator_1/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new trained in with name W3->Generator/conv2d_transpose_1/add_1
+VirtuosoWrapper:Function to insert new trained out with name W3->Generator/conv2d_transpose_1/conv2d_transpose
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W3
 VirtuosoWrapper:Function to insert new named individual with name W4
 VirtuosoWrapper:Function to insert new type with name W4->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W4->Discriminator_2/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W4->Discriminator_2/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new trained in with name W4->Generator/conv2d_transpose_1/add
+VirtuosoWrapper:Function to insert new trained out with name W4->Generator/conv2d_transpose_1/conv2d_transpose
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W4
 VirtuosoWrapper:Function to insert new named individual with name W5
 VirtuosoWrapper:Function to insert new type with name W5->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W5->Discriminator_2/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W5->Discriminator_2/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new trained in with name W5->Discriminator_1/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new trained out with name W5->Discriminator_1/average_pooling2d_1/AvgPool
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W5
 VirtuosoWrapper:Function to insert new named individual with name W6
 VirtuosoWrapper:Function to insert new type with name W6->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W6->Discriminator_2/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W6->Discriminator_2/Flatten/flatten
+VirtuosoWrapper:Function to insert new trained in with name W6->Discriminator/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new trained out with name W6->Discriminator/average_pooling2d_1/AvgPool
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W6
 VirtuosoWrapper:Function to insert new named individual with name W7
 VirtuosoWrapper:Function to insert new type with name W7->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W7->Discriminator_1/dense/BiasAdd
-VirtuosoWrapper:Function to insert new trained out with name W7->Discriminator_1/dense_1/BiasAdd
+VirtuosoWrapper:Function to insert new trained in with name W7->Discriminator/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new trained out with name W7->Discriminator/Flatten/flatten
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W7
 VirtuosoWrapper:Function to insert new named individual with name W8
 VirtuosoWrapper:Function to insert new type with name W8->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W8->Discriminator_1/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W8->Discriminator_1/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new trained in with name W8->Generator/conv2d_transpose_1/conv2d_transpose
+VirtuosoWrapper:Function to insert new trained out with name W8->Discriminator_1/conv2d/Conv2D
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W8
 VirtuosoWrapper:Function to insert new named individual with name W9
 VirtuosoWrapper:Function to insert new type with name W9->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W9->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new trained out with name W9->Discriminator_1/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new trained in with name W9->Discriminator/Flatten/flatten
+VirtuosoWrapper:Function to insert new trained out with name W9->Discriminator/dense/BiasAdd
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W9
 VirtuosoWrapper:Function to insert new named individual with name W10
 VirtuosoWrapper:Function to insert new type with name W10->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W10->Discriminator/dense/BiasAdd
-VirtuosoWrapper:Function to insert new trained out with name W10->Discriminator/dense_1/BiasAdd
+VirtuosoWrapper:Function to insert new trained in with name W10->Discriminator_2/Flatten/flatten
+VirtuosoWrapper:Function to insert new trained out with name W10->Discriminator_2/dense/BiasAdd
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W10
 VirtuosoWrapper:Function to insert new named individual with name W11
 VirtuosoWrapper:Function to insert new type with name W11->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W11->Discriminator/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W11->Discriminator/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new trained in with name W11->Discriminator_1/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new trained out with name W11->Discriminator_1/average_pooling2d/AvgPool
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W11
 VirtuosoWrapper:Function to insert new named individual with name W12
 VirtuosoWrapper:Function to insert new type with name W12->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W12->Placeholder
-VirtuosoWrapper:Function to insert new trained out with name W12->Generator/dense/BiasAdd
+VirtuosoWrapper:Function to insert new trained in with name W12->Discriminator_2/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new trained out with name W12->Discriminator_2/average_pooling2d_1/AvgPool
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W12
 VirtuosoWrapper:Function to insert new named individual with name W13
 VirtuosoWrapper:Function to insert new type with name W13->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W13->Discriminator_2/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W13->Discriminator_2/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new trained in with name W13->Discriminator_1/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new trained out with name W13->Discriminator_1/Flatten/flatten
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W13
 VirtuosoWrapper:Function to insert new named individual with name W14
 VirtuosoWrapper:Function to insert new type with name W14->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W14->Discriminator/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W14->Discriminator/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new trained in with name W14->Generator/conv2d_transpose/add_1
+VirtuosoWrapper:Function to insert new trained out with name W14->Generator/conv2d_transpose/conv2d_transpose
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W14
 VirtuosoWrapper:Function to insert new named individual with name W15
 VirtuosoWrapper:Function to insert new type with name W15->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W15->Generator/conv2d_transpose/add_1
+VirtuosoWrapper:Function to insert new trained in with name W15->Generator/conv2d_transpose/add
 VirtuosoWrapper:Function to insert new trained out with name W15->Generator/conv2d_transpose/conv2d_transpose
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W15
 VirtuosoWrapper:Function to insert new named individual with name W16
@@ -285,387 +288,43 @@ VirtuosoWrapper:Function to insert new trained out with name W16->Generator/conv
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W16
 VirtuosoWrapper:Function to insert new named individual with name W17
 VirtuosoWrapper:Function to insert new type with name W17->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W17->Generator/conv2d_transpose/add
-VirtuosoWrapper:Function to insert new trained out with name W17->Generator/conv2d_transpose/conv2d_transpose
+VirtuosoWrapper:Function to insert new trained in with name W17->Discriminator_2/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new trained out with name W17->Discriminator_2/Flatten/flatten
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W17
 VirtuosoWrapper:Function to insert new named individual with name W18
 VirtuosoWrapper:Function to insert new type with name W18->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W18->Discriminator_1/Flatten/flatten
-VirtuosoWrapper:Function to insert new trained out with name W18->Discriminator_1/dense/BiasAdd
+VirtuosoWrapper:Function to insert new trained in with name W18->Generator/conv2d_transpose_1/conv2d_transpose
+VirtuosoWrapper:Function to insert new trained out with name W18->Discriminator_2/conv2d/Conv2D
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W18
 VirtuosoWrapper:Function to insert new named individual with name W19
 VirtuosoWrapper:Function to insert new type with name W19->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W19->Discriminator/Flatten/flatten
-VirtuosoWrapper:Function to insert new trained out with name W19->Discriminator/dense/BiasAdd
+VirtuosoWrapper:Function to insert new trained in with name W19->Discriminator_1/dense/BiasAdd
+VirtuosoWrapper:Function to insert new trained out with name W19->Discriminator_1/dense_1/BiasAdd
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W19
 VirtuosoWrapper:Function to insert new named individual with name W20
 VirtuosoWrapper:Function to insert new type with name W20->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W20->Discriminator/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W20->Discriminator/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new trained in with name W20->Placeholder
+VirtuosoWrapper:Function to insert new trained out with name W20->Generator/dense/BiasAdd
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W20
 VirtuosoWrapper:Function to insert new named individual with name W21
 VirtuosoWrapper:Function to insert new type with name W21->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W21->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new trained out with name W21->Discriminator_2/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new trained in with name W21->Discriminator/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new trained out with name W21->Discriminator/conv2d_1/Conv2D
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W21
 VirtuosoWrapper:Function to insert new named individual with name W22
 VirtuosoWrapper:Function to insert new type with name W22->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W22->Discriminator/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W22->Discriminator/Flatten/flatten
+VirtuosoWrapper:Function to insert new trained in with name W22->Placeholder_1
+VirtuosoWrapper:Function to insert new trained out with name W22->Discriminator/conv2d/Conv2D
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W22
 VirtuosoWrapper:Function to insert new named individual with name W23
 VirtuosoWrapper:Function to insert new type with name W23->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W23->Discriminator_2/dense/BiasAdd
-VirtuosoWrapper:Function to insert new trained out with name W23->Discriminator_2/dense_1/BiasAdd
+VirtuosoWrapper:Function to insert new trained in with name W23->Discriminator/dense/BiasAdd
+VirtuosoWrapper:Function to insert new trained out with name W23->Discriminator/dense_1/BiasAdd
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W23
 VirtuosoWrapper:Function to insert new named individual with name W24
 VirtuosoWrapper:Function to insert new type with name W24->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W24->Discriminator_1/dense_1/BiasAdd
-VirtuosoWrapper:Function to insert new trained out with name W24->concat
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W24
-VirtuosoWrapper:Function to insert new named individual with name W25
-VirtuosoWrapper:Function to insert new type with name W25->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W25->Discriminator/dense_1/BiasAdd
-VirtuosoWrapper:Function to insert new trained out with name W25->concat
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W25
-VirtuosoWrapper:Function to insert new named individual with name W26
-VirtuosoWrapper:Function to insert new type with name W26->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W26->Generator/conv2d_transpose_1/add_1
-VirtuosoWrapper:Function to insert new trained out with name W26->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W26
-VirtuosoWrapper:Function to insert new named individual with name W27
-VirtuosoWrapper:Function to insert new type with name W27->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W27->Generator/conv2d_transpose_1/add
-VirtuosoWrapper:Function to insert new trained out with name W27->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W27
-VirtuosoWrapper:Function to insert new named individual with name W28
-VirtuosoWrapper:Function to insert new type with name W28->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W28->Generator/conv2d_transpose/conv2d_transpose
-VirtuosoWrapper:Function to insert new trained out with name W28->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W28
-VirtuosoWrapper:Function to insert new named individual with name W29
-VirtuosoWrapper:Function to insert new type with name W29->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W29->Discriminator_1/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W29->Discriminator_1/Flatten/flatten
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W29
-VirtuosoWrapper:Function to insert new named individual with name W30
-VirtuosoWrapper:Function to insert new type with name W30->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W30->Discriminator_2/Flatten/flatten
-VirtuosoWrapper:Function to insert new trained out with name W30->Discriminator_2/dense/BiasAdd
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W30
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_training_strategy
-VirtuosoWrapper:Function to insert new type with name dcgan_net_training_strategy->TrainingStrategy
-VirtuosoWrapper:Function to insert new training_strategy with name dcgan_net_training_strategy
-VirtuosoWrapper:Function to insert new has primary training session with name dcgan_net_training_strategy->dcgan_net_training_session
-VirtuosoWrapper:Function to insert new has trained model with name dcgan_net_training_strategy->dcgan_trained_model
-VirtuosoWrapper:Function to insert new named individual with name dcgan
-VirtuosoWrapper:Function to insert new type with name dcgan->AnnConfiguration
-VirtuosoWrapper:Function to insert new ann configuration with name dcgan
-VirtuosoWrapper:Function to insert new has network with name dcgan_net_1
-VirtuosoWrapper:Function to insert new has network with name dcgan_net_0
-VirtuosoWrapper:Function to insert new training_strategy with name dcgan_net_training_strategy
-VirtuosoWrapper:Function to insert new named individual with name dcgan_eval
-VirtuosoWrapper:Function to insert new type with name dcgan_eval->EvaluationResult
-VirtuosoWrapper:Function to insert new evaluates ann conf with name dcgan_eval->dcgan
-VirtuosoWrapper:Function to insert new evaluates network with name dcgan_eval->dcgan_net
-VirtuosoWrapper:Function to insert new has training strategy with name dcgan_eval->dcgan_net_training_strategy
-VirtuosoWrapper:Function to insert new init_data with name dcgan
-VirtuosoWrapper:Function to insert new init network with name dcgan_net
-VirtuosoWrapper:Function to insert new init evaluation with name dcgan_eval:dcgan_net
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new type with name Discriminator_2/average_pooling2d/AvgPool->PoolingLayer
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/average_pooling2d/AvgPool->12
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/average_pooling2d/AvgPool->Discriminator_2/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/average_pooling2d/AvgPool->Discriminator_2/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_2/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new type with name Discriminator_2/conv2d_1/Conv2D->ConvolutionLayer
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/Tanh_1
-VirtuosoWrapper:Function to insert new type with name Discriminator_2/Tanh_1->Tanh
-VirtuosoWrapper:Function to insert new has activation with name Discriminator_2/conv2d_1/Conv2D->Discriminator_2/Tanh_1
-VirtuosoWrapper:Function to insert new has bias with name Discriminator_2/conv2d_1/Conv2D->True
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/conv2d_1/Conv2D->8
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/conv2d_1/Conv2D->Discriminator_2/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/conv2d_1/Conv2D->Discriminator_2/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_2/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new named individual with name Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new type with name Generator/conv2d_transpose_1/conv2d_transpose->DeconvolutionLayer
-VirtuosoWrapper:Function to insert new named individual with name Generator/Sigmoid
-VirtuosoWrapper:Function to insert new type with name Generator/Sigmoid->Sigmoid
-VirtuosoWrapper:Function to insert new has activation with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/Sigmoid
-VirtuosoWrapper:Function to insert new has bias with name Generator/conv2d_transpose_1/conv2d_transpose->True
-VirtuosoWrapper:Function to insert new layer num with name Generator/conv2d_transpose_1/conv2d_transpose->28
-VirtuosoWrapper:Function to insert new next layer with name Generator/conv2d_transpose_1/conv2d_transpose->Discriminator_2/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new next layer with name Generator/conv2d_transpose_1/conv2d_transpose->Discriminator_1/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose_1/add_1
-VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose_1/add
-VirtuosoWrapper:Function to insert new previous layer with name Generator/conv2d_transpose_1/conv2d_transpose->Generator/conv2d_transpose/conv2d_transpose
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new type with name Discriminator_2/average_pooling2d_1/AvgPool->PoolingLayer
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/average_pooling2d_1/AvgPool->4
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/average_pooling2d_1/AvgPool->Discriminator_2/Flatten/flatten
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/average_pooling2d_1/AvgPool->Discriminator_2/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_2/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new type with name Discriminator_2/conv2d/Conv2D->ConvolutionLayer
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/Tanh
-VirtuosoWrapper:Function to insert new type with name Discriminator_2/Tanh->Tanh
-VirtuosoWrapper:Function to insert new has activation with name Discriminator_2/conv2d/Conv2D->Discriminator_2/Tanh
-VirtuosoWrapper:Function to insert new has bias with name Discriminator_2/conv2d/Conv2D->True
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/conv2d/Conv2D->24
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/conv2d/Conv2D->Discriminator_2/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/conv2d/Conv2D->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_2/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new named individual with name Discriminator_2/Flatten/flatten
-VirtuosoWrapper:Function to insert new type with name Discriminator_2/Flatten/flatten->FlattenLayer
-VirtuosoWrapper:Function to insert new layer num with name Discriminator_2/Flatten/flatten->1
-VirtuosoWrapper:Function to insert new next layer with name Discriminator_2/Flatten/flatten->Discriminator_2/dense/BiasAdd
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator_2/Flatten/flatten->Discriminator_2/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_0->Discriminator_2/Flatten/flatten
-VirtuosoWrapper:Function to insert new named individual with name objective_function
-VirtuosoWrapper:Function to insert new type with name objective_function->MinObjectiveFunction
-VirtuosoWrapper:Function to insert new named individual with name cost_function
-VirtuosoWrapper:Function to insert new type with name cost_function->CostFunction
-VirtuosoWrapper:Function to insert new named individual with name SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new type with name SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits->binary
-VirtuosoWrapper:Function to insert new has loss with name cost_function->SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new has cost with name objective_function->cost_function
-VirtuosoWrapper:Function to insert new named individual with name cost_function
-VirtuosoWrapper:Function to insert new type with name cost_function->CostFunction
-VirtuosoWrapper:Function to insert new named individual with name SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new type with name SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits->binary
-VirtuosoWrapper:Function to insert new has loss with name cost_function->SparseSoftmaxCrossEntropyWithLogits_1/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new has cost with name objective_function->cost_function
-VirtuosoWrapper:Function to insert new has objective with name dcgan_net_0->objective_function
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_0
-VirtuosoWrapper:Function to insert new type with name dcgan_net_0->Network
-VirtuosoWrapper:Function to insert new network with name dcgan_net_0
-VirtuosoWrapper:Function to insert new named individual with name Generator/conv2d_transpose_1/add_1
-VirtuosoWrapper:Function to insert new type with name Generator/conv2d_transpose_1/add_1->InputLayer
-VirtuosoWrapper:Function to insert new input layer with name dcgan_net_0->Generator/conv2d_transpose_1/add_1
-VirtuosoWrapper:Function to insert new named individual with name Discriminator/dense/BiasAdd
-VirtuosoWrapper:Function to insert new type with name Discriminator/dense/BiasAdd->FullyConnected
-VirtuosoWrapper:Function to insert new named individual with name Discriminator/Tanh_2
-VirtuosoWrapper:Function to insert new type with name Discriminator/Tanh_2->Tanh
-VirtuosoWrapper:Function to insert new has activation with name Discriminator/dense/BiasAdd->Discriminator/Tanh_2
-VirtuosoWrapper:Function to insert new has bias with name Discriminator/dense/BiasAdd->True
-VirtuosoWrapper:Function to insert new layer num with name Discriminator/dense/BiasAdd->1024
-VirtuosoWrapper:Function to insert new next layer with name Discriminator/dense/BiasAdd->Discriminator/dense_1/BiasAdd
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator/dense/BiasAdd->Discriminator/Flatten/flatten
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator/dense/BiasAdd
-VirtuosoWrapper:Function to insert new named individual with name Discriminator/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new type with name Discriminator/average_pooling2d/AvgPool->PoolingLayer
-VirtuosoWrapper:Function to insert new layer num with name Discriminator/average_pooling2d/AvgPool->12
-VirtuosoWrapper:Function to insert new next layer with name Discriminator/average_pooling2d/AvgPool->Discriminator/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator/average_pooling2d/AvgPool->Discriminator/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new named individual with name Discriminator/Flatten/flatten
-VirtuosoWrapper:Function to insert new type with name Discriminator/Flatten/flatten->FlattenLayer
-VirtuosoWrapper:Function to insert new next layer with name Discriminator/Flatten/flatten->Discriminator/dense/BiasAdd
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator/Flatten/flatten->Discriminator/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator/Flatten/flatten
-VirtuosoWrapper:Function to insert new named individual with name Discriminator/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new type with name Discriminator/conv2d/Conv2D->ConvolutionLayer
-VirtuosoWrapper:Function to insert new named individual with name Discriminator/Tanh
-VirtuosoWrapper:Function to insert new type with name Discriminator/Tanh->Tanh
-VirtuosoWrapper:Function to insert new has activation with name Discriminator/conv2d/Conv2D->Discriminator/Tanh
-VirtuosoWrapper:Function to insert new has bias with name Discriminator/conv2d/Conv2D->True
-VirtuosoWrapper:Function to insert new layer num with name Discriminator/conv2d/Conv2D->24
-VirtuosoWrapper:Function to insert new next layer with name Discriminator/conv2d/Conv2D->Discriminator/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator/conv2d/Conv2D->Placeholder_1
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new named individual with name Discriminator/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new type with name Discriminator/conv2d_1/Conv2D->ConvolutionLayer
-VirtuosoWrapper:Function to insert new named individual with name Discriminator/Tanh_1
-VirtuosoWrapper:Function to insert new type with name Discriminator/Tanh_1->Tanh
-VirtuosoWrapper:Function to insert new has activation with name Discriminator/conv2d_1/Conv2D->Discriminator/Tanh_1
-VirtuosoWrapper:Function to insert new has bias with name Discriminator/conv2d_1/Conv2D->True
-VirtuosoWrapper:Function to insert new layer num with name Discriminator/conv2d_1/Conv2D->8
-VirtuosoWrapper:Function to insert new next layer with name Discriminator/conv2d_1/Conv2D->Discriminator/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator/conv2d_1/Conv2D->Discriminator/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new named individual with name Discriminator/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new type with name Discriminator/average_pooling2d_1/AvgPool->PoolingLayer
-VirtuosoWrapper:Function to insert new layer num with name Discriminator/average_pooling2d_1/AvgPool->4
-VirtuosoWrapper:Function to insert new next layer with name Discriminator/average_pooling2d_1/AvgPool->Discriminator/Flatten/flatten
-VirtuosoWrapper:Function to insert new previous layer with name Discriminator/average_pooling2d_1/AvgPool->Discriminator/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new has layer with name dcgan_net_1->Discriminator/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new named individual with name objective_function_1
-VirtuosoWrapper:Function to insert new type with name objective_function_1->MinObjectiveFunction
-VirtuosoWrapper:Function to insert new named individual with name cost_function_1
-VirtuosoWrapper:Function to insert new type with name cost_function_1->CostFunction
-VirtuosoWrapper:Function to insert new named individual with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new type with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits->binary
-VirtuosoWrapper:Function to insert new has loss with name cost_function_1->SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new has cost with name objective_function_1->cost_function_1
-VirtuosoWrapper:Function to insert new named individual with name cost_function_1
-VirtuosoWrapper:Function to insert new type with name cost_function_1->CostFunction
-VirtuosoWrapper:Function to insert new named individual with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new type with name SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits->binary
-VirtuosoWrapper:Function to insert new has loss with name cost_function_1->SparseSoftmaxCrossEntropyWithLogits/SparseSoftmaxCrossEntropyWithLogits
-VirtuosoWrapper:Function to insert new has cost with name objective_function_1->cost_function_1
-VirtuosoWrapper:Function to insert new has objective with name dcgan_net_1->objective_function_1
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_1
-VirtuosoWrapper:Function to insert new type with name dcgan_net_1->Network
-VirtuosoWrapper:Function to insert new network with name dcgan_net_1
-VirtuosoWrapper:Function to insert new named individual with name Placeholder_1
-VirtuosoWrapper:Function to insert new type with name Placeholder_1->InputLayer
-VirtuosoWrapper:Function to insert new layer num with name Placeholder_1->28
-VirtuosoWrapper:Function to insert new input layer with name dcgan_net_1->Placeholder_1
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_training_session
-VirtuosoWrapper:Function to insert new type with name dcgan_net_training_session->TrainingSession
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_0_training_step
-VirtuosoWrapper:Function to insert new type with name dcgan_net_0_training_step->TrainingSingle
-VirtuosoWrapper:Function to insert new trains network with name dcgan_net_0_training_step->dcgan_net_0
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_0_INP_0
-VirtuosoWrapper:Function to insert new type with name dcgan_net_0_INP_0->DatasetPipe
-VirtuosoWrapper:Function to insert new joins layer with name dcgan_net_0_INP_0->Generator/conv2d_transpose_1/add_1
-VirtuosoWrapper:Function to insert new joins dataset with name dcgan_net_0_INP_0->Placeholder
-VirtuosoWrapper:Function to insert new hasIOPipe with name dcgan_net_0_training_step->dcgan_net_0_INP_0
-VirtuosoWrapper:Function to insert new named individual with name Adam_1
-VirtuosoWrapper:Function to insert new type with name Adam_1->Adam
-VirtuosoWrapper:Function to insert new new_learning_rate with name Adam_1->0.0010000000474974513
-VirtuosoWrapper:Function to insert new  has optimizer  with name dcgan_net_0_training_step->Adam_1
-VirtuosoWrapper:Function to insert new batch size with name dcgan_net_0_training_step->0
-VirtuosoWrapper:Function to insert new epoch num with name dcgan_net_0_training_step->0
-VirtuosoWrapper:Function to insert new training step with name dcgan_net_training_session->dcgan_net_0_training_step
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_1_training_step
-VirtuosoWrapper:Function to insert new type with name dcgan_net_1_training_step->TrainingSingle
-VirtuosoWrapper:Function to insert new trains network with name dcgan_net_1_training_step->dcgan_net_1
-VirtuosoWrapper:Function to insert new named individual with name dcgan_net_1_INP_0
-VirtuosoWrapper:Function to insert new type with name dcgan_net_1_INP_0->DatasetPipe
-VirtuosoWrapper:Function to insert new joins layer with name dcgan_net_1_INP_0->Placeholder_1
-VirtuosoWrapper:Function to insert new joins dataset with name dcgan_net_1_INP_0->Placeholder_1
-VirtuosoWrapper:Function to insert new hasIOPipe with name dcgan_net_1_training_step->dcgan_net_1_INP_0
-VirtuosoWrapper:Function to insert new named individual with name Adam_1
-VirtuosoWrapper:Function to insert new type with name Adam_1->Adam
-VirtuosoWrapper:Function to insert new new_learning_rate with name Adam_1->0.0010000000474974513
-VirtuosoWrapper:Function to insert new  has optimizer  with name dcgan_net_1_training_step->Adam_1
-VirtuosoWrapper:Function to insert new batch size with name dcgan_net_1_training_step->0
-VirtuosoWrapper:Function to insert new epoch num with name dcgan_net_1_training_step->0
-VirtuosoWrapper:Function to insert new training step with name dcgan_net_training_session->dcgan_net_1_training_step
-VirtuosoWrapper:Function to insert new named individual with name dcgan_trained_model
-VirtuosoWrapper:Function to insert new type with name dcgan_trained_model->TrainedModel
-VirtuosoWrapper:Function to insert new named individual with name W1
-VirtuosoWrapper:Function to insert new type with name W1->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W1->Discriminator_2/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W1->Discriminator_2/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W1
-VirtuosoWrapper:Function to insert new named individual with name W2
-VirtuosoWrapper:Function to insert new type with name W2->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W2->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new trained out with name W2->Discriminator_2/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W2
-VirtuosoWrapper:Function to insert new named individual with name W3
-VirtuosoWrapper:Function to insert new type with name W3->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W3->Discriminator_2/Flatten/flatten
-VirtuosoWrapper:Function to insert new trained out with name W3->Discriminator_2/dense/BiasAdd
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W3
-VirtuosoWrapper:Function to insert new named individual with name W4
-VirtuosoWrapper:Function to insert new type with name W4->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W4->Discriminator/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W4->Discriminator/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W4
-VirtuosoWrapper:Function to insert new named individual with name W5
-VirtuosoWrapper:Function to insert new type with name W5->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W5->Generator/conv2d_transpose_1/add_1
-VirtuosoWrapper:Function to insert new trained out with name W5->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W5
-VirtuosoWrapper:Function to insert new named individual with name W6
-VirtuosoWrapper:Function to insert new type with name W6->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W6->Generator/conv2d_transpose_1/add
-VirtuosoWrapper:Function to insert new trained out with name W6->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W6
-VirtuosoWrapper:Function to insert new named individual with name W7
-VirtuosoWrapper:Function to insert new type with name W7->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W7->Generator/conv2d_transpose/conv2d_transpose
-VirtuosoWrapper:Function to insert new trained out with name W7->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W7
-VirtuosoWrapper:Function to insert new named individual with name W8
-VirtuosoWrapper:Function to insert new type with name W8->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W8->Discriminator_2/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W8->Discriminator_2/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W8
-VirtuosoWrapper:Function to insert new named individual with name W9
-VirtuosoWrapper:Function to insert new type with name W9->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W9->Discriminator/dense/BiasAdd
-VirtuosoWrapper:Function to insert new trained out with name W9->Discriminator/dense_1/BiasAdd
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W9
-VirtuosoWrapper:Function to insert new named individual with name W10
-VirtuosoWrapper:Function to insert new type with name W10->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W10->Discriminator/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W10->Discriminator/Flatten/flatten
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W10
-VirtuosoWrapper:Function to insert new named individual with name W11
-VirtuosoWrapper:Function to insert new type with name W11->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W11->Discriminator_1/Flatten/flatten
-VirtuosoWrapper:Function to insert new trained out with name W11->Discriminator_1/dense/BiasAdd
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W11
-VirtuosoWrapper:Function to insert new named individual with name W12
-VirtuosoWrapper:Function to insert new type with name W12->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W12->Discriminator/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W12->Discriminator/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W12
-VirtuosoWrapper:Function to insert new named individual with name W13
-VirtuosoWrapper:Function to insert new type with name W13->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W13->Generator/dense/BiasAdd
-VirtuosoWrapper:Function to insert new trained out with name W13->Generator/conv2d_transpose/conv2d_transpose
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W13
-VirtuosoWrapper:Function to insert new named individual with name W14
-VirtuosoWrapper:Function to insert new type with name W14->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W14->Generator/conv2d_transpose/add
-VirtuosoWrapper:Function to insert new trained out with name W14->Generator/conv2d_transpose/conv2d_transpose
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W14
-VirtuosoWrapper:Function to insert new named individual with name W15
-VirtuosoWrapper:Function to insert new type with name W15->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W15->Generator/conv2d_transpose/add_1
-VirtuosoWrapper:Function to insert new trained out with name W15->Generator/conv2d_transpose/conv2d_transpose
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W15
-VirtuosoWrapper:Function to insert new named individual with name W16
-VirtuosoWrapper:Function to insert new type with name W16->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W16->Discriminator/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W16->Discriminator/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W16
-VirtuosoWrapper:Function to insert new named individual with name W17
-VirtuosoWrapper:Function to insert new type with name W17->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W17->Discriminator_2/dense/BiasAdd
-VirtuosoWrapper:Function to insert new trained out with name W17->Discriminator_2/dense_1/BiasAdd
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W17
-VirtuosoWrapper:Function to insert new named individual with name W18
-VirtuosoWrapper:Function to insert new type with name W18->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W18->Discriminator_2/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W18->Discriminator_2/Flatten/flatten
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W18
-VirtuosoWrapper:Function to insert new named individual with name W19
-VirtuosoWrapper:Function to insert new type with name W19->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W19->Discriminator/Flatten/flatten
-VirtuosoWrapper:Function to insert new trained out with name W19->Discriminator/dense/BiasAdd
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W19
-VirtuosoWrapper:Function to insert new named individual with name W20
-VirtuosoWrapper:Function to insert new type with name W20->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W20->Discriminator_2/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W20->Discriminator_2/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W20
-VirtuosoWrapper:Function to insert new named individual with name W21
-VirtuosoWrapper:Function to insert new type with name W21->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W21->Placeholder
-VirtuosoWrapper:Function to insert new trained out with name W21->Generator/dense/BiasAdd
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W21
-VirtuosoWrapper:Function to insert new named individual with name W22
-VirtuosoWrapper:Function to insert new type with name W22->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W22->Discriminator_1/average_pooling2d_1/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W22->Discriminator_1/Flatten/flatten
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W22
-VirtuosoWrapper:Function to insert new named individual with name W23
-VirtuosoWrapper:Function to insert new type with name W23->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W23->Discriminator_1/conv2d/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W23->Discriminator_1/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W23
-VirtuosoWrapper:Function to insert new named individual with name W24
-VirtuosoWrapper:Function to insert new type with name W24->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W24->Discriminator/dense_1/BiasAdd
-VirtuosoWrapper:Function to insert new trained out with name W24->concat
+VirtuosoWrapper:Function to insert new trained in with name W24->Discriminator/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new trained out with name W24->Discriminator/average_pooling2d/AvgPool
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W24
 VirtuosoWrapper:Function to insert new named individual with name W25
 VirtuosoWrapper:Function to insert new type with name W25->TrainedWeights
@@ -674,28 +333,28 @@ VirtuosoWrapper:Function to insert new trained out with name W25->concat
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W25
 VirtuosoWrapper:Function to insert new named individual with name W26
 VirtuosoWrapper:Function to insert new type with name W26->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W26->Discriminator_1/dense/BiasAdd
-VirtuosoWrapper:Function to insert new trained out with name W26->Discriminator_1/dense_1/BiasAdd
+VirtuosoWrapper:Function to insert new trained in with name W26->Discriminator/dense_1/BiasAdd
+VirtuosoWrapper:Function to insert new trained out with name W26->concat
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W26
 VirtuosoWrapper:Function to insert new named individual with name W27
 VirtuosoWrapper:Function to insert new type with name W27->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W27->Discriminator_1/average_pooling2d/AvgPool
-VirtuosoWrapper:Function to insert new trained out with name W27->Discriminator_1/conv2d_1/Conv2D
+VirtuosoWrapper:Function to insert new trained in with name W27->Discriminator_1/Flatten/flatten
+VirtuosoWrapper:Function to insert new trained out with name W27->Discriminator_1/dense/BiasAdd
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W27
 VirtuosoWrapper:Function to insert new named individual with name W28
 VirtuosoWrapper:Function to insert new type with name W28->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W28->Generator/conv2d_transpose_1/conv2d_transpose
-VirtuosoWrapper:Function to insert new trained out with name W28->Discriminator_1/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new trained in with name W28->Discriminator_2/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new trained out with name W28->Discriminator_2/average_pooling2d/AvgPool
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W28
 VirtuosoWrapper:Function to insert new named individual with name W29
 VirtuosoWrapper:Function to insert new type with name W29->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W29->Placeholder_1
-VirtuosoWrapper:Function to insert new trained out with name W29->Discriminator/conv2d/Conv2D
+VirtuosoWrapper:Function to insert new trained in with name W29->Discriminator_1/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new trained out with name W29->Discriminator_1/conv2d_1/Conv2D
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W29
 VirtuosoWrapper:Function to insert new named individual with name W30
 VirtuosoWrapper:Function to insert new type with name W30->TrainedWeights
-VirtuosoWrapper:Function to insert new trained in with name W30->Discriminator_1/conv2d_1/Conv2D
-VirtuosoWrapper:Function to insert new trained out with name W30->Discriminator_1/average_pooling2d_1/AvgPool
+VirtuosoWrapper:Function to insert new trained in with name W30->Discriminator_2/average_pooling2d/AvgPool
+VirtuosoWrapper:Function to insert new trained out with name W30->Discriminator_2/conv2d_1/Conv2D
 VirtuosoWrapper:Function to insert new has weights with name dcgan_trained_model->W30
 VirtuosoWrapper:Function to insert new named individual with name dcgan_net_training_strategy
 VirtuosoWrapper:Function to insert new type with name dcgan_net_training_strategy->TrainingStrategy

@@ -298,13 +298,11 @@ class handle_entities:
             for prev in layers[tmp].previous_layer:
                 if prev in self.layers().keys():
                     break
-            #print("Found initial node=",tmp)
             self.annConfiguration.networks[self.current_network].input_layer=tmp
         for tmp in layers.keys():
             for next in layers[tmp].next_layer:
                 if next in self.layers().keys():
                     break
-            #print("Found initial node=",tmp)
             self.annConfiguration.networks[self.current_network].input_layer=tmp
 
     def check_multiple_networks(self):

@@ -2,9 +2,16 @@ import nodes.handler
 log_msg1="VirtuosoWrapper:Function to insert new "
 log_msg2=" with name "
 log_file=""
+counter=0
 def log(str):
-    with open(log_file, "a") as myfile:
-        myfile.write(str+"\n")
+    global counter
+    if counter==0:
+        with open(log_file, "w") as myfile:
+            myfile.write(str+"\n")
+        counter+=1
+    else:
+        with open(log_file, "a") as myfile:
+            myfile.write(str+"\n")
 
 def insert_ann_graph():
     nodes.handler.entitiesHandler.data.annConfiguration.insert_in_annetto()
