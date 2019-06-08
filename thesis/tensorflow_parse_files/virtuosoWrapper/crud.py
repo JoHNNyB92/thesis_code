@@ -14,7 +14,10 @@ class crud:
     def insert(self,s,o,p):
         #final_query=prefix+" INSERT DATA { GRAPH " + self.graph + " { <"+s_s+":"+s+"> <"+s_o+":"+o+"> <"+s_p+":"+p+"> } }"
         final_query="INSERT DATA { GRAPH " + self.graph + " { <"+s+"> <"+o+"> <"+p+"> } }"
-        #print(final_query)
+        print_query="INSERT DATA { GRAPH " + self.graph + len("INSERT DATA { GRAPH " + str(self.graph))*" "+"\n{ <"+s+">\n<"+o+">\n<"+p+">\n}\n}"
+        rdfWrapper.log(print_query)
+        rdfWrapper.log(len(final_query)*"-")
+        print(final_query)
         #rdfWrapper.log(log_msg_ins+final_query)
         '''self.sparql.setQuery(final_query)
         self.sparql.setReturnFormat('json')

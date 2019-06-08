@@ -135,9 +135,11 @@ def handle_pow(node,network):
     sub=False
     power_of_two=False
     node_obj=None
+    sub_elem=None
     for elem in children:
         if elem.get_op()=="Sub":
             node_obj=elem
+            sub_elem=elem
             sub=True
         if elem.get_op()=="Const":
             num=elem.node_obj.attr["value"].tensor.float_val
@@ -146,6 +148,12 @@ def handle_pow(node,network):
     if sub==True and power_of_two==True:
         return handle_mean_square_error(node_obj,network,node.get_name())
     else:
+        if sub_elem!=None:
+            children=sub_elem.get_inputs()
+            for elem in children:
+                print(elem.get_op())
+                if elem.get_op()=="Placeholder":
+                    return handle_mean_square_error(sub_elem,network,node.get_name())
         return ""
 def handle_neg_for_log(node):
     inputs=node.get_inputs()

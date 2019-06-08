@@ -226,7 +226,7 @@ class handle_entities:
             nodeReturn = handler_functions.handle_objective(name,nodeReturn)
             if nodeReturn!="":
                 self.insert_to_list(nodeReturn, name, "Objective")
-        elif self.node_map[e].get_op()=="Pow":
+        elif self.node_map[e].get_op()=="Pow" or self.node_map[e].get_op()=="Square":
             #TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
             name = "objective_function"
             if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
