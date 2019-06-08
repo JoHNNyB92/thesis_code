@@ -188,12 +188,12 @@ def handle_mean_square_error(node,network,name):
 def check_for_bias(name):
     nm = nodes.handler.entitiesHandler.node_map
     for node_name in nodes.handler.entitiesHandler.node_map.keys():
-        out_name = nm[node_name].get_name()
-        if nm[node_name].search_inputs(name) == True:
-            if nm[node_name].get_op() == "BiasAdd":
-                return out_name
+        #out_name = nm[node_name].get_name()
+        if nm[node_name].search_inputs(name) == True and "gradients" not in node_name:
+            if nm[node_name].get_op() == "BiasAdd" or nm[node_name].get_op()=="Add":
+                return node_name
             else:
-                print("ERROR:Conv2d node with name ", name, "should have biasAdd following,this does not.")
+                print("ERROR:Conv2d node with name ", name, "should have biasAdd following,this does not.",node_name)
                 return -1
 
 def handle_conv2d(node):

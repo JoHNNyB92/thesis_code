@@ -21,8 +21,8 @@ def execute_file(new_file,new_line_list,path_to_folder):
         subprocess.check_output([sys.executable, file_to_execute], stderr=subprocess.STDOUT)
         return file_to_execute
     except subprocess.CalledProcessError as e:
-        traceback = str(e.output).split("Traceback")
-        print("Traceback:",traceback)
+        traceback = str(e)
+        print("ERROR:File:",file_to_execute ,"\nTraceback:",traceback)
         if "batch" in traceback:
             return "batch"
         else:
@@ -42,14 +42,15 @@ def parse_file(path,skip):
     (pbtxt_file,batch_epoch,model_var,new_line_list)=create_new_file(line_list,path,file,skip)
     new_line_list=find_epoch_size(new_line_list)
     result=execute_file(new_file,new_line_list,path_to_folder)
-    if result=="batch":
-        print("ERROR:Cannot find batch,error when executing.")
-        return ("batch",None,None,None)
+    if result=="error":
+        print("ERROR:File contains inner error,cannot execute it.")
+        return ("error", None, None, None)
     else:
         print("LOGGING:Successfully executed.")
         (batch_size,epoch)=get_batch_epoch(batch_epoch)
         if batch_size==-2 and epoch==-2:
-            return ("batch_epoch_file_not_found","",-2,-2)
+            print("ERROR:Could not obtain epoch/batch information")
+            return ("success",pbtxt_file,batch_size,epoch)
         else:
             return ("success",pbtxt_file,batch_size,epoch)
 
@@ -124,6 +125,7 @@ def create_new_file(line_list,path,file,skip):
     #This happend because the path contains unicode escape characters \a ,\t etc.We needed to make sure the produced path string,
     #would not contain any escape characters.
     num_of_space = min_space
+    str_0="\n"+num_of_space*" "+"import tensorflow as tf\n"
     str_1="\n"+num_of_space*" "+"with tf.Session() as sess:\n"
     num_of_space=num_of_space+1
     str_2=num_of_space*" "+"graph_def = sess.graph.as_graph_def(add_shapes=True)\n"
@@ -133,14 +135,16 @@ def create_new_file(line_list,path,file,skip):
     str_5=num_of_space*" "+"tfFileWriter.add_graph(graph_def)\n"
     str_6=num_of_space*" "+"tfFileWriter.close()\n"
     if "batch" not in skip:
-        str_8=num_of_space*" "+"print(\"BATCH SIZE:\",batch_size,file=batch_epoch_file_to_print)\n"
-
+        str_7=num_of_space*" "+"if 'batch_size' in locals():\n"
+        str_8=(num_of_space+1)*" "+"print(\"BATCH SIZE:\",batch_size,file=batch_epoch_file_to_print)\n"
+    new_line_list.append(str_0)
     new_line_list.append(str_1)
     new_line_list.append(str_2)
     new_line_list.append(str_3)
     new_line_list.append(str_4)
     new_line_list.append(str_5)
     new_line_list.append(str_6)
+    new_line_list.append(str_7)
     new_line_list.append(str_8)
 
     os.chdir(current_folder)

@@ -218,11 +218,11 @@ class layer:
                         if res != 0:
                             found = False
                             input = nm[node].get_inputs()
-                            print("1:START SEARCHING FOR=", node)
+                            #print("1:START SEARCHING FOR=", node)
                             while found == False:
                                 temp_in = []
                                 for elem_in in input:
-                                    print("2:START SEARCHING FOR=", elem_in.get_name())
+                                    #print("2:START SEARCHING FOR=", elem_in.get_name())
                                     if elem_in.get_op() in nodes.handler.entitiesHandler.intermediate_operations:
                                         for elem_in_in in nm[elem_in.get_name()].get_inputs():
                                             temp_in.append(elem_in_in)

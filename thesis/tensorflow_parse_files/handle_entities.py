@@ -113,7 +113,7 @@ class handle_entities:
             nodeReturn= handler_functions.handle_conv2d(self.node_map[e])
             if nodeReturn!=None:
                 self.insert_to_list(nodeReturn, e,"Layer")
-        elif self.node_map[e].get_op()=="Conv2DBackpropInput":
+        elif self.node_map[e].get_op()=="Conv2DBackpropInput" and "gradient" not in e:
             nodeReturn= handler_functions.handle_deconv2d(self.node_map[e])
             if nodeReturn!=None:
                 self.insert_to_list(nodeReturn, e,"Layer")
