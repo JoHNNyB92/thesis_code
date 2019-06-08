@@ -132,28 +132,42 @@ def handle_flatten(node,name):
 
 def handle_pow(node,network):
     children=node.get_inputs()
-    sub=False
-    power_of_two=False
     node_obj=None
     sub_elem=None
-    for elem in children:
-        if elem.get_op()=="Sub":
-            node_obj=elem
-            sub_elem=elem
-            sub=True
-        if elem.get_op()=="Const":
-            num=elem.node_obj.attr["value"].tensor.float_val
-            if int(num[0])==2:
-                power_of_two=True
-    if sub==True and power_of_two==True:
-        return handle_mean_square_error(node_obj,network,node.get_name())
+    sub=False
+    power_of_two=False
+    while children!=[]:
+        tmp=[]
+        for elem in children:
+            if elem.get_op()=="Sub":
+                node_obj=elem
+                sub_elem=elem
+                sub=True
+            elif elem.get_op()=="Const":
+                num=elem.node_obj.attr["value"].tensor.float_val
+                if int(num[0])==2:
+                    power_of_two=True
+            elif elem.get_op() in nodes.handler.entitiesHandler.intermediate_operations:
+                for el in elem.get_inputs():
+                    tmp.append(el)
+        if sub==True and power_of_two==True:
+            return handle_mean_square_error(node_obj,network,node.get_name())
+        children=tmp
     else:
         if sub_elem!=None:
+            print("\n\n\n\n\n\n\n\n")
+            print("ELEM=",sub_elem.get_name())
             children=sub_elem.get_inputs()
-            for elem in children:
-                print(elem.get_op())
-                if elem.get_op()=="Placeholder":
-                    return handle_mean_square_error(sub_elem,network,node.get_name())
+            while children != []:
+                tmp=[]
+                for elem in children:
+                    print("ELEM GET OP=",elem.get_op())
+                    if elem.get_op()=="Placeholder":
+                        return handle_mean_square_error(sub_elem,network,node.get_name())
+                    elif elem.get_op() in nodes.handler.entitiesHandler.intermediate_operations:
+                        for el in elem.get_inputs():
+                            tmp.append(el)
+                children = tmp
         return ""
 def handle_neg_for_log(node):
     inputs=node.get_inputs()
@@ -304,7 +318,7 @@ def handle_dropout( node,name):
     return dropout_layer(node,name)
 
 def check_simple_layer( node,name):
-    if "random_" in name:
+    if "random_" in name or "normal" in name:
         return (False, [])
 
     #TODO:What happens if no bias in the node???

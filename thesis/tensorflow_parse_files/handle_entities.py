@@ -19,7 +19,7 @@ class handle_entities:
         self.intermediate_operations=["Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean"]
         self.optimizer_operations=["ApplyAdam"]
         self.intermediate_operations.append("Add")
-        self.activation_operations=["Relu","Dropout","Softmax","Sigmoid","Tanh"]
+        self.activation_operations=["Relu","Dropout","Softmax","Sigmoid","Tanh","Softplus"]
         self.loss_functions=["softmax_cross_entropy"]
         self.nodes_to_layers={}
         self.layers_to_nodes = {}

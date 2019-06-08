@@ -3,6 +3,7 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 from functions.activation.non_diff.relu import relu
 from functions.activation.regularization.dropout import dropout
 from functions.activation.smooth.softmax import softmax
+from functions.activation.smooth.softplus import softplus
 from functions.activation.smooth.tanh import tanh
 from functions.activation.smooth.sigmoid import sigmoid
 class layer:
@@ -58,6 +59,8 @@ class layer:
             self.activation=dropout(node)
         elif node.get_op()=="Softmax":
             self.activation = softmax(node)
+        elif node.get_op()=="Softplus":
+            self.activation = softplus(node)
         elif node.get_op()=="Tanh":
             self.activation = tanh(node)
         elif node.get_op()=="Sigmoid":
