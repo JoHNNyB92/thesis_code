@@ -21,11 +21,10 @@ def print_topology():
             and nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].node.get_op()!="Placeholder":
             print("LAYER TO BE DELETED,IT IS WITHOUT INPUT OUTPUT LAYER")
             del_layers.append(key)
-
-        for layer in del_layers:
-            del nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[layer]
-
         print("_____________________________________________________________________________________")
+    for layer in del_layers:
+        del nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[layer]
+
     print("\n Optimization \n")
     for key in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].optimizer.keys():
         print("_____________________________________________________________________________________")
