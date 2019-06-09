@@ -9,4 +9,4 @@ thesis/old_keras
 /thesis/git_repositories/
 *.pbtxt
 /thesis/git_repositories_temp/
-thesis/log/
+thesis/log/*
