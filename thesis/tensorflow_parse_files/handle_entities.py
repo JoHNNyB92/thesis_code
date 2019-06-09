@@ -281,6 +281,7 @@ class handle_entities:
                     weight=handler_functions.handle_weights('W'+str(counter),elem_in,layer)
                     tr_model.add_weight(weight)
         optimizer=self.data.annConfiguration.networks[self.current_network].optimizer
+        optimizer_node=""
         for key in optimizer.keys():
             optimizer_node=optimizer[key]
         IOPipe=handler_functions.handle_dataset_pipe(self.current_network,self.input_layer,"train")

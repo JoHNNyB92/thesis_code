@@ -79,7 +79,7 @@ with open('github/github.csv') as csv_file:
         repository_path=github.get_github_repository(url[0])
         code_repository=github.folder+github.dirName+"/"+repository_path
         print("LOGGING:About to start processing repository into ",code_repository)
-        if "tutorials" in code_repository:
+        if "domain" in code_repository:
             found_network=False
             for subdir, dirs, files in os.walk(code_repository):
                 for file in files:

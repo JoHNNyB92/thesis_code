@@ -33,7 +33,7 @@ def print_topology():
         print("LO:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].objective[key].cost_function.loss.name)
         print("_____________________________________________________________________________________")
     if nodes.handler.entitiesHandler.data.evaluationResult!="":
-        print("\n evaluation \n")
+        print("\n Evaluation \n")
         print("_____________________________________________________________________________________")
         print("NM:", nodes.handler.entitiesHandler.data.evaluationResult.name)
         if nodes.handler.entitiesHandler.data.evaluationResult.metric!="":
