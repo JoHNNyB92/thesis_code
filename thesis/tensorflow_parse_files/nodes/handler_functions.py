@@ -106,14 +106,9 @@ def handle_softmax( node):
 def handle_adam(node,name):
     return adam(node,name)
 
-def handle_sparse_cross_entropy(node,c_name):
-    for dim in node.get_output():
-        for i,elem in enumerate(dim.dim):
-            if elem.size != -1:
-                if elem.size > 2:
-                    return cost_function(c_name, categorical_cross_entropy(node.get_name(), node))
-                else:
-                    return cost_function(c_name, binary_cross_entropy(node.get_name(), node))
+def handle_sigmoid_entropy(node,c_name):
+    #TODO SIGMOID 
+    return cost_function(c_name, categorical_cross_entropy(node.get_name(), node))
 
 def handle_cross_entropy(node,name,c_name):
     for t_name in nodes.handler.entitiesHandler.node_map.keys():
@@ -156,9 +151,8 @@ def handle_pow(node,network):
         children=tmp
     else:
         if sub_elem!=None:
-            print("\n\n\n\n\n\n\n\n")
-            print("ELEM=",sub_elem.get_name())
             children=sub_elem.get_inputs()
+            possible=[]
             while children != []:
                 tmp=[]
                 for elem in children:
@@ -168,7 +162,14 @@ def handle_pow(node,network):
                     elif elem.get_op() in nodes.handler.entitiesHandler.intermediate_operations:
                         for el in elem.get_inputs():
                             tmp.append(el)
+                    else:
+                        possible.append(elem.get_name())
                 children = tmp
+        #Check if mse is applied to the output of two layers.
+        if len(possible)==2:
+            nodes.handler.entitiesHandler.possible_loss_function[node.get_name()]=[]
+            for child in possible:
+                nodes.handler.entitiesHandler.possible_loss_function[node.get_name()].append(child)
         return ""
 def handle_neg_for_log(node):
     inputs=node.get_inputs()

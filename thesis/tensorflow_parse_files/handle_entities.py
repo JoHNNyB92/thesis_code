@@ -10,11 +10,12 @@ class handle_entities:
         self.epochs=0
         self.node_map={}
         self.current_network=""
-        self.networks=[]
-        self.current_evaluation=""
-        self.activations={}
-        self.all_inputs={}
-        self.intermediate_bias={}
+        #self.networks=[]
+        #self.current_evaluation=""
+        #self.activations={}
+        #self.all_inputs={}
+        #self.intermediate_bias={}
+        self.possible_loss_function={}
         self.variable_operations=["Const","VariableV2","Variable"]
         self.intermediate_operations=["Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones"]
         self.optimizer_operations=["ApplyAdam"]
@@ -28,15 +29,19 @@ class handle_entities:
         self.optimizer=False
         self.batch=""
         self.epoch=""
+        '''
         self.placeholder_names=[]
-        self.output_layer=[]
-        self.input_layer=[]
         self.discovered_rnn_lstm=[]
-        self.discovered_optimizers=[]
+        
         self.discovered_loss=[]
         self.discovered_dense=[]
-        self.input_layers=[]
+        
+        '''
+        self.discovered_optimizers = []
+        self.input_layers = []
         self.names_into_separator=[]
+        self.output_layer=[]
+        self.input_layer=[]
 
     def set_batch_epoch(self,batch,epoch):
         self.batch=batch
@@ -131,11 +136,17 @@ class handle_entities:
             self.optimizer = True
             nodeReturn = handler_functions.handle_gradient_descent(self.node_map[e])
             self.insert_to_list(nodeReturn, e,"Optimizer")
-        elif self.node_map[e].get_name().startswith("Adam") and \
-                self.node_map[e].get_name().split("/")[0] not in self.discovered_optimizers:# and self.node_map[e].get_name().endswith("learning_rate"):
-            self.discovered_dense.append(self.node_map[e].get_name().split("/")[0])
-            nodeReturn = handler_functions.handle_adam(self.node_map[e],self.node_map[e].get_name().split("/")[0])
-            self.insert_to_list(nodeReturn, self.node_map[e].get_name().split("/")[0],"Optimizer")
+        elif "Adam" in self.node_map[e].get_name():
+            name=self.node_map[e].get_name().split("/")
+            real_name=""
+            for part in name:
+                if "Adam" in part:
+                    real_name = part
+                    break
+            if real_name not in self.discovered_optimizers:# and self.node_map[e].get_name().endswith("learning_rate"):
+                self.discovered_optimizers.append(real_name)
+                nodeReturn = handler_functions.handle_adam(self.node_map[e],real_name)
+                self.insert_to_list(nodeReturn, real_name,"Optimizer")
         elif self.node_map[e].get_op()=="Neg":
             nodeReturn = handler_functions.handle_neg_for_log(self.node_map[e])
             if nodeReturn!="":
@@ -165,6 +176,21 @@ class handle_entities:
                     print("LOGGING:Cost function name is ", nodeReturn.cost_function.name)
                     self.insert_to_list(nodeReturn, name, "Objective")
         elif self.node_map[e].get_op()=="SparseSoftmaxCrossEntropyWithLogits":
+            name = "objective_function"
+            c_name="cost_function"
+            # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
+            if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
+                num=str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
+                name = name + "_" + num
+                c_name=c_name+"_"+num
+            nodeReturn = handler_functions.handle_sparse_cross_entropy(self.node_map[e],c_name)
+            print("COST FUNCTION=",nodeReturn.name)
+            nodeReturn = handler_functions.handle_objective(name, nodeReturn)
+            if nodeReturn != "":
+                print("LOGGING:Inserting objective with ",name)
+                print("LOGGING:Cost function name is ",nodeReturn.cost_function.name)
+                self.insert_to_list(nodeReturn, name, "Objective")
+        elif "sigmoid_cross_entropy" in self.node_map[e].get_name():
             name = "objective_function"
             c_name="cost_function"
             # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
@@ -313,6 +339,7 @@ class handle_entities:
             self.annConfiguration.networks[self.current_network].input_layer=tmp
 
     def check_multiple_networks(self):
+        self.handle_possible_loss_functions()
         if len(self.data.annConfiguration.networks[self.current_network].objective.keys())==1:
             print("LOGGING:Only one network presented,no more parsing.")
             return 0
@@ -340,6 +367,29 @@ class handle_entities:
         self.insert_training()
         del self.data.annConfiguration.networks[self.current_network]
         return 1
+
+
+    def handle_possible_loss_functions(self):
+        for poss in self.possible_loss_function.keys():
+            cnt=0
+            print(self.possible_loss_function[poss])
+            for layer in self.data.annConfiguration.networks[self.current_network].layer:
+                if len(set(self.possible_loss_function[poss]).intersection(set(self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes)))>0:
+                        cnt+=1
+                elif self.data.annConfiguration.networks[self.current_network].layer[layer].activation!=None:
+                    if len(set(self.possible_loss_function[poss]).intersection(set([self.data.annConfiguration.networks[self.current_network].layer[layer].activation.name]))) > 0:
+                        cnt+=1
+            if cnt==2:
+                name = "objective_function"
+                if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
+                    name = name + "_" + str(
+                        len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
+                nodeReturn = handler_functions.handle_mean_square_error(self.node_map[poss],self.current_network,poss)
+                if nodeReturn != "":
+                    nodeReturn = handler_functions.handle_objective(name, nodeReturn)
+                    if nodeReturn != "":
+                        self.insert_to_list(nodeReturn, name, "Objective")
+
 
     def check_loss_metric(self):
         #TODO:If found two loss functions with same input ,one of them
@@ -416,27 +466,28 @@ class handle_entities:
             tmp=[]
             for elem in children:
                 print("Children node ",elem.get_name())
-                if elem.get_name() in self.data.annConfiguration.networks[self.current_network].layer.keys():
-                    outputs.append(elem.get_name())
-                    print("LOGGING:Found output layer = ",elem.get_name())
-                    #for layer in self.data.annConfiguration.networks[self.current_network].layer.keys():
-                        #in_=self.data.annConfiguration.networks[self.current_network].layer[elem.get_name()].input
-                        #out=self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes
-                        #elems_in_both_lists = set(in_) & set(out)
-                        #if elem.get_name() in self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes or \
-                            #elem.get_name==layer or elem.get_name()==self.data.annConfiguration.networks[self.current_network].layer[layer].activation\
-                                #or len(elems_in_both_lists)!=0:
-                            #print("Returning layer ",layer)
-                            #return layer
-                elif elem.get_op() in self.intermediate_operations or elem.get_op() in self.activation_operations or elem.get_op()=="Add"\
-                       or elem.get_op()=="Log":
-                    for input in elem.get_inputs():
-                        if input not in tmp:
+                if elem.get_op() != "Placeholder":
+                    if elem.get_name() in self.data.annConfiguration.networks[self.current_network].layer.keys():
+                        outputs.append(elem.get_name())
+                        print("LOGGING:Found output layer = ",elem.get_name())
+                        #for layer in self.data.annConfiguration.networks[self.current_network].layer.keys():
+                            #in_=self.data.annConfiguration.networks[self.current_network].layer[elem.get_name()].input
+                            #out=self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes
+                            #elems_in_both_lists = set(in_) & set(out)
+                            #if elem.get_name() in self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes or \
+                                #elem.get_name==layer or elem.get_name()==self.data.annConfiguration.networks[self.current_network].layer[layer].activation\
+                                    #or len(elems_in_both_lists)!=0:
+                                #print("Returning layer ",layer)
+                                #return layer
+                    elif elem.get_op() in self.intermediate_operations or elem.get_op() in self.activation_operations or elem.get_op()=="Add"\
+                           or elem.get_op()=="Log":
+                        for input in elem.get_inputs():
+                            if input not in tmp:
+                                tmp.append(input)
+                    else:
+                        print("LOGGING:Encountered intermediate node ",elem.get_name(),".Children added.")
+                        for input in elem.get_inputs():
                             tmp.append(input)
-                else:
-                    print("LOGGING:Encountered intermediate node ",elem.get_name(),".Children added.")
-                    for input in elem.get_inputs():
-                        tmp.append(input)
 
             children=tmp
         print("LOGGING:Find the following output layers:",outputs)
