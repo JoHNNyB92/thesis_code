@@ -7,6 +7,7 @@ from layers.hidden.activation.deconv2d_layer import deconv2d_layer
 from layers.hidden.aggregation.maxpool_layer import maxpool_layer
 from layers.hidden.aggregation.concat_layer import concat_layer
 from layers.hidden.modification.dropout_layer import dropout_layer
+from layers.hidden.modification.batch_norm_layer import batch_norm_layer
 from layers.hidden.modification.flatten_layer import flatten_layer
 from functions.activation.non_diff.relu import relu
 from functions.activation.regularization.dropout import dropout
@@ -217,6 +218,9 @@ def check_for_bias(name):
             else:
                 print("ERROR:Conv2d node with name ", name, "should have biasAdd following,this does not.",node_name)
                 return -1
+
+def handle_batch_norm(node):
+    return batch_norm_layer(node,node.get_name())
 
 def handle_conv2d(node):
     nodeReturn = check_for_bias(node.get_name())

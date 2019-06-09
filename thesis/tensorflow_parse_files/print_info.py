@@ -6,6 +6,7 @@ def print_topology():
         return "ERROR:This tensorflow program is not a network.0 layers were indentified."
 
     print("\n Layers \n")
+    del_layers=[]
     for key in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer.keys():
         print("_____________________________________________________________________________________")
         print("NM:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].name)
@@ -16,6 +17,14 @@ def print_topology():
             print("AC:",None)
         print("PL:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].previous_layer)
         print("OUT:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].output_nodes)
+        if nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].previous_layer==[] and nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].next_layer==[] \
+            and nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].node.get_op()!="Placeholder":
+            print("LAYER TO BE DELETED,IT IS WITHOUT INPUT OUTPUT LAYER")
+            del_layers.append(key)
+
+        for layer in del_layers:
+            del nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[layer]
+
         print("_____________________________________________________________________________________")
     print("\n Optimization \n")
     for key in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].optimizer.keys():

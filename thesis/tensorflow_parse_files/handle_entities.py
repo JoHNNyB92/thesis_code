@@ -16,7 +16,7 @@ class handle_entities:
         self.all_inputs={}
         self.intermediate_bias={}
         self.variable_operations=["Const","VariableV2","Variable"]
-        self.intermediate_operations=["Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean"]
+        self.intermediate_operations=["Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones"]
         self.optimizer_operations=["ApplyAdam"]
         self.intermediate_operations.append("Add")
         self.activation_operations=["Relu","Dropout","Softmax","Sigmoid","Tanh","Softplus"]
@@ -99,11 +99,17 @@ class handle_entities:
                 self.insert_to_list(nodeReturn, tmp_name, "Layer")
 
     def handle_different_layer_cases(self,e):
+        if "gradient" in e:
+            return
+
         if self.node_map[e].get_op()=="Add":
             (isSimpleLayer,nodeReturn)=handler_functions.check_simple_layer(self.node_map[e],self.node_map[e].get_name())
             if isSimpleLayer==True:
                 self.insert_to_list(nodeReturn,e,"Layer")
-        elif self.node_map[e].get_op() == "ConcatV2" and "gradient" not in e:
+        elif "BatchNorm" in self.node_map[e].get_op():
+            nodeReturn = handler_functions.handle_maxpool(self.node_map[e])
+            self.insert_to_list(nodeReturn, e, "Layer")
+        elif self.node_map[e].get_op() == "ConcatV2":
             nodeReturn = handler_functions.handle_maxpool(self.node_map[e])
             self.insert_to_list(nodeReturn, e, "Layer")
         elif self.node_map[e].get_op()=="MaxPool" or self.node_map[e].get_op()=="AvgPool":
@@ -113,7 +119,7 @@ class handle_entities:
             nodeReturn= handler_functions.handle_conv2d(self.node_map[e])
             if nodeReturn!=None:
                 self.insert_to_list(nodeReturn, e,"Layer")
-        elif self.node_map[e].get_op()=="Conv2DBackpropInput" and "gradient" not in e:
+        elif self.node_map[e].get_op()=="Conv2DBackpropInput" :
             nodeReturn= handler_functions.handle_deconv2d(self.node_map[e])
             if nodeReturn!=None:
                 self.insert_to_list(nodeReturn, e,"Layer")
@@ -197,13 +203,13 @@ class handle_entities:
                 self.data.evaluationResult.metric=nodeReturn
             else:
                 print("LOGGING: Equal not metric.")
-        elif "flatten" in e and "gradients" not in e:
+        elif "flatten" in e :
             self.handle_complex_layers(self.node_map[e],e,"flatten")
-        elif "dense" in e and "gradient" not in e.lower() and self.node_map[e].get_op() not in self.optimizer_operations:
+        elif "dense" in e and self.node_map[e].get_op() not in self.optimizer_operations:
             self.handle_complex_layers(self.node_map[e],e,"dense")
-        elif "dropout" in e and "gradients" not in e:
+        elif "dropout" in e:
             self.handle_complex_layers(self.node_map[e],e,"dropout")
-        elif "rnn" in e and "gradient" not in e.lower():
+        elif "rnn" in e:
             self.handle_complex_layers(self.node_map[e],e,"rnn")
         elif "Placeholder"==self.node_map[e].get_op():
             has_dim=False
