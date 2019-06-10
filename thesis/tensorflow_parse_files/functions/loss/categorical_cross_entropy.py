@@ -11,6 +11,6 @@ class categorical_cross_entropy(loss):
             if self.name+"/" in name:
                 self.inner_nodes.append(name)
 
-    def __init__(self,name,node):
-        super(categorical_cross_entropy, self).__init__(name, node)
+    def __init__(self,name,node,complex=False):
+        super(categorical_cross_entropy, self).__init__(name, node,complex)
         self.type="categorical"

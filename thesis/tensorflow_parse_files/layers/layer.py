@@ -76,7 +76,7 @@ class layer:
         for node_name in nm.keys():
             #print("Name=",node_name," result ",nm[node_name].search_inputs(name))
             if nm[node_name].search_inputs(name) == True and "gradient" not in node_name:
-                print("SELF=",name," || SELF IN INPUT OF =",node_name,"{}",[x.get_name() for x in nodes.handler.entitiesHandler.node_map[node_name].get_inputs()])
+                #print("SELF=",name," || SELF IN INPUT OF =",node_name,"{}",[x.get_name() for x in nodes.handler.entitiesHandler.node_map[node_name].get_inputs()])
                 #Problem with reshape,it is an in+
                 # ermediate operation,though when used with flatten there is a problem.
                 #TODO:FIND A BETTER SOLUTION-Insert all intermediate nodes into a temporary intermediate storage,aftwrwards check this when connecting the layers
@@ -115,12 +115,13 @@ class layer:
                         self.output_nodes.append(node_name)
 
     def find_input_layer(self,input_node):
+
         print("FINDING INPUT LAYER FOR ",self.name)
         print("INPUT NODES ARE ",self.input)
         for input_name in set(self.input):
             if input_name!=self.name:
                 if input_name in nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer.keys() and input_name!=self.name :
-                    print("Immediate connection found between ", input_name, " and ", self.name)
+                    #print("Immediate connection found between ", input_name, " and ", self.name)
                     input_node=nodes.handler.entitiesHandler.node_map[input_name]
                     self.previous_layer.append(input_node.get_name())
                     nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[input_node.get_name()].next_layer.append(self.node.get_name())
@@ -128,7 +129,7 @@ class layer:
             layer_obj = nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
                 layer]
             elems_in_both_lists = set(layer_obj.output_nodes) & set(self.input)
-            print("Check if output of ",layer_obj.name," and ",self.name," input have common elements.The result is ",elems_in_both_lists)
+            #print("Check if output of ",layer_obj.name," and ",self.name," input have common elements.The result is ",elems_in_both_lists)
             if layer_obj.name!= self.name and (self.name in layer_obj.output_nodes or  len(elems_in_both_lists)!=0):
                 found_in_other_layer=False
                 for elem in elems_in_both_lists:
@@ -146,7 +147,7 @@ class layer:
                                     print("layer=",layer," does not have innert nodes ")
                                 '''
                                 if temp in nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[layer].inner_nodes:
-                                    print("INSIDEEEEEEEEEEEEEEEEEEEEEEEEE")
+                                    #print("INSIDEEEEEEEEEEEEEEEEEEEEEEEEE")
                                     found_in_other_layer=True
                                     temp=""
                             if temp in layer_obj.output_intermediate_nodes:
@@ -159,9 +160,9 @@ class layer:
                         self.previous_layer.append(layer_obj.name)
                         nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
                             layer_obj.name].next_layer.append(self.name)
-                        print("1)NODE:", self.node.get_name(), "\nPL:", self.previous_layer, "\nLAY:", layer, "\nNL:",
-                              nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
-                                  layer].next_layer)
+                        #print("1)NODE:", self.node.get_name(), "\nPL:", self.previous_layer, "\nLAY:", layer, "\nNL:",
+                              #nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
+                                  #layer].next_layer)
                     #return
                     else:
                         for output_node in  layer_obj.output_nodes:
@@ -171,9 +172,9 @@ class layer:
                                     self.previous_layer.append(layer_obj.name)
                                     nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
                                         layer].next_layer.append(self.node.get_name())
-                                    print("2)NODE:", self.node.get_name(), " PL:", self.previous_layer, " LAY:", layer, " NL:",
-                                          nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
-                                              layer].next_layer[0])
+                                    #print("2)NODE:", self.node.get_name(), " PL:", self.previous_layer, " LAY:", layer, " NL:",
+                                          #nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
+                                              #layer].next_layer[0])
                                     return
                 else:
                     print("Some element of ",elems_in_both_lists," is inner element of a layer.")

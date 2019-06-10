@@ -17,13 +17,39 @@ def print_topology():
             print("AC:",None)
         print("PL:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].previous_layer)
         print("OUT:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].output_nodes)
-        if nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].previous_layer==[] and nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].next_layer==[] \
+        if nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].previous_layer==[] \
             and nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].node.get_op()!="Placeholder":
             print("LAYER TO BE DELETED,IT IS WITHOUT INPUT OUTPUT LAYER")
             del_layers.append(key)
         print("_____________________________________________________________________________________")
+
     for layer in del_layers:
         del nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[layer]
+    for layer in del_layers:
+        for key in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer.keys():
+            if layer in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].next_layer:
+                nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].next_layer.remove(layer)
+            if layer in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].previous_layer:
+                nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].previous_layer.remove(layer)
+                nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].find_input_layer()
+    print("FINAL ONENETWORKLAYERS ")
+    for key in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer.keys():
+        print("_____________________________________________________________________________________")
+        print("NM:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].name)
+        print("NL:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].next_layer)
+        if nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].activation!=None:
+            print("AC:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].activation.name)
+        else:
+            print("AC:",None)
+        print("PL:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].previous_layer)
+        print("OUT:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].output_nodes)
+        if nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].previous_layer==[] \
+            and nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].node.get_op()!="Placeholder":
+            print("LAYER TO BE DELETED,IT IS WITHOUT INPUT OUTPUT LAYER")
+            del_layers.append(key)
+        print("_____________________________________________________________________________________")
+
+
 
     print("\n Optimization \n")
     for key in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].optimizer.keys():

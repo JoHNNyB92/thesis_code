@@ -106,9 +106,9 @@ def handle_softmax( node):
 def handle_adam(node,name):
     return adam(node,name)
 
-def handle_sigmoid_entropy(node,c_name):
-    #TODO SIGMOID 
-    return cost_function(c_name, categorical_cross_entropy(node.get_name(), node))
+def handle_sigmoid_entropy(node,c_name,name):
+    #TODO SIGMOID
+    return cost_function(c_name, categorical_cross_entropy(name, node,True))
 
 def handle_cross_entropy(node,name,c_name):
     for t_name in nodes.handler.entitiesHandler.node_map.keys():

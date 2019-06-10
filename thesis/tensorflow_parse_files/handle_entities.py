@@ -17,7 +17,7 @@ class handle_entities:
         #self.intermediate_bias={}
         self.possible_loss_function={}
         self.variable_operations=["Const","VariableV2","Variable"]
-        self.intermediate_operations=["Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones"]
+        self.intermediate_operations=["Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones","Tile"]
         self.optimizer_operations=["ApplyAdam"]
         self.intermediate_operations.append("Add")
         self.activation_operations=["Relu","Dropout","Softmax","Sigmoid","Tanh","Softplus"]
@@ -112,7 +112,7 @@ class handle_entities:
             if isSimpleLayer==True:
                 self.insert_to_list(nodeReturn,e,"Layer")
         elif "BatchNorm" in self.node_map[e].get_op():
-            nodeReturn = handler_functions.handle_maxpool(self.node_map[e])
+            nodeReturn = handler_functions.handle_batch_norm(self.node_map[e])
             self.insert_to_list(nodeReturn, e, "Layer")
         elif self.node_map[e].get_op() == "ConcatV2":
             nodeReturn = handler_functions.handle_maxpool(self.node_map[e])
@@ -190,21 +190,30 @@ class handle_entities:
                 print("LOGGING:Inserting objective with ",name)
                 print("LOGGING:Cost function name is ",nodeReturn.cost_function.name)
                 self.insert_to_list(nodeReturn, name, "Objective")
-        elif "sigmoid_cross_entropy" in self.node_map[e].get_name():
-            name = "objective_function"
-            c_name="cost_function"
-            # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
-            if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
-                num=str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
-                name = name + "_" + num
-                c_name=c_name+"_"+num
-            nodeReturn = handler_functions.handle_sparse_cross_entropy(self.node_map[e],c_name)
-            print("COST FUNCTION=",nodeReturn.name)
-            nodeReturn = handler_functions.handle_objective(name, nodeReturn)
-            if nodeReturn != "":
-                print("LOGGING:Inserting objective with ",name)
-                print("LOGGING:Cost function name is ",nodeReturn.cost_function.name)
-                self.insert_to_list(nodeReturn, name, "Objective")
+        elif "sigmoid_cross_entropy" in e:
+            parts=e.split("/")
+            full_name=""
+            for part in parts:
+                full_name = full_name + "/" + part
+                if "sigmoid_cross_entropy" in part:
+                    break
+            full_name=full_name[1:]
+            if full_name not in self.names_into_separator:
+                self.names_into_separator.append(full_name)
+                name = "objective_function"
+                c_name="cost_function"
+                # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
+                if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
+                    num=str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
+                    name = name + "_" + num
+                    c_name=c_name+"_"+num
+                nodeReturn = handler_functions.handle_sigmoid_entropy(self.node_map[e],c_name,full_name)
+                print("COST FUNCTION=",nodeReturn.name)
+                nodeReturn = handler_functions.handle_objective(name, nodeReturn)
+                if nodeReturn != "":
+                    print("LOGGING:Inserting objective with ",name)
+                    print("LOGGING:Cost function name is ",nodeReturn.cost_function.name)
+                    self.insert_to_list(nodeReturn, name, "Objective")
         elif self.node_map[e].get_op()=="SoftmaxCrossEntropyWithLogits":
             name=e
             name_loss = e
@@ -420,13 +429,33 @@ class handle_entities:
 
     def find_network(self,obj_func,net_outputs,network,counter):
         loss=obj_func.cost_function.loss
-        node_loss = self.node_map[loss.node.get_name()]
-        output=self.find_network_output_layer(node_loss)
-        for name in output:
-            (input,layers)=self.find_network_input_layer_and_layers(name,net_outputs)
-            self.insert_network(layers, network+"_"+str(counter), input, name, obj_func)
-            counter+=1
-        return (output,counter)
+        children=""
+        if loss.input_nodes!=[]:
+            children=loss.input_nodes
+        else:
+            node_loss = self.node_map[loss.node.get_name()]
+            children = node_loss.get_inputs()
+        print("\n\n\n\n\nAbout to begin searching from ",set([x.get_name() for x in children]))
+        outputs=self.find_network_output_layer(children)
+        print("\n\n\n\n\n\n\n\noutput=",set(outputs))
+        layers = {}
+        inputs=[]
+        for name in set(outputs):
+            (tinput,tlayers)=self.find_network_input_layer_and_layers(name,net_outputs)
+            for inp in tinput:
+                if inp not in inputs:
+                    inputs.append(inp)
+            for k,v in tlayers.items():
+                layers[k]=v
+        self.insert_network(layers, network+"_"+str(counter), inputs, outputs, obj_func)
+        st=""
+        for x in layers.keys():
+            st=st+"\n"+x
+        print("\n\n\n\n\n\n\n\n\n\nLayers=",st," \n-------------------------------\nLoss:",loss.node.get_name())
+        print("--------------------\nInput=",inputs)
+        print("Net_Outputs=", set(outputs))
+        counter+=1
+        return (outputs,counter)
 
     def find_network_input_layer_and_layers(self,output,net_outputs):
         layers = self.data.annConfiguration.networks[self.current_network].layer
@@ -438,6 +467,7 @@ class handle_entities:
             print("Previous translated to ",prev)
         prev=layers[prev].previous_layer
         net_layers={}
+        ret_layer=[]
         while prev!=[]:
             temp=[]
             for prev_layer in prev:
@@ -450,17 +480,17 @@ class handle_entities:
                             print("class=",layers[prev_layer].__class__.__name__ )
                             print("previous=", layers[prev_layer].previous_layer)
                             print("RETURNING LAYERS =",layers)
-                            return (prev_layer,net_layers)
+                            ret_layer.append(prev_layer)
                 else:
                     net_layers[prev_layer]=layers[prev_layer]
                     for elem in layers[prev_layer].previous_layer:
                         temp.append(elem)
             prev=temp
 
+        return (ret_layer, net_layers)
 
-    def find_network_output_layer(self,node):
-        children=node.get_inputs()
-        print("LOGGING:Start searching for output node of ",node.get_name())
+    def find_network_output_layer(self,children):
+        print("LOGGING:Start searching for output node of ",[x.get_name() for x in children])
         outputs=[]
         while children!=[]:
             tmp=[]
@@ -470,15 +500,6 @@ class handle_entities:
                     if elem.get_name() in self.data.annConfiguration.networks[self.current_network].layer.keys():
                         outputs.append(elem.get_name())
                         print("LOGGING:Found output layer = ",elem.get_name())
-                        #for layer in self.data.annConfiguration.networks[self.current_network].layer.keys():
-                            #in_=self.data.annConfiguration.networks[self.current_network].layer[elem.get_name()].input
-                            #out=self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes
-                            #elems_in_both_lists = set(in_) & set(out)
-                            #if elem.get_name() in self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes or \
-                                #elem.get_name==layer or elem.get_name()==self.data.annConfiguration.networks[self.current_network].layer[layer].activation\
-                                    #or len(elems_in_both_lists)!=0:
-                                #print("Returning layer ",layer)
-                                #return layer
                     elif elem.get_op() in self.intermediate_operations or elem.get_op() in self.activation_operations or elem.get_op()=="Add"\
                            or elem.get_op()=="Log":
                         for input in elem.get_inputs():
@@ -494,16 +515,18 @@ class handle_entities:
         return outputs
 
 
-    def insert_network(self,layers,name,input,output,objective_func):
+    def insert_network(self,layers,name,inputs,outputs,objective_func):
         self.data.init_new_network(name)
         for layer in layers.keys():
             self.data.annConfiguration.networks[name].layer[layer]=layers[layer]
-        node=self.data.annConfiguration.networks[self.current_network].layer[input].node
-        input_layer=handler_functions.handle_in_layer(node)
-        self.data.annConfiguration.networks[name].input_layer.append(input_layer)
-        node = self.data.annConfiguration.networks[self.current_network].layer[output].node
-        output_layer = handler_functions.handle_out_layer(node)
-        self.data.annConfiguration.networks[self.current_network].output_layer.append(output_layer)
+        for input in inputs:
+            node=self.data.annConfiguration.networks[self.current_network].layer[input].node
+            input_layer=handler_functions.handle_in_layer(node)
+            self.data.annConfiguration.networks[name].input_layer.append(input_layer)
+        for output in outputs:
+            node = self.data.annConfiguration.networks[self.current_network].layer[output].node
+            output_layer = handler_functions.handle_out_layer(node)
+            self.data.annConfiguration.networks[self.current_network].output_layer.append(output_layer)
         if objective_func!="":
             self.data.annConfiguration.networks[name].objective[objective_func.name]=objective_func
 
@@ -515,14 +538,21 @@ class handle_entities:
                 layers=[]
                 for layer in self.data.annConfiguration.networks[network].layer.keys():
                     layers.append(layer)
+                print("\n\n\nStart searching for optimizer for ",layers,"\n\n\n")
                 optimizer=self.find_optimizer(layers)
-                self.data.annConfiguration.networks[network].optimizer[optimizer.name]=optimizer
-                input_layer=self.data.annConfiguration.networks[network].input_layer
-                print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer.name)
-                IOPipe = handler_functions.handle_dataset_pipe(network, input_layer, "train")
-                #TODO:EDW TI NA KANW POU XRIAZONTE POLLAPLA EPOCH AND BATCHES???????
-                tr_step = handler_functions.handle_training_single(network + "_training_step", network, IOPipe,optimizer, 0, 0)
-                trSteps.append(tr_step)
+                if optimizer!=None:
+                    self.data.annConfiguration.networks[network].optimizer[optimizer.name]=optimizer
+                    input_layer=self.data.annConfiguration.networks[network].input_layer
+                    print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer.name)
+                    IOPipe = handler_functions.handle_dataset_pipe(network, input_layer, "train")
+                    #TODO:EDW TI NA KANW POU XRIAZONTE POLLAPLA EPOCH AND BATCHES???????
+                    tr_step = handler_functions.handle_training_single(network + "_training_step", network, IOPipe,optimizer, 0, 0)
+                    trSteps.append(tr_step)
+                else:
+                    st=""
+                    for x in layers:
+                        st=st+"\n"+x
+                    print("ERROR:The following layers are not part of an optimization procedure:",st)
         tr_model = handler_functions.handle_trained_model(self.data.AnnConfig + "_trained_model")
         layers = self.data.annConfiguration.networks[self.current_network].layer
         counter = 0
