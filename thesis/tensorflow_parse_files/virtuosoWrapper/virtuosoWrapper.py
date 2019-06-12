@@ -196,3 +196,7 @@ def new_has_training_step(session,step):
 def new_has_primary_training_step(session,prStep):
     #log(log_msg1 + "primary training step" + log_msg2 + session + "->" + str(prStep))
     nodes.handler.entitiesHandler.data.insert_primary_step(session, prStep)
+
+
+def new_has_regularizer(cf,regularizer):
+    nodes.handler.entitiesHandler.data.insert_has_regularizer(cf, regularizer)

@@ -17,7 +17,7 @@ class handle_entities:
         #self.intermediate_bias={}
         self.possible_loss_function={}
         self.variable_operations=["Const","VariableV2","Variable"]
-        self.intermediate_operations=["Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones","Tile"]
+        self.intermediate_operations=["Identity","Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones","Tile"]
         self.optimizer_operations=["ApplyAdam"]
         self.intermediate_operations.append("Add")
         self.activation_operations=["Relu","Dropout","Softmax","Sigmoid","Tanh","Softplus"]
@@ -366,6 +366,7 @@ class handle_entities:
         objectives=[]
         for l in self.data.annConfiguration.networks[self.current_network].objective.keys():
             objectives.append(l)
+        #self.find_combined_losses(objectives)
         for obj in sorted(objectives):
             print("Encountered objective ",self.data.annConfiguration.networks[self.current_network].objective[obj].name)
             obj_func=self.data.annConfiguration.networks[self.current_network].objective[obj]
@@ -376,7 +377,6 @@ class handle_entities:
         self.insert_training()
         del self.data.annConfiguration.networks[self.current_network]
         return 1
-
 
     def handle_possible_loss_functions(self):
         for poss in self.possible_loss_function.keys():
@@ -429,7 +429,6 @@ class handle_entities:
 
     def find_network(self,obj_func,net_outputs,network,counter):
         loss=obj_func.cost_function.loss
-        children=""
         if loss.input_nodes!=[]:
             children=loss.input_nodes
         else:

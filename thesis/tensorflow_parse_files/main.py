@@ -11,10 +11,12 @@ def code_in_one_file(file):
     result=""
     if file.endswith('.py'):
         total_path = os.path.join(subdir, file)
-        with open(total_path, encoding="utf8", errors='ignore') as myfile:
+        with open(total_path, encoding="utf8", errors='replace') as myfile:
             has_sess = False
             has_run=False
             is_main=False
+            has_tf_app_run=False
+            has_def_main=False
             if '.run(' in myfile.read():
                 has_run=True
             myfile.seek(0)
@@ -23,15 +25,24 @@ def code_in_one_file(file):
             myfile.seek(0)
             if '__main__' in myfile.read():
                 is_main = True
+            myfile.seek(0)
+            if 'tf.app.run' in myfile.read():
+                has_tf_app_run = True
+            myfile.seek(0)
+            if "def main(" in myfile.read():
+                has_def_main=True
             skip = ""
             print("FILE= ",file," hasRun=",has_run," HasSess=",has_sess," is main=",is_main)
-            if (has_sess==True and has_run==True) or is_main==True:
+
+            if (has_sess==True and has_run==True) or is_main==True or (has_def_main==True and has_tf_app_run==True):
                 batch_size = 0
                 epoch = 0
                 path = os.getcwd()
+                tf_run_app=False
+                if (has_def_main==True and has_tf_app_run==True):
+                    tf_run_app=True
                 while "ERROR" not in result and "error" not in result and result != "success" and result!="batch_epoch_file_not_found":
-                    (result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(total_path, skip)
-                    print("RESULT IS ",result)
+                    (result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(total_path, skip,tf_run_app)
                     if result == "batch":
                         print("ERROR:Unable to find batch number for ", file, ".Batch will be set as -1")
                         skip += result
