@@ -82,14 +82,12 @@ class layer:
                 #TODO:FIND A BETTER SOLUTION-Insert all intermediate nodes into a temporary intermediate storage,aftwrwards check this when connecting the layers
 
                 if nm[node_name].get_op() in nodes.handler.entitiesHandler.intermediate_operations and "(" not in node_name.split("/")[-1]:
-                    print(self.name,":1:", node_name)
                     self.output_intermediate_nodes[node_name]=name
                     self.find_output_node(node_name)
                 elif nm[node_name].get_op() in nodes.handler.entitiesHandler.activation_operations:
                     self.init_activation(nm[node_name])
                     self.find_output_node(node_name)
                 else:
-                    print(self.name,":3:", node_name)
                     if self.output_intermediate_nodes.keys()!=[]:
                         self.output_intermediate_nodes[node_name]=name
                     if node_name not in self.output_nodes:
@@ -116,8 +114,8 @@ class layer:
 
     def find_input_layer(self,input_node):
 
-        print("FINDING INPUT LAYER FOR ",self.name)
-        print("INPUT NODES ARE ",self.input)
+        #print("FINDING INPUT LAYER FOR ",self.name)
+        #print("INPUT NODES ARE ",self.input)
         for input_name in set(self.input):
             if input_name!=self.name:
                 if input_name in nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer.keys() and input_name!=self.name :
@@ -177,9 +175,9 @@ class layer:
                                               #layer].next_layer[0])
                                     return
                 else:
-                    print("Some element of ",elems_in_both_lists," is inner element of a layer.")
+                    print("ERROR:Some element of ",elems_in_both_lists," is inner element of a layer.")
                     # handle intermediate transformations(unstack etc)
-        print("FINDING INPUT LAYER RESULT ", self.name, " - ", self.previous_layer)
+        #print("FINDING INPUT LAYER RESULT ", self.name, " - ", self.previous_layer)
 
     def check_input_layer(self,name):
         res=self.check_in(name)
@@ -189,9 +187,7 @@ class layer:
             self.is_in=True
 
     def find_output(self, nn):
-        print("Find output=")
         for tmp in nodes.handler.entitiesHandler.node_map.keys():
-            print("Find output=",tmp)
             if nodes.handler.entitiesHandler.node_map[tmp].search_inputs(nn) == True:
                 self.next_layer.append(tmp)
                 return
@@ -243,10 +239,8 @@ class layer:
                 for elem_in in elem.get_inputs():
                     if self.name in elem_in.get_name():
                         if elem.get_op() in nodes.handler.entitiesHandler.intermediate_operations or elem.get_op() in nodes.handler.entitiesHandler.activation_operations:
-                            print("2FUCKING:",elem.get_name())
                             self.find_output_node(elem.get_name())
                         elif elem.get_name() not in self.output_nodes:
-                            print("3FUCKING:", elem.get_name())
                             self.output_nodes.append(elem.get_name())
 
     def __init__(self,node,name,hasBias,searchForInner=False):

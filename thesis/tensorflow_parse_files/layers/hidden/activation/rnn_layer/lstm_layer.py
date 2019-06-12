@@ -32,4 +32,4 @@ class lstm_layer(rnn_layer):
         self.find_output_node_complex()
         self.get_all_inner_nodes()
         self.update_dicts()
-        print("LOGGING:CLASS INFORMATION:", self.type, ":Name:", self.name, "\nInput Nodes:", self.input, "\nOutput Nodes:",self.output_nodes)
+        #print("LOGGING:CLASS INFORMATION:", self.type, ":Name:", self.name, "\nInput Nodes:", self.input, "\nOutput Nodes:",self.output_nodes)

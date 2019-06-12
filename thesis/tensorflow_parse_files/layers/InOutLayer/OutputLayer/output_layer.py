@@ -5,7 +5,7 @@ import nodes.handler
 class output_layer(in_out_layer):
 
     def insert_in_annetto(self):
-        print("Annetto::output_layer-", self.name)
+        #print("Annetto::output_layer-", self.name)
         super(output_layer, self).insert_in_annetto()
         for elem in self.previous_layer:
             rdfWrapper.new_previous_layer(self.name, elem)

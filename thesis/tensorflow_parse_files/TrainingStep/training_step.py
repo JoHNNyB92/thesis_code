@@ -3,7 +3,7 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class training_step:
 
     def insert_in_annetto(self):
-        print("Annetto::training_step-", self.name)
+        #print("Annetto::training_step-", self.name)
         rdfWrapper.new_trains_network(self.name,self.network)
         for i,_ in enumerate(self.IOPipe):
             self.IOPipe[i].insert_in_annetto()

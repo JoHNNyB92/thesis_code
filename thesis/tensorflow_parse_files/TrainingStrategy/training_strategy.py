@@ -2,7 +2,7 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class training_strategy:
 
     def insert_in_annetto(self):
-        print("Annetto::TrainingStrategy-",self.name)
+        #print("Annetto::TrainingStrategy-",self.name)
         self.primary_training_session.insert_in_annetto()
         self.training_model.insert_in_annetto()
         rdfWrapper.new_named_individual(self.name)

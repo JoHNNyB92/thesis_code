@@ -25,6 +25,6 @@ class flatten_layer(layer):
         self.find_input_node_complex()
         self.find_output_node_complex()
         self.update_dicts()
-        print("CLASS INFORMATION:", self.type, ":Name:", self.name, "\nInput Nodes:", set(self.input),
-              "\nOutput Nodes:", set(self.output_nodes))
+        #print("CLASS INFORMATION:", self.type, ":Name:", self.name, "\nInput Nodes:", set(self.input),
+              #"\nOutput Nodes:", set(self.output_nodes))
 

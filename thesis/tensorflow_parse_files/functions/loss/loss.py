@@ -12,7 +12,6 @@ class loss(function):
         super(loss, self).insert_in_annetto()
 
     def find_input_nodes(self):
-        print("FInding input nodes for ",self.name)
         nm=nodes.handler.entitiesHandler.node_map
         for node in nm.keys():
             if "gradient" not in nm[node].get_name() and self.name in nm[node].get_name().split("/"):

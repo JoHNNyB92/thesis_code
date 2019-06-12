@@ -22,5 +22,5 @@ class batch_norm_layer(layer):
         self.find_output_node(self.name)
         self.update_dicts()
         #No reason to search for input nodes
-        print("LOGGING:CLASS INFORMATION:",self.type, ":Name:", self.name, "\nInput Nodes:", set(self.input), "\nOutput Nodes:", set(self.output_nodes))
+        #print("LOGGING:CLASS INFORMATION:",self.type, ":Name:", self.name, "\nInput Nodes:", set(self.input), "\nOutput Nodes:", set(self.output_nodes))
 

@@ -99,8 +99,6 @@ def create_new_file(line_list,path,file,skip,tf_run_app):
     current_folder=os.getcwd()
     first_time=0
     found_main=0
-
-    print("\n\n\n\n\ntf_app_run=\n\n\n\n\n", tf_run_app)
     (return_list,pbtxt_file)=create_code_for_pbtxt_and_tensorboard(path, file, skip)
     if tf_run_app == True:
         found_def_main=False
@@ -110,7 +108,6 @@ def create_new_file(line_list,path,file,skip,tf_run_app):
         spaces_to_use=0
         only_once=False
         for ind, line in enumerate(line_list):
-            print(ind)
             if "def main" in line:
                 main_func.append(line)
                 found_def_main=True

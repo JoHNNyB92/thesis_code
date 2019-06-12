@@ -4,7 +4,7 @@ class objective(function):
 
 
     def insert_in_annetto(self):
-        print("Annetto::objective-", self.name)
+        #print("Annetto::objective-", self.name)
         #nodes.handler.entitiesHandler.new_activation_subclass(self.name, self.subclass)
         self.cost_function.insert_in_annetto()
         rdfWrapper.new_has_cost(self.name, self.cost_function.name)

@@ -4,7 +4,7 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class minimize_objective(objective):
 
     def insert_in_annetto(self):
-        print("Annetto::minimize_objective-", self.name)
+        #print("Annetto::minimize_objective-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         self.cost_function.insert_in_annetto()

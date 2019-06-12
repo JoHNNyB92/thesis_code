@@ -29,11 +29,12 @@ class handle_entities:
         self.optimizer=False
         self.batch=""
         self.epoch=""
+        self.discovered_loss = []
         '''
         self.placeholder_names=[]
         self.discovered_rnn_lstm=[]
         
-        self.discovered_loss=[]
+        
         self.discovered_dense=[]
         
         '''
@@ -436,7 +437,7 @@ class handle_entities:
             children = node_loss.get_inputs()
         print("\n\n\n\n\nAbout to begin searching from ",set([x.get_name() for x in children]))
         outputs=self.find_network_output_layer(children)
-        print("\n\n\n\n\n\n\n\noutput=",set(outputs))
+        #print("\n\n\n\n\n\n\n\noutput=",set(outputs))
         layers = {}
         inputs=[]
         for name in set(outputs):
@@ -537,7 +538,7 @@ class handle_entities:
                 layers=[]
                 for layer in self.data.annConfiguration.networks[network].layer.keys():
                     layers.append(layer)
-                print("\n\n\nStart searching for optimizer for ",layers,"\n\n\n")
+                #print("\n\n\nStart searching for optimizer for ",layers,"\n\n\n")
                 optimizer=self.find_optimizer(layers)
                 if optimizer!=None:
                     self.data.annConfiguration.networks[network].optimizer[optimizer.name]=optimizer

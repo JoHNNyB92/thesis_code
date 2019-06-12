@@ -12,10 +12,10 @@ print("../git_repositories/"+repository_path+"/2")
 for subdir, dirs, files in os.walk("../git_repositories/"+repository_path+"/TensorFlow-Examples/examples/2"):
 #for subdir, dirs, files in os.walk("../git_repositories/stock-rnn-master"):
     for file in files:
-        print(file)
+        #print(file)
         if file.endswith('.py'):
             total_path=os.path.join(subdir, file)
-            print("Total path:",total_path)
+            #print("Total path:",total_path)
             with open(total_path, encoding="utf8",errors='ignore') as myfile:
                 enter=0
                 if '.run(' in myfile.read():
@@ -29,7 +29,7 @@ for subdir, dirs, files in os.walk("../git_repositories/"+repository_path+"/Tens
                     enter+=0.5
                 '''
                 if enter>=1:
-                    print("Found file :",file)
+                    #print("Found file :",file)
                     print("----------------------------------------------------------------------------")
                     path=os.getcwd()
                     batch_size=0

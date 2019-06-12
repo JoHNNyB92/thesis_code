@@ -63,7 +63,6 @@ def code_in_one_file(file):
                     # Unix OS
                     log_file = log_file.split("/")[-1].replace(".py.pbtxt", "")
                     log_file = "../log/" + log_file
-                    print("LOCO=",os.path.exists(pbtxt_file))
                     if os.path.exists(pbtxt_file)==False:
                         print("ERROR:There was an error with the creation of pbtxt file  ",log_file)
                     else:
@@ -90,7 +89,7 @@ with open('github/github.csv') as csv_file:
         repository_path=github.get_github_repository(url[0])
         code_repository=github.folder+github.dirName+"/"+repository_path
         print("LOGGING:About to start processing repository into ",code_repository)
-        if "domain" in code_repository:
+        if "test" in code_repository:
             found_network=False
             for subdir, dirs, files in os.walk(code_repository):
                 for file in files:

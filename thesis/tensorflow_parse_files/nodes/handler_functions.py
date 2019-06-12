@@ -132,6 +132,7 @@ def handle_pow(node,network):
     sub_elem=None
     sub=False
     power_of_two=False
+    possible=[]
     while children!=[]:
         tmp=[]
         for elem in children:
@@ -156,7 +157,6 @@ def handle_pow(node,network):
             while children != []:
                 tmp=[]
                 for elem in children:
-                    print("ELEM GET OP=",elem.get_op())
                     if elem.get_op()=="Placeholder":
                         return handle_mean_square_error(sub_elem,network,node.get_name())
                     elif elem.get_op() in nodes.handler.entitiesHandler.intermediate_operations:
@@ -362,9 +362,9 @@ def check_simple_layer( node,name):
                         bias = node.inputs[0]
                         node = simple_layer(w, x, matMul, bias, node,name)
                     else:
-                        print("LOGGING:matMul with name ",matMul.get_name()," has less than 2 inpus.")
+                        print("ERROR:matMul with name ",matMul.get_name()," has less than 2 inpus.")
                         return (False,[])
                 return (True, node)
     else:
-        print("LOGGING:node ",node.get_name()," has less than 2 inpus.")
+        print("ERROR:node ",node.get_name()," has less than 2 inpus.")
     return (False, [])

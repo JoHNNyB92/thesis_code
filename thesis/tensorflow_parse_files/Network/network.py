@@ -1,7 +1,7 @@
 import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class network:
     def insert_in_annetto(self):
-        print("Annetto::Network-",self.name)
+        #print("Annetto::Network-",self.name)
         for layer_name in self.layer.keys():
             self.layer[layer_name].insert_in_annetto()
             rdfWrapper.new_network_has_layer(self.name, layer_name)

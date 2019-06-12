@@ -2,7 +2,7 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class trained_weights:
 
     def insert_in_annetto(self):
-        print("Annetto::trained_weights-", self.name)
+        #print("Annetto::trained_weights-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name,self.type)
         rdfWrapper.new_trained_in_layer(self.name,self.trained_in_layer)
