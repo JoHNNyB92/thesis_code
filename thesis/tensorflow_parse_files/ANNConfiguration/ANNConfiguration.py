@@ -6,7 +6,6 @@ class ANNConfiguration:
 
     def insert_in_annetto(self):
         for network in nodes.handler.entitiesHandler.data.annConfiguration.networks.keys():
-            #print("network=",network)
             network_node = nodes.handler.entitiesHandler.data.annConfiguration.networks[network]
             network_node.insert_in_annetto()
         for trStrategy in nodes.handler.entitiesHandler.data.annConfiguration.training_strategy.keys():

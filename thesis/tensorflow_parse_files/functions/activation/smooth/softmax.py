@@ -1,5 +1,7 @@
 from functions.activation.smooth.smooth import smooth
+
 class softmax(smooth):
+
     def insert_in_annetto(self):
         super(softmax, self).insert_in_annetto()
 

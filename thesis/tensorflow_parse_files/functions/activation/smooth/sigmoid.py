@@ -1,6 +1,7 @@
 from functions.activation.smooth.smooth import smooth
 
 class sigmoid(smooth):
+
     def insert_in_annetto(self):
         super(sigmoid, self).insert_in_annetto()
 

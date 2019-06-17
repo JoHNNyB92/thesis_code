@@ -4,7 +4,6 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class dataset_pipe:
 
     def insert_in_annetto(self):
-        #print("Annetto::dataset_pipe-", self.name)
         inputLayer=self.node.name
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
@@ -22,7 +21,6 @@ class dataset_pipe:
         self.node=node
         self.find_datasets(type,helper)
 
-
     def find_datasets(self,type,helper):
         found = False
         children = [x.get_name() for x in helper.get_inputs()]
@@ -34,7 +32,6 @@ class dataset_pipe:
                     found = True
                     self.input_layer = elem
                     self.joins_dataset=elem
-                    #print("FOUND ",type," DATASET=", self.joins_dataset)
                 else:
                     for x in nodes.handler.entitiesHandler.node_map[elem].get_inputs():
                         temp_new_children.append(x.get_name())
