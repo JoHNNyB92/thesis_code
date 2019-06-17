@@ -34,24 +34,7 @@ class layer:
         for elem in self.input:
             nodes.handler.entitiesHandler.nodes_to_layers[elem]=self.name
             nodes.handler.entitiesHandler.layers_to_nodes[self.name].append(elem)
-    '''
-    def check_if_in(self,name):
-        prevRes=[]
-        for input in nodes.handler.entitiesHandler.node_map[name].get_inputs():
-            print("NODE:IN----",name,":",input.get_name())
-            if input.get_name() not in nodes.handler.entitiesHandler.layer_names:
-                if input.get_op()=="Placeholder":
-                    print("RETURNING=",input.get_name(),":",input.get_op())
-                else:
-                    print(input.get_name(),":input.get=",input.get_op())
-                    res=self.check_if_in(input.get_name())
-                    if res==False:
-                        print("IT IS FALSE FOR =",input.get_name())
-                        return res
-            else:
-                print("LAYER INPUT ",name,":",input.get_name()," IS FALSE")
-                return False
-    '''
+
     def init_activation(self,node):
         if node.get_op()=="Relu":
             self.activation=relu(node)
@@ -131,11 +114,7 @@ class layer:
             if layer_obj.name!= self.name and (self.name in layer_obj.output_nodes or  len(elems_in_both_lists)!=0):
                 found_in_other_layer=False
                 for elem in elems_in_both_lists:
-                    #print("TEST:ELEM=",elem," BOTH=",elems_in_both_lists)
-                    #for key in layer_obj.output_intermediate_nodes:
-                        #print("Key=",key," Intermediate=",layer_obj.output_intermediate_nodes)
                     if elem in layer_obj.output_intermediate_nodes:
-                        #print("TEST:",elem)
                         temp=layer_obj.output_intermediate_nodes[elem]
                         while temp in layer_obj.output_intermediate_nodes:
                             for layer in nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer.keys():
@@ -145,7 +124,6 @@ class layer:
                                     print("layer=",layer," does not have innert nodes ")
                                 '''
                                 if temp in nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[layer].inner_nodes:
-                                    #print("INSIDEEEEEEEEEEEEEEEEEEEEEEEEE")
                                     found_in_other_layer=True
                                     temp=""
                             if temp in layer_obj.output_intermediate_nodes:
@@ -247,7 +225,7 @@ class layer:
         self.node=node
         self.name=name
         self.hasBias=hasBias
-        self.num_layer=""
+        self.num_layer=-1
         self.find_num_layers()
         self.activation=None
         self.input=[]
