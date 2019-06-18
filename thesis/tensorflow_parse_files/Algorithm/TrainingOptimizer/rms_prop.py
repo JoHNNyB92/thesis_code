@@ -10,10 +10,9 @@ class rms_prop(training_optimizer):
         rdfWrapper.new_learning_rate(self.name, self.learning_rate)
 
     def find_learning_rate(self):
-        super.find_learning_rate(rms_prop,self)
+        super(rms_prop,self).find_learning_rate()
 
-    def __init__(self,node):
-        super(rms_prop, self).__init__(node,node.get_name())
-        name=self.name.split("/")[0]
+    def __init__(self,node,name):
+        super(rms_prop, self).__init__(node,name)
         self.type="RMSProp"
         self.find_learning_rate()

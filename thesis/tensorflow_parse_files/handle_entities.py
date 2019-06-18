@@ -17,27 +17,23 @@ class handle_entities:
         #self.intermediate_bias={}
         self.possible_loss_function={}
         self.variable_operations=["Const","VariableV2","Variable"]
-        self.intermediate_operations=["Identity","Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones","Tile"]
+
+        #Operations that must be ignored if presented into position that do not represent something important.
+        self.intermediate_operations=["Add","Identity","Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones","Tile"]
         self.optimizer_operations=["ApplyAdam"]
-        self.intermediate_operations.append("Add")
+        #Activation functions upported as of now
         self.activation_operations=["Relu","Dropout","Softmax","Sigmoid","Tanh","Softplus"]
         self.loss_functions=["softmax_cross_entropy"]
+        #Sometimes the layers are part of a wider node system,thus we want to know if we encounter a node whether it is part of a
+        #layer.
         self.nodes_to_layers={}
+        #[COMM]
         self.layers_to_nodes = {}
         self.regularizers=["L2Loss"]
         self.loss=["Equal","Mean"]
-        self.optimizer=False
         self.batch=""
         self.epoch=""
         self.discovered_loss = []
-        '''
-        self.placeholder_names=[]
-        self.discovered_rnn_lstm=[]
-        
-        
-        self.discovered_dense=[]
-        
-        '''
         self.discovered_optimizers = []
         self.input_layers = []
         self.names_into_separator=[]
@@ -45,39 +41,41 @@ class handle_entities:
         self.input_layer=[]
 
     def set_batch_epoch(self,batch,epoch):
+        #Set batch and epoch,though program has some limitations due to lack of gpu.
         self.batch=batch
         self.epoch=epoch
 
+    #The following function is used only if there is only one network presented.
     def insert_to_evaluation_pipe(self):
-        helper=""
-        print("LOGGING:Insert_to_evaluation_pipe.")
         for layer in self.data.annConfiguration.networks[self.current_network].layer.keys():
+            #If next layer is empty,it means we encounter a node just before the loss function.Thus we can search for
             if self.data.annConfiguration.networks[self.current_network].layer[layer].next_layer==[]:
-                helper=self.data.annConfiguration.networks[self.current_network].layer[layer].node
+                #[COMM]
                 for i,_ in enumerate(self.output_layer):
                     self.output_layer[i].previous_layer.append(layer)
                     self.data.annConfiguration.networks[self.current_network].layer[layer].next_layer.append(self.output_layer[i].name)
                 break
+        # [COMM]
         IOPipe=handler_functions.handle_dataset_pipe(self.current_network,self.output_layer,"test")
         self.data.evaluationResult.IOPipe=IOPipe
         self.data.evaluationResult.ann_conf=self.data.annConfiguration
-        #TODO WHAT TO DO WITH MUCH NETWORKS
-        #self.data.evaluationResult.network=self.data.annConfiguration.networks[self.current_network]
 
+    #If some prerequisites are satisfied,we are into the basic handling of the result of the node encountered.
     def insert_to_list(self,node,name,case):
         if case=="Layer":
-            print("Layer=",case)
+            print("LOGGING: Layer: ",name," Type: ",node.type)
             self.data.annConfiguration.networks[self.current_network].layer[name]=node
-        elif case=="Activation":
-            self.data.annConfiguration.networks[self.current_network].activation[name]=node
-        elif case=="Output":
-            self.data.annConfiguration.networks[self.current_network].output[name]=node
         elif case=="Optimizer":
+            print("LOGGING: Optimizer: ", name, " Type: ", node.type)
             self.data.annConfiguration.networks[self.current_network].optimizer[name]=node
         elif case=="Objective":
+            print("LOGGING: Objective: ", name, " Type: ", node.type)
             self.data.annConfiguration.networks[self.current_network].objective[name] = node
 
+    #In order to extract the name of the layer it requires the extraction of the name based on some bigger node
+    #it may be part of .
     def handle_complex_layers(self,node,name,case):
+        #Split the name based on / and when the case (rnn,dense etc) is part of the splitted word,this is the name.
         tmp = name.split("/")
         tmp_name = ""
         for x in tmp:
@@ -86,7 +84,9 @@ class handle_entities:
                 break
             else:
                 tmp_name = tmp_name + "/" + x
+        #Exclude first /
         tmp_name = tmp_name[1:]
+        #If this was not encountered again,insert into list keeping complex node names.
         if tmp_name not in self.names_into_separator:
             self.names_into_separator.append(tmp_name)
             if case=="dense":
@@ -104,10 +104,42 @@ class handle_entities:
                 nodeReturn = handler_functions.handle_lstm(node,tmp_name)
                 self.insert_to_list(nodeReturn, tmp_name, "Layer")
 
+    def optimizers(self,keyword,e):
+        name = self.node_map[e].get_name().split("/")
+        real_name = ""
+        for part in name:
+            if keyword in part:
+                real_name = part
+                break
+        if real_name not in self.discovered_optimizers:  # and self.node_map[e].get_name().endswith("learning_rate"):
+            self.discovered_optimizers.append(real_name)
+            return (True,real_name)
+        return (False,"")
+
+    def objectives(self,c_function,e):
+        name = "objective_function"
+        if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
+            name = name + "_" + str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
+        self.discovered_loss.append(self.node_map[e].get_name().split("/")[0])
+        nodeReturn = handler_functions.handle_objective(name, c_function)
+        if nodeReturn != "":
+            self.insert_to_list(nodeReturn, name, "Objective")
+    '''
+    elif self.node_map[e].get_name().startswith("RMSProp") and self.optimizer==False:
+        self.optimizer = True
+        nodeReturn = handler_functions.handle_rms_prop(self.node_map[e])
+        self.insert_to_list(nodeReturn, e,"Optimizer")
+    elif self.node_map[e].get_name().startswith("GradientDescent") and self.optimizer==False:
+        self.optimizer = True
+        nodeReturn = handler_functions.handle_gradient_descent(self.node_map[e])
+        self.insert_to_list(nodeReturn, e,"Optimizer")
+    '''
+    #Main function, used for handling each protocol buffer node produced by the executed
     def handle_different_layer_cases(self,e):
+        # If gradient is part of name,we ignore it,due to the fact it complicates the process of understanding the nn architecture
         if "gradient" in e:
             return
-
+        #If we encounter Add ,it might be possible a layer case.
         if self.node_map[e].get_op()=="Add":
             (isSimpleLayer,nodeReturn)=handler_functions.check_simple_layer(self.node_map[e],self.node_map[e].get_name())
             if isSimpleLayer==True:
@@ -129,35 +161,27 @@ class handle_entities:
             nodeReturn= handler_functions.handle_deconv2d(self.node_map[e])
             if nodeReturn!=None:
                 self.insert_to_list(nodeReturn, e,"Layer")
-        elif self.node_map[e].get_name().startswith("RMSProp") and self.optimizer==False:
-            self.optimizer = True
-            nodeReturn = handler_functions.handle_rms_prop(self.node_map[e])
-            self.insert_to_list(nodeReturn, e,"Optimizer")
-        elif self.node_map[e].get_name().startswith("GradientDescent") and self.optimizer==False:
-            self.optimizer = True
-            nodeReturn = handler_functions.handle_gradient_descent(self.node_map[e])
-            self.insert_to_list(nodeReturn, e,"Optimizer")
+        elif "RMSProp" in self.node_map[e].get_name():
+            (res, real_name) = self.optimizers("RMSProp", e)
+            if res == True:
+                nodeReturn = handler_functions.handle_rms_prop(self.node_map[e], real_name)
+                self.insert_to_list(nodeReturn, real_name, "Optimizer")
+        elif "GradientDescent" in self.node_map[e].get_name():
+            (res, real_name) = self.optimizers("GradientDescent", e)
+            if res == True:
+                nodeReturn = handler_functions.handle_gradient_descent(self.node_map[e], real_name)
+                self.insert_to_list(nodeReturn, real_name, "Optimizer")
         elif "Adam" in self.node_map[e].get_name():
-            name=self.node_map[e].get_name().split("/")
-            real_name=""
-            for part in name:
-                if "Adam" in part:
-                    real_name = part
-                    break
-            if real_name not in self.discovered_optimizers:# and self.node_map[e].get_name().endswith("learning_rate"):
-                self.discovered_optimizers.append(real_name)
+            (res,real_name)=self.optimizers("Adam",e)
+            if res==True:
                 nodeReturn = handler_functions.handle_adam(self.node_map[e],real_name)
                 self.insert_to_list(nodeReturn, real_name,"Optimizer")
+        #Neg node might be part of a categorical cross entropy created by the user using custom functions
+        #and not the tensorflow implemented function.
         elif self.node_map[e].get_op()=="Neg":
             nodeReturn = handler_functions.handle_neg_for_log(self.node_map[e])
             if nodeReturn!="":
-                name = "objective_function"
-                if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
-                    name = name + "_" + str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
-                self.discovered_loss.append(self.node_map[e].get_name().split("/")[0])
-                nodeReturn = handler_functions.handle_objective(name, nodeReturn)
-            if nodeReturn!="":
-                self.insert_to_list(nodeReturn, name, "Objective")
+                self.objectives(nodeReturn,e)
         elif self.node_map[e].get_op()=="Mul":
             c_name = "cost_function"
             num="0"
@@ -166,31 +190,16 @@ class handle_entities:
             c_name = c_name + "_" + num
             nodeReturn=handler_functions.handle_mul_as_cross_entropy(self.node_map[e],c_name)
             if nodeReturn!="":
-                name = "objective_function"
-                # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
-                if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
-                    num = str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
-                name = name + "_" + num
-                nodeReturn = handler_functions.handle_objective(name, nodeReturn)
-                if nodeReturn != "":
-                    print("LOGGING:Inserting objective with ", name)
-                    print("LOGGING:Cost function name is ", nodeReturn.cost_function.name)
-                    self.insert_to_list(nodeReturn, name, "Objective")
+                self.objectives(nodeReturn,e)
         elif self.node_map[e].get_op()=="SparseSoftmaxCrossEntropyWithLogits":
-            name = "objective_function"
             c_name="cost_function"
             # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
             if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
                 num=str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
-                name = name + "_" + num
                 c_name=c_name+"_"+num
             nodeReturn = handler_functions.handle_sparse_cross_entropy(self.node_map[e],c_name)
-            print("COST FUNCTION=",nodeReturn.name)
-            nodeReturn = handler_functions.handle_objective(name, nodeReturn)
             if nodeReturn != "":
-                print("LOGGING:Inserting objective with ",name)
-                print("LOGGING:Cost function name is ",nodeReturn.cost_function.name)
-                self.insert_to_list(nodeReturn, name, "Objective")
+                self.objectives(nodeReturn,e)
         elif "sigmoid_cross_entropy" in e:
             parts=e.split("/")
             full_name=""
@@ -201,38 +210,25 @@ class handle_entities:
             full_name=full_name[1:]
             if full_name not in self.names_into_separator:
                 self.names_into_separator.append(full_name)
-                name = "objective_function"
                 c_name="cost_function"
                 # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
                 if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
                     num=str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
-                    name = name + "_" + num
                     c_name=c_name+"_"+num
                 nodeReturn = handler_functions.handle_sigmoid_entropy(self.node_map[e],c_name,full_name)
-                print("COST FUNCTION=",nodeReturn.name)
-                nodeReturn = handler_functions.handle_objective(name, nodeReturn)
                 if nodeReturn != "":
-                    print("LOGGING:Inserting objective with ",name)
-                    print("LOGGING:Cost function name is ",nodeReturn.cost_function.name)
-                    self.insert_to_list(nodeReturn, name, "Objective")
+                    self.objectives(nodeReturn, e)
         elif self.node_map[e].get_op()=="SoftmaxCrossEntropyWithLogits":
-            name=e
             name_loss = e
             c_name = "cost_function"
             # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
             if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
                 num = str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
-                name = name + "_" + num
                 name_loss = name_loss + "_" + num
                 c_name = c_name + "_" + num
-            # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
             nodeReturn = handler_functions.handle_cross_entropy(self.node_map[e],name_loss,c_name)
-            nodeReturn = handler_functions.handle_objective(name, nodeReturn)
             if nodeReturn != "":
-                print("LOGGING:Inserting objective with ", name)
-                print("LOGGING:Cost function name is ", nodeReturn.cost_function.name)
-                self.insert_to_list(nodeReturn,name, "Objective")
-        # TODO:MAKE ACCURACY(ITERATE EQUAL ALL THE WAY BACK UNTIL IT FINDS PLACEHOLDER AND NO OTHER LAYER IS BETWEEN(MAYBE DEPETH 2 LAYER ONLY?)
+                self.objectives(nodeReturn, e)
         elif self.node_map[e].get_op()=="Equal":
             nodeReturn= handler_functions.handle_accuracy(self.node_map[e])
             if nodeReturn!=None:
@@ -258,26 +254,16 @@ class handle_entities:
                 self.insert_to_list(nodeReturn, e,"Layer")
         elif "mean_squared_error" in self.node_map[e].get_name()\
                and self.node_map[e].get_name().split("/")[0] not in self.discovered_loss:
-            #TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
             lname=self.node_map[e].get_name().split("/")[0]
-            name = "objective_function"
-            if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
-                name=name+"_"+str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
             self.discovered_loss.append(self.node_map[e].get_name().split("/")[0])
             nodeReturn = handler_functions.handle_mean_square_error(self.node_map[e],self.current_network,lname)
-            nodeReturn = handler_functions.handle_objective(name,nodeReturn)
             if nodeReturn!="":
-                self.insert_to_list(nodeReturn, name, "Objective")
+                self.objectives(nodeReturn, e)
         elif self.node_map[e].get_op()=="Pow" or self.node_map[e].get_op()=="Square":
             #TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
-            name = "objective_function"
-            if len(self.data.annConfiguration.networks[self.current_network].objective.keys()) != 0:
-                name=name+"_"+str(len(self.data.annConfiguration.networks[self.current_network].objective.keys()))
             nodeReturn = handler_functions.handle_pow(self.node_map[e],self.current_network)
             if nodeReturn!="":
-                nodeReturn = handler_functions.handle_objective(name,nodeReturn)
-                if nodeReturn!="":
-                    self.insert_to_list(nodeReturn, name, "Objective")
+                self.objectives(nodeReturn, e)
 
 
     def find_in_out_layer(self):
@@ -437,7 +423,6 @@ class handle_entities:
             children = node_loss.get_inputs()
         print("\n\n\n\n\nAbout to begin searching from ",set([x.get_name() for x in children]))
         outputs=self.find_network_output_layer(children)
-        #print("\n\n\n\n\n\n\n\noutput=",set(outputs))
         layers = {}
         inputs=[]
         for name in set(outputs):

@@ -7,7 +7,7 @@ class binary_cross_entropy(loss):
         super(binary_cross_entropy, self).insert_in_annetto()
 
     def get_all_inner_nodes(self):
-        super.get_all_inner_nodes(binary_cross_entropy, self)
+        super(binary_cross_entropy, self).get_all_inner_nodes()
 
     def __init__(self, name,node):
         super(binary_cross_entropy, self).__init__(name, node)

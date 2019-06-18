@@ -178,6 +178,7 @@ def create_code_for_pbtxt_and_tensorboard(path,file,skip):
     # This happend because the path contains unicode escape characters \a ,\t etc.We needed to make sure the produced path string,
     # would not contain any escape characters.
     num_of_space = 0
+    str="\n"
     str_0 = num_of_space * " " + "import tensorflow as tf\n"
     str_1 = num_of_space * " " + "with tf.Session() as sess:\n"
     num_of_space = num_of_space + 1
@@ -191,6 +192,7 @@ def create_code_for_pbtxt_and_tensorboard(path,file,skip):
         str_7 = num_of_space * " " + "if 'batch_size' in locals():\n"
         str_8 = (num_of_space + 1) * " " + "print(\"BATCH SIZE:\",batch_size,file=batch_epoch_file_to_print)\n"
     return_list=[]
+    return_list.append(str)
     return_list.append(str_0)
     return_list.append(str_1)
     return_list.append(str_2)

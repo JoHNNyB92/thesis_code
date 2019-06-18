@@ -3,7 +3,7 @@ import nodes.handler
 
 class training_optimizer(algorithm):
 
-    def find_learning_rate(self, name):
+    def find_learning_rate(self):
         nm = nodes.handler.entitiesHandler.node_map
         for key in nm.keys():
             if key.endswith("/learning_rate"):

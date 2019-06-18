@@ -1,6 +1,7 @@
 from layers.layer import layer
 from  layers.hidden.activation.rnn_layer.rnn_layer import rnn_layer
 import nodes.handler
+
 class lstm_layer(rnn_layer):
 
     def get_all_inner_nodes(self):
@@ -32,4 +33,3 @@ class lstm_layer(rnn_layer):
         self.find_output_node_complex()
         self.get_all_inner_nodes()
         self.update_dicts()
-        #print("LOGGING:CLASS INFORMATION:", self.type, ":Name:", self.name, "\nInput Nodes:", self.input, "\nOutput Nodes:",self.output_nodes)

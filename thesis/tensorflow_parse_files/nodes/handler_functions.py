@@ -38,11 +38,11 @@ from layers.InOutLayer.in_out_layer import in_out_layer
 def handle_lstm( node,name):
     return lstm_layer(node,name)
 
-def handle_rms_prop(node):
-    return rms_prop(node)
+def handle_rms_prop(node,name):
+    return rms_prop(node,name)
 
-def handle_gradient_descent( node):
-    return gradient_descent(node)
+def handle_gradient_descent( node,name):
+    return gradient_descent(node,name)
 
 def check_if_acc(node):
     children=[x for x in node.get_inputs()]
@@ -78,27 +78,6 @@ def handle_dataset_pipe(network,nodes_list,type):
 
 def handle_random_normal(node):
     return
-    '''
-    name=get_inputs()[0].get_name()
-    input_nm_1=handler.node_map[name].get_inputs()[0].get_name()
-    name = get_inputs()[1].get_name()
-    input_nm_2 = handler.node_map[name].get_inputs()[0].get_name()
-    if handler.node_map[input_nm_1].get_op()=="Placeholder":
-        print("2:", handler.node_map[input_nm_2].get_name(), " 1:", handler.node_map[input_nm_1].get_name())
-        return accuracy(get_name(), "accuracy", handler.node_map[input_nm_1].get_name(),
-                        handler.node_map[input_nm_2].get_name())
-    else:
-        tmp=handler.node_map[input_nm_1]
-        while tmp.get_op() in handler.intermediate_operations:
-            if len(tmp.get_inputs())!=1:
-                import sys
-                print("PROBLEM IN ACCURCY")
-                sys.exit()
-            tmp=handler.node_map[tmp.get_inputs()[0].get_name()]
-        print("1:",handler.node_map[input_nm_2].get_name()," 2:",tmp.get_name())
-        return accuracy(get_name(), "accuracy", handler.node_map[input_nm_2].get_name(),tmp.get_name())
-    '''
-
 
 def handle_softmax( node):
     return softmax(node.get_name(), node.node_obj)
@@ -171,6 +150,7 @@ def handle_pow(node,network):
             for child in possible:
                 nodes.handler.entitiesHandler.possible_loss_function[node.get_name()].append(child)
         return ""
+
 def handle_neg_for_log(node):
     inputs=node.get_inputs()
     while inputs!=[]:
@@ -196,15 +176,7 @@ def handle_neg_for_log(node):
 def handle_log(node):
     return cost_function("_cost",categorical_cross_entropy(node.get_name(),node))
 
-
-
 def handle_mean_square_error(node,network,name):
-    '''
-    for name in nodes.handler.entitiesHandler.node_map.keys():
-        if nodes.handler.entitiesHandler.node_map[name].search_inputs(node.get_name())==True:
-            print("This is not final mean.")
-            return "
-    '''
     #TODO:FIX FOR SIMPLE/SQUARE MEAN
     mean=mse(node,name)
     return cost_function(network+"_cost",mean)
@@ -251,7 +223,6 @@ def handle_training_single(name,network,IOPipe,optimizer,epochs,batch):
 
 def handle_training_strategy(name,session,model):
     return training_strategy(name,session,model)
-
 
 def find_input_or_output_placeholder(node):
     nm = nodes.handler.entitiesHandler.node_map

@@ -1,4 +1,5 @@
 from functions.loss.loss import loss
+
 class log(loss):
 
     def insert_in_annetto(self):

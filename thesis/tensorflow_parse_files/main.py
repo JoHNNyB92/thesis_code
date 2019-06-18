@@ -17,6 +17,10 @@ def code_in_one_file(file):
             is_main=False
             has_tf_app_run=False
             has_def_main=False
+            has_interactive=False
+            if "tf.InteractiveSession" in myfile.read():
+                has_interactive=True
+            myfile.seek(0)
             if '.run(' in myfile.read():
                 has_run=True
             myfile.seek(0)
@@ -34,7 +38,7 @@ def code_in_one_file(file):
             skip = ""
             print("FILE= ",file," hasRun=",has_run," HasSess=",has_sess," is main=",is_main)
 
-            if (has_sess==True and has_run==True) or is_main==True or (has_def_main==True and has_tf_app_run==True):
+            if (has_sess==True and has_run==True) or is_main==True or (has_def_main==True and has_tf_app_run==True) or has_interactive==True:
                 batch_size = 0
                 epoch = 0
                 path = os.getcwd()
@@ -89,7 +93,7 @@ with open('github/github.csv') as csv_file:
         repository_path=github.get_github_repository(url[0])
         code_repository=github.folder+github.dirName+"/"+repository_path
         print("LOGGING:About to start processing repository into ",code_repository)
-        if "test" in code_repository:
+        if "TensorFlow-Autoencoders" in code_repository:
             found_network=False
             for subdir, dirs, files in os.walk(code_repository):
                 for file in files:

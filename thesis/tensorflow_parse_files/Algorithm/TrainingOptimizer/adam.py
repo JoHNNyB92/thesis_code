@@ -11,10 +11,9 @@ class adam(training_optimizer):
         rdfWrapper.new_learning_rate(self.name, self.learning_rate)
 
     def find_learning_rate(self):
-        super.find_learning_rate(adam, self)
+        super(adam, self).find_learning_rate()
 
     def __init__(self,node,name):
         super(adam, self).__init__(node,name)
-        name=self.name.split("/")[0]
         self.type="Adam"
         self.find_learning_rate()
