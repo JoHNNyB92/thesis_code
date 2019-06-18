@@ -22,7 +22,7 @@ class handle_entities:
         self.intermediate_operations=["Add","Identity","Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones","Tile"]
         self.optimizer_operations=["ApplyAdam"]
         #Activation functions upported as of now
-        self.activation_operations=["Relu","Dropout","Softmax","Sigmoid","Tanh","Softplus"]
+        self.activation_operations=["Elu","Relu","Dropout","Softmax","Sigmoid","Tanh","Softplus"]
         self.loss_functions=["softmax_cross_entropy"]
         #Sometimes the layers are part of a wider node system,thus we want to know if we encounter a node whether it is part of a
         #layer.
@@ -148,7 +148,7 @@ class handle_entities:
             nodeReturn = handler_functions.handle_batch_norm(self.node_map[e])
             self.insert_to_list(nodeReturn, e, "Layer")
         elif self.node_map[e].get_op() == "ConcatV2":
-            nodeReturn = handler_functions.handle_maxpool(self.node_map[e])
+            nodeReturn = handler_functions.handle_concat(self.node_map[e])
             self.insert_to_list(nodeReturn, e, "Layer")
         elif self.node_map[e].get_op()=="MaxPool" or self.node_map[e].get_op()=="AvgPool":
             nodeReturn=handler_functions.handle_maxpool(self.node_map[e])
@@ -164,7 +164,7 @@ class handle_entities:
         elif "RMSProp" in self.node_map[e].get_name():
             (res, real_name) = self.optimizers("RMSProp", e)
             if res == True:
-                nodeReturn = handler_functions.handle_rms_prop(self.node_map[e], real_name)
+                nodeReturn = handler_functions.handle_rms_prophandle_rms_prop(self.node_map[e], real_name)
                 self.insert_to_list(nodeReturn, real_name, "Optimizer")
         elif "GradientDescent" in self.node_map[e].get_name():
             (res, real_name) = self.optimizers("GradientDescent", e)
@@ -200,12 +200,12 @@ class handle_entities:
             nodeReturn = handler_functions.handle_sparse_cross_entropy(self.node_map[e],c_name)
             if nodeReturn != "":
                 self.objectives(nodeReturn,e)
-        elif "sigmoid_cross_entropy" in e:
+        elif "sigmoid_cross_entropy" in e or "logistic_loss" in e:
             parts=e.split("/")
             full_name=""
             for part in parts:
                 full_name = full_name + "/" + part
-                if "sigmoid_cross_entropy" in part:
+                if "sigmoid_cross_entropy" or "logistic_loss" in part:
                     break
             full_name=full_name[1:]
             if full_name not in self.names_into_separator:
@@ -336,6 +336,7 @@ class handle_entities:
 
     def check_multiple_networks(self):
         self.handle_possible_loss_functions()
+        print("OBJECTIVES ARE :",self.data.annConfiguration.networks[self.current_network].objective.keys())
         if len(self.data.annConfiguration.networks[self.current_network].objective.keys())==1:
             print("LOGGING:Only one network presented,no more parsing.")
             return 0

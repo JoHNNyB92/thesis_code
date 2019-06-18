@@ -1,4 +1,5 @@
 from functions.activation.non_diff.non_diff import non_diff
+
 class relu(non_diff):
 
     def insert_in_annetto(self):

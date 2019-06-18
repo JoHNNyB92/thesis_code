@@ -1,6 +1,7 @@
 import nodes.handler
 import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 from functions.activation.non_diff.relu import relu
+from functions.activation.non_diff.elu import elu
 from functions.activation.regularization.dropout import dropout
 from functions.activation.smooth.softmax import softmax
 from functions.activation.smooth.softplus import softplus
@@ -48,6 +49,8 @@ class layer:
             self.activation = tanh(node)
         elif node.get_op()=="Sigmoid":
             self.activation = sigmoid(node)
+        elif node.get_op()=="Elu":
+            self.activation = elu(node)
         else:
             print("ERROR:NOT HANDLED ACTIVATION=",node.get_op())
             import sys
