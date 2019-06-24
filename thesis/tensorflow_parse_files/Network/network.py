@@ -19,11 +19,12 @@ class network:
         for elem in self.output_layer:
             elem.insert_in_annetto()
             rdfWrapper.new_output_layer(self.name,elem.name)
-        #rdfWrapper.new_output_layer(self.name,self.input_layer.name)
-
+        for elem in self.hang_dp:
+            elem.insert_in_annetto()
 
     def __init__(self,name):
         self.name=name
+        self.datasets={}
         self.type="Network"
         self.layer = {}
         self.metric = {}
@@ -34,8 +35,5 @@ class network:
         self.output_layer=[]
         self.optimizer={}
         self.objective={}
-
-
-
-
+        self.hang_dp=[]
         self.task_type={}

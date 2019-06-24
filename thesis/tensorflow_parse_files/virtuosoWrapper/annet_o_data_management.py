@@ -174,7 +174,7 @@ class annet_o_data_management:
 
     def insert_trains_network(self,training_, network):
         s = self.prefix_annet_o + training_
-        o = self.prefix_annet_o + "hasNetwork"
+        o = self.prefix_annet_o + "trainsNetwork"
         p = self.prefix_annet_o + network
         self.crud.insert(s, o, p)
 
@@ -318,3 +318,4 @@ class annet_o_data_management:
         o = self.prefix_syntax + "hasPrimaryTrainingStep"
         p = self.prefix_owl + step
         self.crud.insert(s, o, p)
+

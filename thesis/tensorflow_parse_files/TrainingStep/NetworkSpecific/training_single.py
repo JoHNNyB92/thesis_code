@@ -6,11 +6,14 @@ class training_single(network_specific):
 
     def insert_in_annetto(self):
         #print("Annetto::training_single-", self.name)
+        super(training_single, self).insert_in_annetto()
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         super(training_single, self).insert_in_annetto()
-        rdfWrapper.new_batch_size(self.name, self.batch)
-        rdfWrapper.new_epoch_num(self.name, self.epochs)
+        if self.batch!=0:
+            rdfWrapper.new_batch_size(self.name, self.batch)
+        if self.epochs!=0:
+            rdfWrapper.new_epoch_num(self.name, self.epochs)
 
     def find_learning_rate_decay(self):
         nm=nodes.handler.entitiesHandler.node_map

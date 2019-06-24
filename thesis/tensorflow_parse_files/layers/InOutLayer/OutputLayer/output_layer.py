@@ -18,10 +18,11 @@ class output_layer(in_out_layer):
                     self.num_layer = num.size
                     break
 
-    def __init__(self,node):
-        super(output_layer, self).__init__(node)
-        self.previous_layer=[]
-        self.next_layer = "NONE"
+    def __init__(self,layer):
+        super(output_layer, self).__init__(layer.node)
+        self.previous_layer=layer.previous_layer
+        self.orig_layer=layer
+        self.next_layer = []
         self.num_layer=""
         self.find_num_layers()
         self.type = "OutputLayer"

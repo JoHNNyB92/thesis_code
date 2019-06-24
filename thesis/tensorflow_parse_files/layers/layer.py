@@ -57,7 +57,7 @@ class layer:
             sys.exit()
 
     def find_output_node(self,name):
-        print("LOGGING:Finding output for ",name)
+        #print("LOGGING:Finding output for ",name)
         nm = nodes.handler.entitiesHandler.node_map
         for node_name in nm.keys():
             #print("Name=",node_name," result ",nm[node_name].search_inputs(name))
@@ -99,19 +99,20 @@ class layer:
                         self.output_nodes.append(node_name)
 
     def find_input_layer(self,input_node):
-
-        #print("FINDING INPUT LAYER FOR ",self.name)
-        #print("INPUT NODES ARE ",self.input)
+        layers=nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer
+        print("FINDING INPUT LAYER FOR ",self.name)
+        print("INPUT NODES ARE ",self.input)
         for input_name in set(self.input):
             if input_name!=self.name:
-                if input_name in nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer.keys() and input_name!=self.name :
+                if input_name in layers.keys() and input_name!=self.name :
                     #print("Immediate connection found between ", input_name, " and ", self.name)
                     input_node=nodes.handler.entitiesHandler.node_map[input_name]
                     self.previous_layer.append(input_node.get_name())
+                    if input_node.get_op()=='Placeholder':
+                        self.is_input=True
                     nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[input_node.get_name()].next_layer.append(self.node.get_name())
-        for layer in nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer.keys():
-            layer_obj = nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
-                layer]
+        for layer in layers.keys():
+            layer_obj = layers[layer]
             elems_in_both_lists = set(layer_obj.output_nodes) & set(self.input)
             #print("Check if output of ",layer_obj.name," and ",self.name," input have common elements.The result is ",elems_in_both_lists)
             if layer_obj.name!= self.name and (self.name in layer_obj.output_nodes or  len(elems_in_both_lists)!=0):
@@ -120,13 +121,8 @@ class layer:
                     if elem in layer_obj.output_intermediate_nodes:
                         temp=layer_obj.output_intermediate_nodes[elem]
                         while temp in layer_obj.output_intermediate_nodes:
-                            for layer in nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer.keys():
-                                '''if nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[layer].inner_nodes!=[]:
-                                    print(nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[layer].inner_nodes)
-                                else:
-                                    print("layer=",layer," does not have innert nodes ")
-                                '''
-                                if temp in nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[layer].inner_nodes:
+                            for layer in layers.keys():
+                                if temp in layers[layer].inner_nodes:
                                     found_in_other_layer=True
                                     temp=""
                             if temp in layer_obj.output_intermediate_nodes:
@@ -137,11 +133,14 @@ class layer:
                     #Case of already added from above case
                     if layer_obj.name not in self.previous_layer:
                         self.previous_layer.append(layer_obj.name)
+                        if layers[layer_obj.name].node.get_op() == 'Placeholder':
+                            self.is_input = True
+                            self.placeholder=layer_obj.name
                         nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
                             layer_obj.name].next_layer.append(self.name)
-                        #print("1)NODE:", self.node.get_name(), "\nPL:", self.previous_layer, "\nLAY:", layer, "\nNL:",
-                              #nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
-                                  #layer].next_layer)
+                        print("1)NODE:", self.node.get_name(), "\nPL:", self.previous_layer, "\nLAY:", layer, "\nNL:",
+                              nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
+                                  layer].next_layer)
                     #return
                     else:
                         for output_node in  layer_obj.output_nodes:
@@ -149,6 +148,8 @@ class layer:
                                 input_node = nodes.handler.entitiesHandler.node_map[input_name]
                                 if input_node.search_inputs(output_node) == True:
                                     self.previous_layer.append(layer_obj.name)
+                                    if layers[layer_obj.name].node.get_op() == 'Placeholder':
+                                        self.is_input = True
                                     nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
                                         layer].next_layer.append(self.node.get_name())
                                     #print("2)NODE:", self.node.get_name(), " PL:", self.previous_layer, " LAY:", layer, " NL:",
@@ -226,6 +227,9 @@ class layer:
 
     def __init__(self,node,name,hasBias,searchForInner=False):
         self.node=node
+        self.placeholder=""
+        self.is_input=False
+        self.is_output=False
         self.name=name
         self.hasBias=hasBias
         self.num_layer=-1
@@ -233,6 +237,7 @@ class layer:
         self.activation=None
         self.input=[]
         self.next_layer=[]
+        self.dataset=[]
         self.previous_layer=[]
         self.inner_nodes=[]
         self.output_intermediate_nodes={}

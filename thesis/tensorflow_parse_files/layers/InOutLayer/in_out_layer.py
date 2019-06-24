@@ -20,7 +20,8 @@ class in_out_layer(layer):
     def __init__(self,node):
         super(in_out_layer, self).__init__(node, node.get_name(), False)
         self.output_nodes = []
-        self.type="Placeholder"
+        #self.type="Placeholder"
+        self.type="InOutLayer"
         self.node=node
         self.name=node.get_name()
         self.find_output_node(self.name)

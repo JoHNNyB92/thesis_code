@@ -36,11 +36,19 @@ def parse_pbtxt(path,epoch,batch,part_name):
     for e in nodes.handler.entitiesHandler.node_map.keys():
         nodes.handler.entitiesHandler.handle_different_layer_cases(e)
     nodes.handler.entitiesHandler.clear_layers()
+    inputs=[]
+    outputs=[]
     for elem in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer.keys():
         print("=============================================")
         print("Finding input for layer=",elem)
         nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[elem].find_input_layer()
         print("=============================================")
+    for elem in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer.keys():
+        #If only one input and that input is placeholder then it an input layer
+        if nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[elem].is_input==True and \
+            len(nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[elem].previous_layer)==1:
+            inputs.append(elem)
+    #nodes.handler.entitiesHandler.transform_layers_to_ins_outs(inputs)
     result=print_info.print_topology()
     if result!="":
         return result
@@ -48,7 +56,7 @@ def parse_pbtxt(path,epoch,batch,part_name):
     res=nodes.handler.entitiesHandler.check_multiple_networks()
     if res==0:
         nodes.handler.entitiesHandler.prepare_strategy(batch, epoch, part_name)
-        nodes.handler.entitiesHandler.insert_to_evaluation_pipe()
+        #nodes.handler.entitiesHandler.insert_to_evaluation_pipe()
     elif res==-1:
         print("ERROR:Program not a network finally")
         return "ERROR:This tensorflow program is not a network.No objective functions identified"

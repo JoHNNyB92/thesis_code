@@ -4,22 +4,24 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class dataset_pipe:
 
     def insert_in_annetto(self):
-        inputLayer=self.node.name
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
-        rdfWrapper.new_joins_layer(self.name,inputLayer)
-        rdfWrapper.new_joins_dataset(self.name,self.joins_dataset)
+        rdfWrapper.new_joins_layer(self.name,self.input_layer.name)
+        if self.dataset!="":
+            self.dataset.insert_in_annetto()
+            rdfWrapper.new_joins_dataset(self.name,self.dataset.name)
 
-    def __init__(self,name,node,helper,type,count):
-        self.input_layer=""
+
+    def __init__(self,node,layer,type,count,dataset):
+        self.input_layer=layer
+        self.dataset=dataset
         if type=="train":
-            self.name=name+"_INP_"+count
+            self.name=node.get_name()+"_INP_"+count
         else:
-            self.name = name + "_EVP_"+count
+            self.name = node.get_name() + "_EVP_"+count
         self.type = "DatasetPipe"
-        self.joins_dataset=""
         self.node=node
-        self.find_datasets(type,helper)
+        #self.find_datasets(type,helper)
 
     def find_datasets(self,type,helper):
         found = False

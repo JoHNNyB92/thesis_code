@@ -16,12 +16,13 @@ class input_layer(in_out_layer):
                     self.num_layer = num.size
                     break
 
-    def __init__(self,node):
-        super(input_layer, self).__init__(node)
+    def __init__(self,layer):
+        super(input_layer, self).__init__(layer.node)
+        self.orig_layer=layer
         self.num_layer=""
         self.find_num_layers()
-        self.next_layer=[]
-        self.previous_layer="NONE"
+        self.next_layer=layer.next_layer
+        self.previous_layer=[]
         self.type="InputLayer"
         #print("CLASS INFORMATION:",self.type, ":Name:", self.name, "\nInput Nodes:", set(self.input), "\nOutput Nodes:", set(self.output_nodes))
 

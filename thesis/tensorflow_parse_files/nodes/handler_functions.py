@@ -34,7 +34,7 @@ from functions.objective.MinimizeObjective.minimize_objective import minimize_ob
 from layers.InOutLayer.InputLayer.input_layer import input_layer
 from layers.InOutLayer.OutputLayer.output_layer import output_layer
 from layers.InOutLayer.in_out_layer import in_out_layer
-
+from Dataset.label_set import label_set
 def handle_lstm( node,name):
     return lstm_layer(node,name)
 
@@ -75,6 +75,35 @@ def handle_dataset_pipe(network,nodes_list,type):
                 break
         dp_list.append(dataset_pipe(network,nodes_list[i],helper,type,str(i)))
     return dp_list
+
+def handle_dataset_pipe_1(network,type):
+    dp_list=[]
+    if type=="test":
+        for ind,elem in enumerate(network.output_layer):
+            print("network=",elem.name)
+            labelSet=""
+            #if elem.name in network.datasets.keys():
+            dataset_name=elem.name
+            print("Found dataset name ",dataset_name)
+            labelSet=label_set(elem.node)
+            dp_list.append(dataset_pipe(elem.node, elem, type, str(ind),labelSet))
+    if type=="train":
+        for ind,elem in enumerate(network.input_layer):
+            print("network=",elem.name)
+            dataset_name=elem.name
+            print("Found dataset name ",dataset_name)
+            labelSet=label_set(elem.node)
+            dp_list.append(dataset_pipe(elem.node, elem, type, str(ind),labelSet))
+    return dp_list
+
+def handle_sparse_cross_entropy(node,c_name):
+    for dim in node.get_output():
+        for i,elem in enumerate(dim.dim):
+            if elem.size != -1:
+                if elem.size > 2:
+                    return cost_function(c_name, categorical_cross_entropy(node.get_name(), node))
+                else:
+                    return cost_function(c_name, binary_cross_entropy(node.get_name(), node))
 
 def handle_random_normal(node):
     return
@@ -241,11 +270,11 @@ def find_input_or_output_placeholder(node):
 def handle_in_out_layer(node):
     return in_out_layer(node)
 
-def handle_out_layer(node):
-    return output_layer(node)
+def handle_out_layer(layer):
+    return output_layer(layer)
 
-def handle_in_layer(node):
-    return input_layer(node)
+def handle_in_layer(layer):
+    return input_layer(layer)
 
 def handle_training_session(name,trStep,primaryTrStep):
     return training_session(name,trStep,primaryTrStep)

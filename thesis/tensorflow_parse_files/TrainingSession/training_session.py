@@ -6,6 +6,7 @@ class training_session:
         #print("Annetto::training_session-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
+
         if self.hasTrainingStep!="":
             for tr_step in self.hasTrainingStep:
                 tr_step.insert_in_annetto()

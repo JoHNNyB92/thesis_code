@@ -8,7 +8,6 @@ class minimize_objective(objective):
         rdfWrapper.new_type(self.name, self.type)
         self.cost_function.insert_in_annetto()
         rdfWrapper.new_has_cost(self.name, self.cost_function.name)
-        #super(minimize_objective, self).insert_in_annetto()
 
 
     def __init__(self,name,cost_function):

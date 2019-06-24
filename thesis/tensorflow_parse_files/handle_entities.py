@@ -46,18 +46,10 @@ class handle_entities:
         self.epoch=epoch
 
     #The following function is used only if there is only one network presented.
-    def insert_to_evaluation_pipe(self):
-        for layer in self.data.annConfiguration.networks[self.current_network].layer.keys():
-            #If next layer is empty,it means we encounter a node just before the loss function.Thus we can search for
-            if self.data.annConfiguration.networks[self.current_network].layer[layer].next_layer==[]:
-                #[COMM]
-                for i,_ in enumerate(self.output_layer):
-                    self.output_layer[i].previous_layer.append(layer)
-                    self.data.annConfiguration.networks[self.current_network].layer[layer].next_layer.append(self.output_layer[i].name)
-                break
-        # [COMM]
-        IOPipe=handler_functions.handle_dataset_pipe(self.current_network,self.output_layer,"test")
-        self.data.evaluationResult.IOPipe=IOPipe
+    def insert_to_evaluation_pipe(self,network):
+        IOPipe=handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network],"test")
+        self.check_metric(IOPipe, network)
+        #self.data.evaluationResult.IOPipe=IOPipe
         self.data.evaluationResult.ann_conf=self.data.annConfiguration
 
     #If some prerequisites are satisfied,we are into the basic handling of the result of the node encountered.
@@ -164,7 +156,7 @@ class handle_entities:
         elif "RMSProp" in self.node_map[e].get_name():
             (res, real_name) = self.optimizers("RMSProp", e)
             if res == True:
-                nodeReturn = handler_functions.handle_rms_prophandle_rms_prop(self.node_map[e], real_name)
+                nodeReturn = handler_functions.handle_rms_prop(self.node_map[e], real_name)
                 self.insert_to_list(nodeReturn, real_name, "Optimizer")
         elif "GradientDescent" in self.node_map[e].get_name():
             (res, real_name) = self.optimizers("GradientDescent", e)
@@ -265,7 +257,7 @@ class handle_entities:
             if nodeReturn!="":
                 self.objectives(nodeReturn, e)
 
-
+    '''
     def find_in_out_layer(self):
         layers=self.data.annConfiguration.networks[self.current_network].layer.copy()
         layers_del=[]
@@ -296,11 +288,13 @@ class handle_entities:
                                 break
         for elem in set(layers_del):
             del self.data.annConfiguration.networks[self.current_network].layer[elem]
-
+    '''
     def prepare_strategy(self,batch,epochs,part_name):
-        self.find_in_out_layer()
+        #self.find_in_out_layer()
+        for obj in self.data.annConfiguration.networks[self.current_network].objective.keys():
+            (n_name,_,_)=self.find_network(self.data.annConfiguration.networks[self.current_network].objective[obj],[],self.current_network,0)
         tr_model=handler_functions.handle_trained_model(self.data.AnnConfig+"_trained_model")
-        layers=self.data.annConfiguration.networks[self.current_network].layer
+        layers=self.data.annConfiguration.networks[n_name].layer
         counter=0
         for layer in layers.keys():
             if len(layers[layer].previous_layer)!=0:
@@ -312,15 +306,17 @@ class handle_entities:
         optimizer_node=""
         for key in optimizer.keys():
             optimizer_node=optimizer[key]
-        IOPipe=handler_functions.handle_dataset_pipe(self.current_network,self.input_layer,"train")
-        tr_step = handler_functions.handle_training_single(part_name+"_training_step",self.current_network,IOPipe,optimizer_node,epochs,batch)
+        IOPipe=handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name],"train")
+        tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,optimizer_node,epochs,batch)
         tr_list_step=[]
         tr_list_step.append(tr_step)
         tr_session=handler_functions.handle_training_session(part_name+"_training_session",tr_list_step,"")
         tr_strategy=handler_functions.handle_training_strategy(part_name+"_training_strategy",tr_session,tr_model)
         self.data.evaluationResult.train_strategy=tr_strategy
         self.data.annConfiguration.training_strategy[tr_strategy.name]=tr_strategy
-
+        self.insert_to_evaluation_pipe(n_name)
+        del self.data.annConfiguration.networks[self.current_network]
+    '''
     def find_input_output(self):
         layers=self.annConfiguration.networks[self.current_network].layer
         for tmp in layers.keys():
@@ -333,11 +329,12 @@ class handle_entities:
                 if next in self.layers().keys():
                     break
             self.annConfiguration.networks[self.current_network].input_layer=tmp
-
+    '''
     def check_multiple_networks(self):
         self.handle_possible_loss_functions()
         print("OBJECTIVES ARE :",self.data.annConfiguration.networks[self.current_network].objective.keys())
         if len(self.data.annConfiguration.networks[self.current_network].objective.keys())==1:
+           #self.transform_layers_to_ins_outs(self.current_network,self.data.annConfiguration.networks[self.current_network].keys())
             print("LOGGING:Only one network presented,no more parsing.")
             return 0
         if len(self.data.annConfiguration.networks[self.current_network].objective.keys())==0:
@@ -358,7 +355,7 @@ class handle_entities:
         for obj in sorted(objectives):
             print("Encountered objective ",self.data.annConfiguration.networks[self.current_network].objective[obj].name)
             obj_func=self.data.annConfiguration.networks[self.current_network].objective[obj]
-            (output,net_cnt)=self.find_network(obj_func,network_outputs,self.current_network,net_cnt)
+            (output_layers,output,net_cnt)=self.find_network(obj_func,network_outputs,self.current_network,net_cnt)
             for name in output:
                 network_outputs.append(name)
 
@@ -422,69 +419,72 @@ class handle_entities:
         else:
             node_loss = self.node_map[loss.node.get_name()]
             children = node_loss.get_inputs()
-        print("\n\n\n\n\nAbout to begin searching from ",set([x.get_name() for x in children]))
-        outputs=self.find_network_output_layer(children)
+        print("LOGGING:About to begin searching from ",set([x.get_name() for x in children]))
+        #Returns List of node outputs,list of layer outputs,a dictionary of (layer name)-(output placeholder) , if exists
+        (outputs,layer_outputs,datasets)=self.find_network_output_layer(children)
         layers = {}
         inputs=[]
-        for name in set(outputs):
-            (tinput,tlayers)=self.find_network_input_layer_and_layers(name,net_outputs)
+        for ind,mem in enumerate(layer_outputs):
+            (tinput,tlayers)=self.find_network_input_layer_and_layers(mem,net_outputs)
             for inp in tinput:
                 if inp not in inputs:
                     inputs.append(inp)
             for k,v in tlayers.items():
                 layers[k]=v
-        self.insert_network(layers, network+"_"+str(counter), inputs, outputs, obj_func)
+        n_name=network + "_" + str(counter)
+        l_outputs=[]
+        for output in outputs:
+            l_outputs.append(self.data.annConfiguration.networks[self.current_network].layer[output.get_name()])
+        self.insert_network(layers,n_name, inputs, l_outputs, obj_func,datasets)
+        counter += 1
         st=""
         for x in layers.keys():
             st=st+"\n"+x
-        print("\n\n\n\n\n\n\n\n\n\nLayers=",st," \n-------------------------------\nLoss:",loss.node.get_name())
-        print("--------------------\nInput=",inputs)
-        print("Net_Outputs=", set(outputs))
-        counter+=1
-        return (outputs,counter)
+        return (n_name,outputs,counter)
 
     def find_network_input_layer_and_layers(self,output,net_outputs):
         layers = self.data.annConfiguration.networks[self.current_network].layer
-        prev=output
-        print("Start searching from output ",output)
+        prev=output.name
+        net_layers = {}
+        net_layers[prev] = output
+        print("Start searching from output ",output.name)
         if prev not in layers.keys():
             print("Previous layer not in keys ",prev)
             prev=self.nodes_to_layers[prev]
             print("Previous translated to ",prev)
         prev=layers[prev].previous_layer
-        net_layers={}
-        ret_layer=[]
+        ret_layer = []
         while prev!=[]:
             temp=[]
             for prev_layer in prev:
-                if layers[prev_layer].__class__.__name__ == "InputLayer" \
-                        or layers[prev_layer].__class__.__name__ == "OutputLayer" \
-                        or layers[prev_layer].previous_layer==""\
-                        or layers[prev_layer].previous_layer==[] \
-                        or layers[prev_layer].name in net_outputs:
-                            print("found input=",prev_layer)
-                            print("class=",layers[prev_layer].__class__.__name__ )
-                            print("previous=", layers[prev_layer].previous_layer)
-                            print("RETURNING LAYERS =",layers)
-                            ret_layer.append(prev_layer)
+                if layers[prev_layer].is_input==True:
+                    print("LOGGING:Discovered input layer = ",prev_layer)
+                    ret_layer.append(layers[prev_layer].placeholder)
+                    net_layers[layers[prev_layer].placeholder]=layers[layers[prev_layer].placeholder]
+                    net_layers[prev_layer] = layers[prev_layer]
                 else:
+                    print("LOGGING:Discovered intermediate layer = ",prev_layer)
                     net_layers[prev_layer]=layers[prev_layer]
                     for elem in layers[prev_layer].previous_layer:
                         temp.append(elem)
-            prev=temp
-
+            prev=list(set(temp))
         return (ret_layer, net_layers)
 
     def find_network_output_layer(self,children):
         print("LOGGING:Start searching for output node of ",[x.get_name() for x in children])
         outputs=[]
-        while children!=[]:
+        layer_outputs=[]
+        datasets={}
+        found_placeholder=""
+        while list(set(children))!=[]:
             tmp=[]
-            for elem in children:
+            for elem in list(set(children)):
                 print("Children node ",elem.get_name())
                 if elem.get_op() != "Placeholder":
                     if elem.get_name() in self.data.annConfiguration.networks[self.current_network].layer.keys():
-                        outputs.append(elem.get_name())
+                        layer_outputs.append(self.data.annConfiguration.networks[self.current_network].layer[elem.get_name()])
+                        if found_placeholder!="":
+                            datasets[elem.get_name()] = found_placeholder
                         print("LOGGING:Found output layer = ",elem.get_name())
                     elif elem.get_op() in self.intermediate_operations or elem.get_op() in self.activation_operations or elem.get_op()=="Add"\
                            or elem.get_op()=="Log":
@@ -494,27 +494,41 @@ class handle_entities:
                     else:
                         print("LOGGING:Encountered intermediate node ",elem.get_name(),".Children added.")
                         for input in elem.get_inputs():
+                            print("O:",elem.get_name()," NIN:",input.get_name())
                             tmp.append(input)
-
-            children=tmp
+                else:
+                    outputs.append(elem)
+            children=list(set(tmp))
         print("LOGGING:Find the following output layers:",outputs)
-        return outputs
+        return (outputs,layer_outputs,datasets)
 
 
-    def insert_network(self,layers,name,inputs,outputs,objective_func):
+    def insert_network(self,layers,name,inputs,outputs,objective_func,datasets):
         self.data.init_new_network(name)
-        for layer in layers.keys():
-            self.data.annConfiguration.networks[name].layer[layer]=layers[layer]
+        print("---------------START NEW NETWORK-----------------")
         for input in inputs:
-            node=self.data.annConfiguration.networks[self.current_network].layer[input].node
-            input_layer=handler_functions.handle_in_layer(node)
+            input_layer=handler_functions.handle_in_layer(layers[input])
+            input_layer.placeholder=layers[input].placeholder
+            print("LOGGING:Input is =", input," Dataset is = ",input_layer.placeholder)
             self.data.annConfiguration.networks[name].input_layer.append(input_layer)
+            #del self.data.annConfiguration.networks[self.current_network].layer[input]
+            del layers[input]
         for output in outputs:
-            node = self.data.annConfiguration.networks[self.current_network].layer[output].node
-            output_layer = handler_functions.handle_out_layer(node)
-            self.data.annConfiguration.networks[self.current_network].output_layer.append(output_layer)
+            #node = output.node
+            print("LOGGING:Output is = ",output.name)
+            output_layer = handler_functions.handle_out_layer(output)
+            self.data.annConfiguration.networks[name].output_layer.append(output_layer)
+            #del self.data.annConfiguration.networks[self.current_network].layer[output]
+        for layer in layers.keys():
+            print("LOGGING:Layer is ",layer)
+            self.data.annConfiguration.networks[name].layer[layer]=layers[layer]
         if objective_func!="":
+            print("LOGGING:Objective func is = ",objective_func.name)
             self.data.annConfiguration.networks[name].objective[objective_func.name]=objective_func
+        if datasets.keys()!=[]:
+            print("LOGGING:Dataset is = ", datasets)
+            self.data.annConfiguration.networks[name].datasets=datasets
+        print("---------------END NEW NETWORK-----------------")
 
     def insert_training(self):
         trSteps=[]
@@ -530,7 +544,7 @@ class handle_entities:
                     self.data.annConfiguration.networks[network].optimizer[optimizer.name]=optimizer
                     input_layer=self.data.annConfiguration.networks[network].input_layer
                     print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer.name)
-                    IOPipe = handler_functions.handle_dataset_pipe(network, input_layer, "train")
+                    IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network],"train")
                     #TODO:EDW TI NA KANW POU XRIAZONTE POLLAPLA EPOCH AND BATCHES???????
                     tr_step = handler_functions.handle_training_single(network + "_training_step", network, IOPipe,optimizer, 0, 0)
                     trSteps.append(tr_step)
@@ -540,7 +554,7 @@ class handle_entities:
                         st=st+"\n"+x
                     print("ERROR:The following layers are not part of an optimization procedure:",st)
         tr_model = handler_functions.handle_trained_model(self.data.AnnConfig + "_trained_model")
-        layers = self.data.annConfiguration.networks[self.current_network].layer
+        layers = self.data.annConfiguration.networks[network].layer
         counter = 0
         for layer in layers.keys():
             if len(layers[layer].previous_layer) != 0:
@@ -548,15 +562,49 @@ class handle_entities:
                     counter += 1
                     weight = handler_functions.handle_weights('W' + str(counter), elem_in, layer)
                     tr_model.add_weight(weight)
-        tr_session = handler_functions.handle_training_session(self.current_network + "_training_session", trSteps, "")
-        tr_strategy = handler_functions.handle_training_strategy(self.current_network + "_training_strategy", tr_session, tr_model)
+        tr_session = handler_functions.handle_training_session(network + "_training_session", trSteps, "",)
+        tr_strategy = handler_functions.handle_training_strategy(network + "_training_strategy", tr_session, tr_model)
 
-        if self.data.evaluationResult.metric!="":
-            IOPipe = handler_functions.handle_dataset_pipe(self.current_network, self.output_layer, "test")
-            self.data.evaluationResult.IOPipe = IOPipe
+        IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network],"test")
+        self.check_metric(IOPipe,network)
         self.data.evaluationResult.train_strategy = tr_strategy
         self.data.annConfiguration.training_strategy[tr_strategy.name] = tr_strategy
         self.data.evaluationResult.ann_conf = self.data.annConfiguration
+
+    def check_metric(self,IOPipe,network):
+        if self.data.evaluationResult.metric!="":
+            res=self.check_evaluation(IOPipe)
+            print("res=",res)
+            if res==True:
+                self.data.evaluationResult.IOPipe = IOPipe
+            else:
+                for elem in IOPipe:
+                    self.data.annConfiguration.networks[network].hang_dp.append(elem)
+        else:
+            for elem in IOPipe:
+                self.data.annConfiguration.networks[network].hang_dp.append(elem)
+        self.data.evaluationResult.ann_conf = self.data.annConfiguration
+
+    def check_evaluation(self,IOPipes):
+        for IOPipe in IOPipes:
+            output=IOPipe.dataset.name
+            node=self.node_map[self.data.evaluationResult.metric.name]
+            children = node.get_inputs()
+            while children != []:
+                tmp = []
+                for elem in children:
+                    if self.node_map[elem.get_name()].get_op() == "Placeholder":
+                        if self.node_map[elem.get_name()].get_name()==output:
+                            print("LOGGING:Associated metric ",self.data.evaluationResult.metric.name," with dataset ",output," .")
+                            return True
+                        else:
+                            #If it encounters a different placeholder,that means that the one searching is wrong.
+                            return False
+                    else:
+                        for x in self.node_map[elem.get_name()].get_inputs():
+                            tmp.append(x)
+                children = tmp
+        return False
 
     def find_optimizer(self,layers):
         for optimizer in self.data.annConfiguration.networks[self.current_network].optimizer.keys():
@@ -630,6 +678,13 @@ class handle_entities:
                 layer_names.remove(layer_names[0])
                 print(len(layer_names))
 
+    def transform_layers_to_ins_outs(self,inputs,curr):
+        for elem in self.data.annConfiguration.networks[self.current_network].layer.keys():
+            # If only one input and that input is placeholder then it an input layer
+            if nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[elem].is_input == True and \
+                    len(nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[
+                            elem].previous_layer) == 1:
+                inputs.append(elem)
 
     '''
         def handle_autoencoder(self,num_of_layers):
