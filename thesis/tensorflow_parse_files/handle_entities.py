@@ -499,7 +499,7 @@ class handle_entities:
                 else:
                     if len(outputs)!=0:
                         datasets[outputs[-1].get_name()]=elem
-                    found_placeholder=elem.get_name()
+                    found_placeholder=elem
             children=list(set(tmp))
         print("LOGGING:Find the following output layers:",[x.get_name() for x in outputs])
         return (outputs,layer_outputs,datasets)

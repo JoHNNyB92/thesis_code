@@ -1,6 +1,5 @@
 from functions.loss.binary_cross_entropy import binary_cross_entropy
 from functions.loss.categorical_cross_entropy import categorical_cross_entropy
-from loss_function import loss_function
 from layers.hidden.activation.simple_layer import simple_layer
 from layers.hidden.activation.conv2d_layer import conv2d_layer
 from layers.hidden.activation.deconv2d_layer import deconv2d_layer
@@ -83,6 +82,7 @@ def handle_dataset_pipe_1(network,type):
             print("network=",elem.name)
             labelSet=""
             node=""
+            dataset_name=""
             if elem.name in network.datasets.keys():
                 dataset_name=network.datasets[elem.name].get_name()
                 node=network.datasets[elem.name]

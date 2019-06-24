@@ -63,7 +63,10 @@ def parse_pbtxt(path,epoch,batch,part_name):
     print("Starting inserting to annetto.")
     print("-----------------------------------------------------")
     rdfWrapper.insert_ann_graph()
-    return "Success for "+path
+    hasMetric=False
+    if nodes.handler.entitiesHandler.data.evaluationResult.metric!=0:
+        hasMetric=True
+    return ("Success for "+path,hasMetric)
 
 def begin_parsing(name,pbtxt_file,epoch,batch,log_file):
     nodes.handler.entitiesHandler=handle_entities()
@@ -73,6 +76,6 @@ def begin_parsing(name,pbtxt_file,epoch,batch,log_file):
     rdfWrapper.new_init_new_network(part_name+"_net")
     rdfWrapper.new_init_new_evaluation(part_name+"_eval",part_name+"_net")
     nodes.handler.entitiesHandler.set_batch_epoch(batch,epoch)
-    result=parse_pbtxt(pbtxt_file,epoch,batch,part_name)
+    (result,hasMetric)=parse_pbtxt(pbtxt_file,epoch,batch,part_name)
     nodes.handler.entitiesHandler=""
-    return result
+    return (result,hasMetric)

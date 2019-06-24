@@ -204,3 +204,7 @@ def create_code_for_pbtxt_and_tensorboard(path,file,skip):
     return_list.append(str_8)
     pbtxt_file=backwards_dir+github.dirName+"\_tensorflow\pbtxt\\"+file+".pbtxt"
     return (return_list,pbtxt_file)
+
+
+def handle_evaluation_score(filePath):
+    print("Path is:",filePath)
