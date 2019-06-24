@@ -241,9 +241,8 @@ class handle_entities:
                 for _ in elem.dim:
                     has_dim=True
                     break
-            if has_dim==True:
-                nodeReturn = handler_functions.handle_in_out_layer(self.node_map[e])
-                self.insert_to_list(nodeReturn, e,"Layer")
+            nodeReturn = handler_functions.handle_in_out_layer(self.node_map[e])
+            self.insert_to_list(nodeReturn, e,"Layer")
         elif "mean_squared_error" in self.node_map[e].get_name()\
                and self.node_map[e].get_name().split("/")[0] not in self.discovered_loss:
             lname=self.node_map[e].get_name().split("/")[0]
@@ -485,7 +484,8 @@ class handle_entities:
                         layer_outputs.append(self.data.annConfiguration.networks[self.current_network].layer[elem.get_name()])
                         if found_placeholder!="":
                             datasets[elem.get_name()] = found_placeholder
-                        print("LOGGING:Found output layer = ",elem.get_name())
+                        outputs.append(elem)
+                        print("LOGGING:Found output layer = ", elem.get_name())
                     elif elem.get_op() in self.intermediate_operations or elem.get_op() in self.activation_operations or elem.get_op()=="Add"\
                            or elem.get_op()=="Log":
                         for input in elem.get_inputs():
@@ -497,9 +497,11 @@ class handle_entities:
                             print("O:",elem.get_name()," NIN:",input.get_name())
                             tmp.append(input)
                 else:
-                    outputs.append(elem)
+                    if len(outputs)!=0:
+                        datasets[outputs[-1].get_name()]=elem
+                    found_placeholder=elem.get_name()
             children=list(set(tmp))
-        print("LOGGING:Find the following output layers:",outputs)
+        print("LOGGING:Find the following output layers:",[x.get_name() for x in outputs])
         return (outputs,layer_outputs,datasets)
 
 
@@ -512,7 +514,7 @@ class handle_entities:
             print("LOGGING:Input is =", input," Dataset is = ",input_layer.placeholder)
             self.data.annConfiguration.networks[name].input_layer.append(input_layer)
             #del self.data.annConfiguration.networks[self.current_network].layer[input]
-            del layers[input]
+            #del layers[input]
         for output in outputs:
             #node = output.node
             print("LOGGING:Output is = ",output.name)

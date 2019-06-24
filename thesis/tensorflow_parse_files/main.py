@@ -61,7 +61,7 @@ def code_in_one_file(file):
                     os.chdir(path)
                     print("----------------------------------------------------------------------------")
                     # Change directory in order to be appropriate for the folder that the pbtxt parser is located.
-                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\custom_split_repository.py.pbtxt"
+                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\linear_regression.py.pbtxt"
                     #pbtxt_file = github.folder + github.dirName + pbtxt_file.split(github.dirName)[1]
 
                     # Windows OS
