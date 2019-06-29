@@ -5,7 +5,6 @@ import nodes.handler
 class training_single(network_specific):
 
     def insert_in_annetto(self):
-        #print("Annetto::training_single-", self.name)
         super(training_single, self).insert_in_annetto()
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)

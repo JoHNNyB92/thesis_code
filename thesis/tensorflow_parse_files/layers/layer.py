@@ -13,19 +13,23 @@ class layer:
         #print("Annetto::layer-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
-        if self.activation!=None:
-            self.activation.insert_in_annetto()
-            rdfWrapper.new_has_activation(self.name,self.activation.name)
-        if self.hasBias==True:
-            rdfWrapper.new_has_bias(self.name,self.hasBias)
-        if self.num_layer=="":
-            print("ERROR:"+self.name+" NOT AVAILABLE NUM LAYER")
-        else:
-            rdfWrapper.layer_num_units(self.name, self.num_layer)
         for elem in self.next_layer:
             rdfWrapper.new_next_layer(self.name, elem)
         for elem in self.previous_layer:
             rdfWrapper.new_previous_layer(self.name, elem)
+        if self.sameLayer!="":
+            rdfWrapper.new_same_layer(self.name, self.sameLayer)
+        else:
+            if self.activation!=None:
+                self.activation.insert_in_annetto()
+                rdfWrapper.new_has_activation(self.name,self.activation.name)
+            if self.hasBias==True:
+                rdfWrapper.new_has_bias(self.name,self.hasBias)
+            if self.num_layer=="":
+                print("ERROR:"+self.name+" NOT AVAILABLE NUM LAYER")
+            else:
+                rdfWrapper.layer_num_units(self.name, self.num_layer)
+
 
     def update_dicts(self):
         nodes.handler.entitiesHandler.layers_to_nodes[self.name]=[]
@@ -241,6 +245,7 @@ class layer:
         self.previous_layer=[]
         self.inner_nodes=[]
         self.output_intermediate_nodes={}
+        self.sameLayer=""
         if searchForInner==True:
             self.get_all_inner_nodes()
 

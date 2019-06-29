@@ -14,10 +14,10 @@ class ANNConfiguration:
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         rdfWrapper.new_ann_configuration(self.name)
-        for net in self.networks.keys():
-            rdfWrapper.new_has_network(self.networks[net].name)
-        for trStr in self.training_strategy.keys():
-            rdfWrapper.new_has_tr_strategy(self.training_strategy[trStr].name)
+        #for net in self.networks.keys():
+            #rdfWrapper.new_has_network(self.networks[net].name)
+        #for trStr in self.training_strategy.keys():
+            #rdfWrapper.new_has_tr_strategy(self.training_strategy[trStr].name)
 
     def __init__(self,name):
         self.name=name

@@ -73,8 +73,8 @@ def begin_parsing(name,pbtxt_file,epoch,batch,log_file):
     part_name=name.replace(".py","")
     rdfWrapper.log_file=log_file
     rdfWrapper.new_init_data(part_name)
-    rdfWrapper.new_init_new_network(part_name+"_net")
-    rdfWrapper.new_init_new_evaluation(part_name+"_eval",part_name+"_net")
+    rdfWrapper.new_init_new_network(part_name)
+    rdfWrapper.new_init_new_evaluation(part_name+"_eval",part_name)
     nodes.handler.entitiesHandler.set_batch_epoch(batch,epoch)
     (result,hasMetric)=parse_pbtxt(pbtxt_file,epoch,batch,part_name)
     nodes.handler.entitiesHandler=""

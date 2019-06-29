@@ -38,7 +38,7 @@ def new_ann_configuration(name):
 
 def new_network(name):
     #log(log_msg1+"network"+log_msg2+ name)
-    nodes.handler.entitiesHandler.data.insert_network(name + "_net")
+    nodes.handler.entitiesHandler.data.insert_network(name)
 
 def new_training_strategy(name):
     #log(log_msg1+"training_strategy"+log_msg2+name )
@@ -200,3 +200,6 @@ def new_has_primary_training_step(session,prStep):
 
 def new_has_regularizer(cf,regularizer):
     nodes.handler.entitiesHandler.data.insert_has_regularizer(cf, regularizer)
+
+def new_same_layer(layer,same_layer):
+    nodes.handler.entitiesHandler.data.insert_same_layer(layer,same_layer)

@@ -203,7 +203,7 @@ class annet_o_data_management:
         self.crud.insert(s, o, p)
 
     def insert_optimizer(self,trStep,optimizer):
-        s = self.prefix_annet_o + optimizer
+        s = self.prefix_annet_o + trStep
         o = self.prefix_annet_o + "hasTrainingOptimizer"
         p = self.prefix_annet_o + str(optimizer)
         self.crud.insert(s, o, p)
@@ -317,5 +317,11 @@ class annet_o_data_management:
         s = self.prefix_annet_o + session
         o = self.prefix_syntax + "hasPrimaryTrainingStep"
         p = self.prefix_owl + step
+        self.crud.insert(s, o, p)
+
+    def insert_same_layer(self,layer,same_layer):
+        s = self.prefix_annet_o + layer
+        o = self.prefix_syntax + "sameLayerAs"
+        p = self.prefix_owl + same_layer
         self.crud.insert(s, o, p)
 

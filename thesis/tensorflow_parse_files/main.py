@@ -62,7 +62,7 @@ def code_in_one_file(file):
                     os.chdir(path)
                     print("----------------------------------------------------------------------------")
                     # Change directory in order to be appropriate for the folder that the pbtxt parser is located.
-                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\05_basic_convnet.py.pbtxt"
+                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\dcgan.py.pbtxt"
                     #pbtxt_file = github.folder + github.dirName + pbtxt_file.split(github.dirName)[1]
 
                     # Windows OS
@@ -101,7 +101,7 @@ with open('github/github.csv') as csv_file:
             found_network=False
             for subdir, dirs, files in os.walk(code_repository):
                 for file in files:
-                    if "05" in file:
+                    if "dcgan" in file:
                         (result,found_net,hasMetric)=code_in_one_file(file)
                         if hasMetric==True:
                             tranform_tf_file.handle_evaluation_score(file)
