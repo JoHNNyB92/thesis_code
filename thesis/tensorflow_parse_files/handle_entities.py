@@ -3,6 +3,7 @@ from NetworkEvaluation.evaluation_result import evaluation_result
 from nodes import handler_functions
 from nodes.nodeEntity import nodeEntity as nodeClass
 from Network.network import network
+from copy import copy
 
 class handle_entities:
     def __init__(self):
@@ -560,7 +561,7 @@ class handle_entities:
                                 if non_optimizer[layer] not in new_networks.keys():
                                     name=non_optimizer[layer]
                                     new_networks[non_optimizer[layer]]=network(name)
-                                new_networks[non_optimizer[layer]].layer[pl+"--"+str(self.sameLayerCounter)]=layers[pl]
+                                new_networks[non_optimizer[layer]].layer[pl+"--"+str(self.sameLayerCounter)]=copy(layers[pl])
                                 new_names[pl]=pl+"--"+str(self.sameLayerCounter)
                                 new_networks[non_optimizer[layer]].layer[pl +"--" + str(self.sameLayerCounter)].name=pl + "--" + str(self.sameLayerCounter)
                                 new_networks[non_optimizer[layer]].layer[pl + "--" + str(self.sameLayerCounter)].sameLayer = pl
@@ -579,7 +580,7 @@ class handle_entities:
                         if nl in tt_layers:
                             print("1YEAH FINAL INPUT=",input)
                             new_inputs.append(input)
-                            new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)] = layers[input]
+                            new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)] = copy(layers[input])
                             new_names[input] = input+"--"+str(self.sameLayerCounter)
                             new_networks[non_optimizer[input]].layer[
                                 input + "--" + str(self.sameLayerCounter)].name = input + "--" + str(self.sameLayerCounter)
@@ -605,7 +606,7 @@ class handle_entities:
                                                 print("2YEAH FINAL INPUT=", input)
                                                 new_inputs.append(input)
                                                 new_networks[non_optimizer[input]].layer[
-                                                    input + "--" + str(self.sameLayerCounter)] = layers[input]
+                                                    input + "--" + str(self.sameLayerCounter)] = copy(layers[input])
                                                 new_networks[non_optimizer[input]].layer[
                                                     input + +"--" + str(self.sameLayerCounter)].sameLayer = input
                                                 new_networks[non_optimizer[input]].output_layer.append(
@@ -625,7 +626,7 @@ class handle_entities:
                     if found==False:
                         #If nothing was found( a layer to be input to the current network)
                         #we add this layer to the new network as simple intermediate layer.
-                        new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)]=layers[input]
+                        new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)]=copy(layers[input])
                         new_names[input] = input + "--" + str(self.sameLayerCounter)
                         new_networks[non_optimizer[input]].layer[
                             input + "--" + str(self.sameLayerCounter)].name = input + "--" + str(self.sameLayerCounter)
