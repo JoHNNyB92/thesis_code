@@ -15,6 +15,9 @@ class dropout_layer(layer):
     def update_dicts(self):
         super(dropout_layer, self).update_dicts()
 
+    def find_num_layers(self):
+        layer.find_num_layers(self)
+
     def find_input_layer(self):
         layer.find_input_layer(self, self.node)
 

@@ -62,7 +62,7 @@ def code_in_one_file(file):
                     os.chdir(path)
                     print("----------------------------------------------------------------------------")
                     # Change directory in order to be appropriate for the folder that the pbtxt parser is located.
-                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\dcgan.py.pbtxt"
+                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\05_basic_convnet.py.pbtxt"
                     #pbtxt_file = github.folder + github.dirName + pbtxt_file.split(github.dirName)[1]
 
                     # Windows OS
@@ -74,17 +74,18 @@ def code_in_one_file(file):
                         print("ERROR:There was an error with the creation of pbtxt file  ",pbtxt_file)
                     else:
                         print("LOGGING:Begin parsing pbtxt file ", pbtxt_file, " with anneto logging in ", log_file)
-                        (result,hasMetric) = tensorflow_parser.begin_parsing(os.path.basename(total_path), pbtxt_file, batch_size,
+                        result= tensorflow_parser.begin_parsing(os.path.basename(total_path), pbtxt_file, batch_size,
                                                              epoch, log_file)
                         if result == "success":
                             found_network = True
                         print(
                             " ----------------------------------------------------------------------------------------------------------------------")
                         print("|Finished parsing of file ", os.path.basename(total_path), " Result:", result, "|")
-
+                        import sys
+                        sys.exit()
                         print(
                             " ---------------------------------------------------------------------------------------------------------------------")
-    return(result,found_network,hasMetric)
+    return(result,found_network)
 
 def code_in_multiple_files(file):
     print(file)
@@ -101,12 +102,10 @@ with open('github/github.csv') as csv_file:
             found_network=False
             for subdir, dirs, files in os.walk(code_repository):
                 for file in files:
-                    if "dcgan" in file:
-                        (result,found_net,hasMetric)=code_in_one_file(file)
-                        if hasMetric==True:
-                            tranform_tf_file.handle_evaluation_score(file)
-                            import sys
-                            sys.exit()
+                    if "05" in file:
+                        (result,found_net)=code_in_one_file(file)
+                        #if hasMetric==True:
+                            #tranform_tf_file.handle_evaluation_score(file)
                         if found_net==False:
                             print("LOGGING:No network found in ",file)
                         if found_network==False:

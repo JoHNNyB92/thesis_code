@@ -285,43 +285,43 @@ class annet_o_data_management:
 
     def insert_has_network(self,network):
         s = self.prefix_annet_o + self.AnnConfig
-        o = self.prefix_syntax + "hasNetwork"
+        o = self.prefix_annet_o + "hasNetwork"
         p = self.prefix_owl + network
         self.crud.insert(s, o, p)
 
     def insert_has_training_strategy(self,trStrat):
         s = self.prefix_annet_o + self.AnnConfig
-        o = self.prefix_syntax + "hasTrainingStrategy"
-        p = self.prefix_owl + trStrat
+        o = self.prefix_annet_o + "hasTrainingStrategy"
+        p = self.prefix_annet_o + trStrat
         self.crud.insert(s, o, p)
 
     def insert_input_layer(self,network,input):
         s = self.prefix_annet_o + network
-        o = self.prefix_syntax + "hasInputLayer"
-        p = self.prefix_owl + input
+        o = self.prefix_annet_o + "hasInputLayer"
+        p = self.prefix_annet_o + input
         self.crud.insert(s, o, p)
 
     def insert_output_layer(self,network,output):
         s = self.prefix_annet_o + network
-        o = self.prefix_syntax + "hasOutputLayer"
-        p = self.prefix_owl + output
+        o = self.prefix_annet_o + "hasOutputLayer"
+        p = self.prefix_annet_o + output
         self.crud.insert(s, o, p)
 
     def insert_step(self,session,step):
         s = self.prefix_annet_o + session
-        o = self.prefix_syntax + "hasTrainingStep"
-        p = self.prefix_owl + step
+        o = self.prefix_annet_o + "hasTrainingStep"
+        p = self.prefix_annet_o + step
         self.crud.insert(s, o, p)
 
     def insert_primary_step(self,session,step):
         s = self.prefix_annet_o + session
-        o = self.prefix_syntax + "hasPrimaryTrainingStep"
-        p = self.prefix_owl + step
+        o = self.prefix_annet_o + "hasPrimaryTrainingStep"
+        p = self.prefix_annet_o + step
         self.crud.insert(s, o, p)
 
     def insert_same_layer(self,layer,same_layer):
         s = self.prefix_annet_o + layer
-        o = self.prefix_syntax + "sameLayerAs"
-        p = self.prefix_owl + same_layer
+        o = self.prefix_annet_o + "sameLayerAs"
+        p = self.prefix_annet_o + same_layer
         self.crud.insert(s, o, p)
 

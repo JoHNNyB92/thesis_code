@@ -183,7 +183,21 @@ class layer:
             for num in elem.dim:
                 if num.size > 0:
                     self.num_layer = num.size
-                    break
+                    return
+        #If we have not found the num of layers to be inserted,the layer is part of a complex structure.
+        #Thus,we have to find the last inner node connecting the layer to the outer neural network.
+        if self.num_layer<0:
+            for name in nodes.handler.entitiesHandler.node_map.keys():
+                elem = nodes.handler.entitiesHandler.node_map[name]
+                if self.name not in elem.get_name() and "gradient" not in elem.get_name().lower():
+                    for elem_ in elem.get_inputs():
+                        if self.name in elem_.get_name():
+                            for elem__ in elem_.get_output():
+                                for num in elem__.dim:
+                                    if num.size > 0:
+                                        self.num_layer = num.size
+                                        return
+
     def get_all_inner_nodes(self):
         nm = nodes.handler.entitiesHandler.node_map
         for name in nm.keys():

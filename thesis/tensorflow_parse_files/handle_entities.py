@@ -3,7 +3,7 @@ from NetworkEvaluation.evaluation_result import evaluation_result
 from nodes import handler_functions
 from nodes.nodeEntity import nodeEntity as nodeClass
 from Network.network import network
-from copy import copy
+import copy
 
 class handle_entities:
     def __init__(self):
@@ -285,7 +285,10 @@ class handle_entities:
     def prepare_strategy(self,batch,epochs,part_name):
         #self.find_in_out_layer()
         for obj in self.data.annConfiguration.networks[self.current_network].objective.keys():
-            (n_name,_,_,_)=self.find_network(self.data.annConfiguration.networks[self.current_network].objective[obj],[],self.current_network,0)
+            opl=self.find_optimizer()
+            (n_name,_,_,_)=\
+                self.find_network(self.data.annConfiguration.networks[self.current_network].objective[obj],[],self.current_network,0,opl)
+                #self.find_network(obj_func, network_outputs, self.current_network, net_cnt, optimizer_per_layer)
         tr_model=handler_functions.handle_trained_model(self.data.AnnConfig+"_trained_model")
         layers=self.data.annConfiguration.networks[n_name].layer
         counter=0
@@ -515,7 +518,7 @@ class handle_entities:
         no_opt_layers=self.data.annConfiguration.networks[self.current_network].layer.keys()-all_opt_layers
 
         #Copy the layers into a temporary object and remove from it the layers not belonging to an optimizer.
-        t_layers=layers.copy()
+        t_layers=copy.deepcopy(layers)
         for layer in layers:
             if layer in no_opt_layers:
                 del t_layers[layer]
@@ -547,7 +550,7 @@ class handle_entities:
             if sum[key].count(1)>=(len(t_layers)/2):
                 new_networks={}
                 inputs_list=[]
-                tt_layers=t_layers.copy()
+                tt_layers=copy.deepcopy(t_layers)
                 for layer in t_layers:
                     #If layer does not belong to this optimizer
                     if layer in non_optimizer.keys():
@@ -561,7 +564,7 @@ class handle_entities:
                                 if non_optimizer[layer] not in new_networks.keys():
                                     name=non_optimizer[layer]
                                     new_networks[non_optimizer[layer]]=network(name)
-                                new_networks[non_optimizer[layer]].layer[pl+"--"+str(self.sameLayerCounter)]=copy(layers[pl])
+                                new_networks[non_optimizer[layer]].layer[pl+"--"+str(self.sameLayerCounter)]=copy.deepcopy(layers[pl])
                                 new_names[pl]=pl+"--"+str(self.sameLayerCounter)
                                 new_networks[non_optimizer[layer]].layer[pl +"--" + str(self.sameLayerCounter)].name=pl + "--" + str(self.sameLayerCounter)
                                 new_networks[non_optimizer[layer]].layer[pl + "--" + str(self.sameLayerCounter)].sameLayer = pl
@@ -580,7 +583,7 @@ class handle_entities:
                         if nl in tt_layers:
                             print("1YEAH FINAL INPUT=",input)
                             new_inputs.append(input)
-                            new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)] = copy(layers[input])
+                            new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)] = copy.deepcopy(layers[input])
                             new_names[input] = input+"--"+str(self.sameLayerCounter)
                             new_networks[non_optimizer[input]].layer[
                                 input + "--" + str(self.sameLayerCounter)].name = input + "--" + str(self.sameLayerCounter)
@@ -606,7 +609,7 @@ class handle_entities:
                                                 print("2YEAH FINAL INPUT=", input)
                                                 new_inputs.append(input)
                                                 new_networks[non_optimizer[input]].layer[
-                                                    input + "--" + str(self.sameLayerCounter)] = copy(layers[input])
+                                                    input + "--" + str(self.sameLayerCounter)] = copy.deepcopy(layers[input])
                                                 new_networks[non_optimizer[input]].layer[
                                                     input + +"--" + str(self.sameLayerCounter)].sameLayer = input
                                                 new_networks[non_optimizer[input]].output_layer.append(
@@ -626,11 +629,12 @@ class handle_entities:
                     if found==False:
                         #If nothing was found( a layer to be input to the current network)
                         #we add this layer to the new network as simple intermediate layer.
-                        new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)]=copy(layers[input])
+                        new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)]=copy.deepcopy(layers[input])
+                        new_names[input] = input + "--" + str(self.sameLayerCounter)
+                        new_networks[non_optimizer[input]].layer[input + "--" + str(self.sameLayerCounter)].sameLayer=input
                         new_names[input] = input + "--" + str(self.sameLayerCounter)
                         new_networks[non_optimizer[input]].layer[
                             input + "--" + str(self.sameLayerCounter)].name = input + "--" + str(self.sameLayerCounter)
-                        new_networks[non_optimizer[input]].layer[input + "--" + str(self.sameLayerCounter)].sameLayer=input
                         self.sameLayerCounter+=1
                         del layers[input]
                 for x in inputs:
@@ -660,23 +664,25 @@ class handle_entities:
     def insert_network(self,layers,name,inputs,outputs,objective_func,datasets):
         self.data.init_new_network(name)
         print("\n---------------START NEW NETWORK-----------------\n")
+        t_layers=copy.deepcopy(layers)
         for input in inputs:
             input_layer=handler_functions.handle_in_layer(layers[input])
             input_layer.placeholder=layers[input].placeholder
             print("LOGGING:["+name+"]Input is =", input," Dataset is = ",input_layer.placeholder)
             self.data.annConfiguration.networks[name].input_layer.append(input_layer)
             #del self.data.annConfiguration.networks[self.current_network].layer[input]
-            del layers[input]
+            del t_layers[input]
+            print(layers[input])
         for output in outputs:
             #node = output.node
             print("LOGGING:["+name+"]Output is = ",output.name)
             output_layer = handler_functions.handle_out_layer(output)
             self.data.annConfiguration.networks[name].output_layer.append(output_layer)
             #del self.data.annConfiguration.networks[self.current_network].layer[output.name]
-            #del layers[output.name]
-        for layer in layers.keys():
+            #del t_layers[output.name]
+        for layer in t_layers.keys():
             print("LOGGING:["+name+"]Layer is ",layer)
-            self.data.annConfiguration.networks[name].layer[layer]=layers[layer]
+            self.data.annConfiguration.networks[name].layer[layer]=copy.deepcopy(layers[layer])
         if objective_func!="":
             print("LOGGING:["+name+"]Objective func is = ",objective_func.name)
             self.data.annConfiguration.networks[name].objective[objective_func.name]=objective_func
