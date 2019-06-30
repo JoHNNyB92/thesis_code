@@ -295,9 +295,9 @@ def handle_mul_as_cross_entropy(node,c_name):
             for dim in elem.get_attr()["shape"].shape.dim:
                 if dim.size != -1:
                     if dim.size > 2:
-                        type="b"
-                    else:
                         type="c"
+                    else:
+                        type="b"
     if log == True and placeholder == True:
         if type=="b":
             return cost_function(c_name, binary_cross_entropy(node.get_name(), node))
