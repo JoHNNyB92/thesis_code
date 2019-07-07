@@ -9,7 +9,7 @@ from modulefinder import ModuleFinder
 def code_in_one_file(file,imported_files):
     found_network=False
     result=""
-    if file.endswith('.py'):
+    if str(file).endswith('.py'):
         hasMetric=False
         with open(file, encoding="utf8", errors='replace') as myfile:
             has_sess = False
@@ -47,7 +47,7 @@ def code_in_one_file(file,imported_files):
                     tf_run_app=True
 
                 while "ERROR" not in result and "error" not in result and result != "success" and result!="batch_epoch_file_not_found":
-                    (result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(file, skip,tf_run_app)
+                    (result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(file,tf_run_app,project_structure)
                     if result == "batch":
                         print("ERROR:Unable to find batch number for ", file, ".Batch will be set as -1")
                         skip += result
@@ -240,7 +240,7 @@ with open('github/github.csv') as csv_file:
                             used_files=tmp
 
                     print("Files include in main file ",path," are ",project_structure)
-                    code_in_one_file(path,set(project_structure))
+                    code_in_one_file(str(path),set(project_structure))
 
             print("Function")
             sys.exit()

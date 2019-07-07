@@ -22,13 +22,24 @@ def execute_file(new_file,new_line_list,path_to_folder):
         return file_to_execute
     except subprocess.CalledProcessError as e:
         traceback = str(e)
-        print("ERROR:File:",file_to_execute ,"\nTraceback:",traceback)
-        if "batch" in traceback:
-            return "batch"
-        else:
-            return "error"
+        return "error"
 
-def parse_file(path,skip,tf_run_app):
+def handle_imported_files(proj):
+    for path in proj:
+        line_list=[]
+        for line in open(path, errors="replace"):
+            line_list.append(line)
+        (new_line_list,found)=find_epoch_size(line_list,str(path))
+        if found==True:
+            f=open("temp.a",'w')
+            print("Writing to file")
+            for elem in new_line_list:
+                f.write(elem)
+            f.close()
+            import sys
+            sys.exit()
+
+def parse_file(path,tf_run_app,proj):
     path_to_folder=os.path.dirname(path)
     file=ntpath.basename(path)
     new_file=path_to_folder+"/summary_"+file
@@ -39,8 +50,9 @@ def parse_file(path,skip,tf_run_app):
         line_list.append(line)
     #In case there is a meaningful last line,to reduce additional checks for last line
     #line_list.append(" ")
-    (pbtxt_file,batch_epoch,model_var,new_line_list)=create_new_file(line_list,path,file,skip,tf_run_app)
-    new_line_list=find_epoch_size(new_line_list)
+    (pbtxt_file,batch_epoch,model_var,new_line_list)=create_new_file(line_list,path,file,tf_run_app)
+    handle_imported_files(proj)
+    (new_line_list,_)=find_epoch_size(new_line_list)
     result=execute_file(new_file,new_line_list,path_to_folder)
     if result=="error":
         print("ERROR:File contains inner error,cannot execute it.")
@@ -69,37 +81,57 @@ def get_batch_epoch(file):
     except FileNotFoundError:
         return (-2,-2)
 
-def find_epoch_size(line_list):
+
+def find_epoch_size(line_list,file):
     new_line_list = []
+    new_line_list.append("import json\n")
     cnt=0
     found_model_line=0
     num_of_space=0
+    found_sess=False
+    num_found=0
+    line_of_sess_run=""
+    file=file.split("\\")[-1]
+    found_run=False
     for ind,line in enumerate(line_list):
         new_line_list.append(line)
         if ".run" in line:
             num_of_space = len(line) - len(line.lstrip(' '))
+            line_of_sess_run=line.replace("\n","").replace(" ","")
+            found_run=True
+        elif found_run==True:
+            line_of_sess_run+=line.replace("\n","").replace(" ","")
         if "feed_dict" in line:
             found_model_line = 1
         if line.replace("\n", "").endswith(')') == True  and found_model_line == 1:
             if ind+1 >=len(line_list) or line_list[ind + 1][0].replace(" ","") != ".":
-                new_line_list.append(num_of_space*" "+"global epoch_counter\n")
-                new_line_list.append(num_of_space*" "+"epoch_counter+=1\n")
-                new_line_list.append(num_of_space*" "+"print(\"EPOCH COUNTER:\",epoch_counter,file=batch_epoch_file_to_print)\n")
-                break
+                write_file = "temporary_" + file + "_" + str(num_found) + ".info"
+                write_file_line = "temporary_" + file + "_" + str(num_found) + ".lines"
+                new_line_list.append(num_of_space*" "+"with open('"+write_file+"', 'w') as json_file:\n")
+                new_line_list.append((num_of_space+1)* " "+"json.dump(locals(), json_file)\n")
+                new_line_list.append(num_of_space * " " + "f = open("+write_file_line+", 'a')\n")
+                new_line_list.append(num_of_space * " "+"f.write('"+line_of_sess_run+"')\n")
+                new_line_list.append(num_of_space * " "+"f.close()\n")
+                found_sess=True
+                found_run=False
+                num_found+=1
+                found_model_line = 0
         cnt+=1
     for i,v in enumerate(line_list):
         if i > cnt:
             new_line_list.append(v)
-    return ( new_line_list)
+    return ( new_line_list,found_sess)
 
-def create_new_file(line_list,path,file,skip,tf_run_app):
+
+
+def create_new_file(line_list,path,file,tf_run_app):
     new_line_list=[]
     model_variable=""
     batch_epoch=file+"_batch_epoch.txt"
     current_folder=os.getcwd()
     first_time=0
     found_main=0
-    (return_list,pbtxt_file)=create_code_for_pbtxt_and_tensorboard(path, file, skip)
+    (return_list,pbtxt_file)=create_code_for_pbtxt_and_tensorboard(path, file)
     if tf_run_app == True:
         found_def_main=False
         spaces=0
@@ -167,7 +199,7 @@ def model_find(path):
                 model_find(model_variable)
 
 
-def create_code_for_pbtxt_and_tensorboard(path,file,skip):
+def create_code_for_pbtxt_and_tensorboard(path,file):
     backwards_dir = ""
     real_path = os.path.dirname(path)
     real_path = os.getcwd() + "\\" + real_path
@@ -188,9 +220,6 @@ def create_code_for_pbtxt_and_tensorboard(path,file,skip):
     str_4 = num_of_space * " " + "tfFileWriter = tf.summary.FileWriter(\"" + folder + "\")\n"
     str_5 = num_of_space * " " + "tfFileWriter.add_graph(graph_def)\n"
     str_6 = num_of_space * " " + "tfFileWriter.close()\n"
-    if "batch" not in skip:
-        str_7 = num_of_space * " " + "if 'batch_size' in locals():\n"
-        str_8 = (num_of_space + 1) * " " + "print(\"BATCH SIZE:\",batch_size,file=batch_epoch_file_to_print)\n"
     return_list=[]
     return_list.append(str)
     return_list.append(str_0)
@@ -200,8 +229,6 @@ def create_code_for_pbtxt_and_tensorboard(path,file,skip):
     return_list.append(str_4)
     return_list.append(str_5)
     return_list.append(str_6)
-    return_list.append(str_7)
-    return_list.append(str_8)
     pbtxt_file=backwards_dir+github.dirName+"\_tensorflow\pbtxt\\"+file+".pbtxt"
     return (return_list,pbtxt_file)
 
