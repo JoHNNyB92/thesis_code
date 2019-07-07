@@ -8,7 +8,6 @@ class training_single(network_specific):
         super(training_single, self).insert_in_annetto()
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
-        super(training_single, self).insert_in_annetto()
         if self.batch!=0:
             rdfWrapper.new_batch_size(self.name, self.batch)
         if self.epochs!=0:

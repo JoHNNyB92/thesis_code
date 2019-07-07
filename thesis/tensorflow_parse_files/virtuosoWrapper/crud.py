@@ -6,7 +6,7 @@ class crud:
         self.virtuosoDB = "http://localhost:8890/sparql-auth"
         self.password = "dba"
         self.username = "dba"
-        self.graph = "<http://localhost:8890/DAV/anneto>"
+        self.graph = "<http://localhost:8890/DAV/annetto>"
         self.sparql = SPARQLWrapper(self.virtuosoDB)
         self.sparql.setHTTPAuth(DIGEST)
         self.sparql.setCredentials(self.username, self.password)
@@ -18,10 +18,11 @@ class crud:
         rdfWrapper.log(print_query)
         rdfWrapper.log(len(final_query)*"-")
         #print(final_query)
-        #rdfWrapper.log(log_msg_ins+final_query)
-        '''self.sparql.setQuery(final_query)
+        rdfWrapper.log(log_msg_ins+final_query)
+        self.sparql.setQuery(final_query)
         self.sparql.setReturnFormat('json')
         self.sparql.method = "POST"
-        res=self.sparql.query()'''
+        res=self.sparql.query()
+        print("RESULT:\n",res)
 
 

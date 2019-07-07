@@ -99,12 +99,6 @@ class annet_o_data_management:
         p = self.prefix_annet_o + input
         self.crud.insert(s, o, p)
 
-    def insert_joinsDataset(self,name,dataset):
-        s = self.prefix_annet_o + name
-        o = self.prefix_annet_o + "joinsLayer"
-        p = self.prefix_annet_o + dataset
-        self.crud.insert(s, o, p)
-
     def insert_hasMetric(self,result,metric):
         s = self.prefix_annet_o +result
         o = self.prefix_annet_o + "hasMetric"
@@ -130,7 +124,7 @@ class annet_o_data_management:
         self.crud.insert(s, o, p)
 
     def insert_has_bias(self,layer,bool):
-        value=str(bool)+"^^<http://www.w3.org/2001/XMLSchema#boolean>"
+        value=str(bool)#+"^^<http://www.w3.org/2001/XMLSchema#boolean>"
         s = self.prefix_annet_o + layer
         o = self.prefix_annet_o + "has_bias"
         p = self.prefix_annet_o + value
@@ -264,14 +258,14 @@ class annet_o_data_management:
         self.crud.insert(s, o, p)
 
     def insert_batch(self,annConf,batch):
-        value = str(batch) + "^^<http://www.w3.org/2001/XMLSchema#int>"
+        value = str(batch)# + "^^<http://www.w3.org/2001/XMLSchema#int>"
         s = self.prefix_annet_o + annConf
         o = self.prefix_annet_o + "batch_size"
         p = self.prefix_annet_o + str(value)
         self.crud.insert(s, o, p)
 
     def insert_epoch(self,annConf,epoch):
-        value = str(epoch) + "^^<http://www.w3.org/2001/XMLSchema#int>"
+        value = str(epoch)# + "^^<http://www.w3.org/2001/XMLSchema#int>"
         s = self.prefix_annet_o + annConf
         o = self.prefix_annet_o + "number_of_epochs"
         p = self.prefix_annet_o + str(value)

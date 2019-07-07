@@ -46,7 +46,7 @@ def code_in_one_file(file):
                 tf_run_app=False
                 if (has_def_main==True and has_tf_app_run==True):
                     tf_run_app=True
-                '''
+
                 while "ERROR" not in result and "error" not in result and result != "success" and result!="batch_epoch_file_not_found":
                     (result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(total_path, skip,tf_run_app)
                     if result == "batch":
@@ -54,7 +54,6 @@ def code_in_one_file(file):
                         skip += result
                         batch_size = -1
                     os.chdir(path)
-                '''
                 if "error" in result:
                     print("ERROR:Error occured when executing the program ", file)
                 else:
@@ -62,8 +61,8 @@ def code_in_one_file(file):
                     os.chdir(path)
                     print("----------------------------------------------------------------------------")
                     # Change directory in order to be appropriate for the folder that the pbtxt parser is located.
-                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\05_basic_convnet.py.pbtxt"
-                    #pbtxt_file = github.folder + github.dirName + pbtxt_file.split(github.dirName)[1]
+                    #pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\05_basic_convnet.py.pbtxt"
+                    pbtxt_file = github.folder + github.dirName + pbtxt_file.split(github.dirName)[1]
 
                     # Windows OS
                     log_file = pbtxt_file.split("\\")[-1].replace(".py.pbtxt", "")
@@ -81,8 +80,7 @@ def code_in_one_file(file):
                         print(
                             " ----------------------------------------------------------------------------------------------------------------------")
                         print("|Finished parsing of file ", os.path.basename(total_path), " Result:", result, "|")
-                        import sys
-                        sys.exit()
+
                         print(
                             " ---------------------------------------------------------------------------------------------------------------------")
     return(result,found_network)
@@ -102,14 +100,13 @@ with open('github/github.csv') as csv_file:
             found_network=False
             for subdir, dirs, files in os.walk(code_repository):
                 for file in files:
-                    if "05" in file:
-                        (result,found_net)=code_in_one_file(file)
-                        #if hasMetric==True:
-                            #tranform_tf_file.handle_evaluation_score(file)
-                        if found_net==False:
-                            print("LOGGING:No network found in ",file)
-                        if found_network==False:
-                            found_network=found_net
+                    (result,found_net)=code_in_one_file(file)
+                    #if hasMetric==True:
+                        #tranform_tf_file.handle_evaluation_score(file)
+                    if found_net==False:
+                        print("LOGGING:No network found in ",file)
+                    if found_network==False:
+                        found_network=found_net
 
 
 

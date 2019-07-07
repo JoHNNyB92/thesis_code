@@ -283,11 +283,14 @@ class handle_entities:
             del self.data.annConfiguration.networks[self.current_network].layer[elem]
     '''
     def prepare_strategy(self,batch,epochs,part_name):
-        #self.find_in_out_layer()
+        #There is a case where a second optimizer is used as an initialization optimizer for some variables of the network.
+        #This function is used for the case of only one neural network.
+        #Thus after the call to find which optimizer belong to the networ,we break the iteration.
         for obj in self.data.annConfiguration.networks[self.current_network].objective.keys():
             opl=self.find_optimizer()
             (n_name,_,_,_)=\
                 self.find_network(self.data.annConfiguration.networks[self.current_network].objective[obj],[],self.current_network,0,opl)
+            break
                 #self.find_network(obj_func, network_outputs, self.current_network, net_cnt, optimizer_per_layer)
         tr_model=handler_functions.handle_trained_model(self.data.AnnConfig+"_trained_model")
         layers=self.data.annConfiguration.networks[n_name].layer
@@ -459,12 +462,14 @@ class handle_entities:
             temp=[]
             for prev_layer in prev:
                 if layers[prev_layer].is_input==True:
-                    #print("LOGGING:Discovered input layer = ",prev_layer)
+                    print("LOGGING:Discovered input layer = ",prev_layer)
                     ret_layer.append(layers[prev_layer].placeholder)
                     net_layers[layers[prev_layer].placeholder]=layers[layers[prev_layer].placeholder]
                     net_layers[prev_layer] = layers[prev_layer]
+                    for elem in layers[prev_layer].previous_layer:
+                        temp.append(elem)
                 else:
-                    #print("LOGGING:Discovered intermediate layer = ",prev_layer)
+                    print("LOGGING:Discovered intermediate layer = ",prev_layer)
                     net_layers[prev_layer]=layers[prev_layer]
                     for elem in layers[prev_layer].previous_layer:
                         temp.append(elem)

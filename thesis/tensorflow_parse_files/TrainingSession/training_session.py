@@ -8,7 +8,7 @@ class training_session:
         rdfWrapper.new_type(self.name, self.type)
 
         if self.hasTrainingStep!="":
-            for tr_step in self.hasTrainingStep:
+            for ind,tr_step in enumerate(self.hasTrainingStep):
                 tr_step.insert_in_annetto()
                 rdfWrapper.new_has_training_step(self.name,tr_step.name)
         else:
