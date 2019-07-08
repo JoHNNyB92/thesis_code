@@ -25,19 +25,24 @@ def execute_file(new_file,new_line_list,path_to_folder):
         return "error"
 
 def handle_imported_files(proj):
+    print("Started searching for project included files")
     for path in proj:
         line_list=[]
         for line in open(path, errors="replace"):
             line_list.append(line)
-        (new_line_list,found)=find_epoch_size(line_list,str(path))
+        dir_ = os.getcwd()
+        os.chdir(os.path.dirname(str(path)))
+        (new_line_list,found,produced_files)=find_epoch_size(line_list,str(path))
+        import ntpath
+        real_path=ntpath.basename(str(path))
         if found==True:
-            f=open("temp.a",'w')
-            print("Writing to file")
+            f=open(real_path,'w')
+            print("Writing to file ",real_path," get=",os.getcwd())
             for elem in new_line_list:
                 f.write(elem)
             f.close()
-            import sys
-            sys.exit()
+        os.chdir(str(dir_))
+    return produced_files
 
 def parse_file(path,tf_run_app,proj):
     path_to_folder=os.path.dirname(path)
@@ -51,8 +56,13 @@ def parse_file(path,tf_run_app,proj):
     #In case there is a meaningful last line,to reduce additional checks for last line
     #line_list.append(" ")
     (pbtxt_file,batch_epoch,model_var,new_line_list)=create_new_file(line_list,path,file,tf_run_app)
+    for elem in new_line_list:
+        print("MALAKA",elem)
+    dir_ = os.getcwd()
+    os.chdir(os.path.dirname(str(path)))
+    (new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
+    os.chdir(str(dir_))
     handle_imported_files(proj)
-    (new_line_list,_)=find_epoch_size(new_line_list)
     result=execute_file(new_file,new_line_list,path_to_folder)
     if result=="error":
         print("ERROR:File contains inner error,cannot execute it.")
@@ -82,8 +92,16 @@ def get_batch_epoch(file):
         return (-2,-2)
 
 
-def find_epoch_size(line_list,file):
+def find_epoch_size(line_list,file_path):
     new_line_list = []
+    print("Start iterating")
+    for ind,elem in enumerate(line_list):
+        print("\n\n\n\n\nelem=",elem)
+        new_line_list.append(elem)
+        if elem.startswith("from") or elem.startswith("import"):
+            if "__future__" not in line_list:
+                break
+    print("End iterating")
     new_line_list.append("import json\n")
     cnt=0
     found_model_line=0
@@ -91,36 +109,46 @@ def find_epoch_size(line_list,file):
     found_sess=False
     num_found=0
     line_of_sess_run=""
-    file=file.split("\\")[-1]
+    file=file_path.split("\\")[-1]
     found_run=False
-    for ind,line in enumerate(line_list):
-        new_line_list.append(line)
-        if ".run" in line:
-            num_of_space = len(line) - len(line.lstrip(' '))
-            line_of_sess_run=line.replace("\n","").replace(" ","")
-            found_run=True
-        elif found_run==True:
-            line_of_sess_run+=line.replace("\n","").replace(" ","")
-        if "feed_dict" in line:
-            found_model_line = 1
-        if line.replace("\n", "").endswith(')') == True  and found_model_line == 1:
-            if ind+1 >=len(line_list) or line_list[ind + 1][0].replace(" ","") != ".":
-                write_file = "temporary_" + file + "_" + str(num_found) + ".info"
-                write_file_line = "temporary_" + file + "_" + str(num_found) + ".lines"
-                new_line_list.append(num_of_space*" "+"with open('"+write_file+"', 'w') as json_file:\n")
-                new_line_list.append((num_of_space+1)* " "+"json.dump(locals(), json_file)\n")
-                new_line_list.append(num_of_space * " " + "f = open("+write_file_line+", 'a')\n")
-                new_line_list.append(num_of_space * " "+"f.write('"+line_of_sess_run+"')\n")
-                new_line_list.append(num_of_space * " "+"f.close()\n")
-                found_sess=True
-                found_run=False
-                num_found+=1
-                found_model_line = 0
-        cnt+=1
+    produced_files=[]
+    github_path = github.folder + github.dirName + "\\"
+    for ind_,line in enumerate(line_list):
+        if ind_>ind:
+            new_line_list.append(line)
+            if ".run" in line:
+                num_of_space = len(line) - len(line.lstrip(' '))
+                line_of_sess_run=line.replace("\n","").replace(" ","")
+                found_run=True
+            elif found_run==True:
+                line_of_sess_run+=line.replace("\n","").replace(" ","")
+            if "feed_dict" in line:
+                found_model_line = 1
+            if line.replace("\n", "").endswith(')') == True  and found_model_line == 1:
+                if ind+1 >=len(line_list) or line_list[ind + 1][0].replace(" ","") != ".":
+                    write_file = "_temporary_" + file + "_" + str(num_found) + ".info"
+                    write_file_line = "_temporary_" + file + "_" + str(num_found) + ".lines"
+                    name=os.path.dirname(file_path).split(github.dirName)[1].replace("\\","_")
+                    write_file_line=name+write_file_line
+                    write_file = name + write_file
+                    produced_files.append(name+write_file.replace(".info",""))
+                    new_line_list.append(num_of_space * " " +"abc = ''\n")
+                    new_line_list.append(num_of_space * " "+"for k, v in locals().items():\n")
+                    new_line_list.append((num_of_space+1) * " "+"abc +='KEY:'+ k + 'VALUE:' + str(v) + '||||'\n")
+                    new_line_list.append(num_of_space * " "+"f = open('"+write_file+"', 'w')\n")
+                    new_line_list.append(num_of_space * " "+"f.write(abc)\n")
+                    new_line_list.append(num_of_space * " " + "f = open('"+write_file_line+"', 'a')\n")
+                    new_line_list.append(num_of_space * " "+"f.write('"+line_of_sess_run+"||||')\n")
+                    new_line_list.append(num_of_space * " "+"f.close()\n")
+                    found_sess=True
+                    found_run=False
+                    num_found+=1
+                    found_model_line = 0
+            cnt+=1
     for i,v in enumerate(line_list):
         if i > cnt:
             new_line_list.append(v)
-    return ( new_line_list,found_sess)
+    return ( new_line_list,found_sess,produced_files)
 
 
 

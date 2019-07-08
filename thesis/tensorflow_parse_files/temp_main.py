@@ -3,6 +3,7 @@ import os
 import sys
 import tranform_tf_file
 import tensorflow_parser
+import handle_lines_and_info
 import csv
 from modulefinder import ModuleFinder
 
@@ -240,8 +241,13 @@ with open('github/github.csv') as csv_file:
                             used_files=tmp
 
                     print("Files include in main file ",path," are ",project_structure)
-                    code_in_one_file(str(path),set(project_structure))
-
+                    #code_in_one_file(str(path),set(project_structure))
+                    pathlistInfo = Path(code_repository).glob("**/*.info")
+                    pathlistLine = Path(code_repository).glob("**/*.lines")
+                    files = ["_temp_folder_test_temporary_test.py_0",
+                             "_temp_folder_train_temporary_train.py_0"]
+                    print(pathlist)
+                    handle_lines_and_info.handle_lines_and_info(files,pathlistInfo,pathlistLine)
             print("Function")
             sys.exit()
 
