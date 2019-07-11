@@ -76,4 +76,4 @@ def print_topology():
         print("_____________________________________________________________________________________")
     else:
         print("\nno evaluation\n")
-    return ""
+    return "success"

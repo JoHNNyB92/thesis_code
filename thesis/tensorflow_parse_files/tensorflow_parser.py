@@ -50,23 +50,18 @@ def parse_pbtxt(path,epoch,batch,part_name):
             inputs.append(elem)
     #nodes.handler.entitiesHandler.transform_layers_to_ins_outs(inputs)
     result=print_info.print_topology()
-    if result!="":
+    if result!="success":
+        print("PARSING FAILED")
         return result
     #TODO FOR MULTIPLE NETWORKS WE NEED MULTIPLE EVALUATION RESULTS->THUS THIS SHOULD BE MOVED
     res=nodes.handler.entitiesHandler.check_multiple_networks()
     if res==0:
         nodes.handler.entitiesHandler.prepare_strategy(batch, epoch, part_name)
-        #nodes.handler.entitiesHandler.insert_to_evaluation_pipe()
     elif res==-1:
         print("ERROR:Program not a network finally")
         return "ERROR:This tensorflow program is not a network.No objective functions identified"
-    print("Starting inserting to annetto.")
     print("-----------------------------------------------------")
-    rdfWrapper.insert_ann_graph()
-    hasMetric=False
-    if nodes.handler.entitiesHandler.data.evaluationResult.metric!=0:
-        hasMetric=True
-    return "Success for "+path
+    return result
 
 def begin_parsing(name,pbtxt_file,epoch,batch,log_file):
     nodes.handler.entitiesHandler=handle_entities()
@@ -77,5 +72,12 @@ def begin_parsing(name,pbtxt_file,epoch,batch,log_file):
     rdfWrapper.new_init_new_evaluation(part_name+"_eval",part_name)
     nodes.handler.entitiesHandler.set_batch_epoch(batch,epoch)
     result=parse_pbtxt(pbtxt_file,epoch,batch,part_name)
+    #nodes.handler.entitiesHandler=""
+    return (result,nodes.handler.entitiesHandler)
+
+def insert_in_annetto():
+    rdfWrapper.insert_ann_graph()
     nodes.handler.entitiesHandler=""
-    return result
+
+
+

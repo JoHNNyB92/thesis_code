@@ -10,7 +10,7 @@ def get_output_networks(sess_run):
     else:
         print("2")
         network_list.append(networks.replace(" ",""))
-    print("networks are ",network_list)
+    #print("networks are ",network_list)
     return network_list
 
 def get_feed_dict(sess_run):
@@ -26,16 +26,16 @@ def get_feed_dict(sess_run):
             feed.append(feed_dict.replace(" ","").split(":")[0])
     else:
         feed_dict = feed_dict.split(")")[0]
-        feed.append(feed_dict)
-    print("feed_dict is ",feed)
+        feed=feed_dict
+    #print("feed_dict is ",feed)
     return feed
 
 
 def handle_lines(content):
     epoch=content.count("||||")
-    print("Epoch is ",epoch)
+    #print("Epoch is ",epoch)
     sess_run=content.split("||||")[0]
-    print("sess run is =",sess_run)
+    #print("sess run is =",sess_run)
     networks=get_output_networks(sess_run)
     feed_dict=get_feed_dict(sess_run)
     return (feed_dict,networks,epoch)
@@ -56,11 +56,20 @@ def handle_input_var(value):
         n_value = value.split("Tensor(\"")[1].split("\"")[0].split(":")[0]
     return n_value
 
+def search_feed_dict(feed_dict,key,value,inputs):
+    for input in feed_dict:
+        if input in key:
+            in_ = handle_input_var(value)
+            inputs.append(in_)
+    return inputs
+
 def handle_info(content,networks,feed_dict):
     dict=content.split("||||")
     loss=[]
     optimizer=[]
     inputs=[]
+    input_search=[]
+    not_class=False
     for element in dict:
         value=""
         try:
@@ -69,48 +78,80 @@ def handle_info(content,networks,feed_dict):
             continue
         key = element.split("VALUE:")[0].split("KEY:")[1]
         for network in networks:
-            #print("Search for ",network)
+
             if network in key:
-                print("KEY IS ",key,"Value:",value)
                 (case,n_value)=handle_network_var(value)
                 if case=="L":
                     loss.append(n_value)
                 if case=="O":
                     optimizer.append(n_value)
                 break
-        print("feed=",feed_dict)
+        #print("feed=",feed_dict)
         if str(type(feed_dict))=="<class 'list'>":
-          for input in feed_dict:
-              if input in key:
-                  print("VAlu=",value)
-                  in_=handle_input_var(value)
-                  print("ALELELELELELEL=",in_)
-                  inputs.append(in_)
-
+            inputs=search_feed_dict(feed_dict,key,value,inputs)
+        else:
+            #not_class=True
+            if feed_dict in key:
+                #print("ARETH-1=",key)
+                #print("ARETH-0.5=", value)
+                vars=value.split("<tf.Tensor ")
+                vars=vars[1:]
+                #print("AReth0=",vars)
+                for var in vars:
+                    #print("Areth1=",var.split("'"))
+                    #print("Areth3=",var.split("'")[1].split(":")[0])
+                    inputs.append(var.split("'")[1].split(":")[0])
+    '''
+    if not_class==True:
+        for element in dict:
+            value = ""
+            try:
+                value = element.split("VALUE:")[1]
+            except:
+                continue
+            key = element.split("VALUE:")[0].split("KEY:")[1]
+            print("EVITA=",input_search,"key=",key)
+            inputs=search_feed_dict(input_search,key,value,inputs)
+            print("ARETH2=", inputs)
+    '''
+    print("Returning inputs=",inputs)
     return(loss,optimizer,inputs)
 
 def handle_lines_and_info(files,pathlistInfo,pathlistLine):
-    print("\n\n\n\n\n\n\n\n\n\n\n\n")
     pathlistInfo=list(pathlistInfo)
+    file_training_information=[]
     for file in pathlistLine:
+        print("begin searching for ",file)
+        found_file = False
         for prFile in files:
+            print("File=",prFile)
             if str(prFile)+".lines" in str(file):
+                print("\n\n\n\n\n\n\n\nFound str(prFile)=",str(prFile))
+                print('file=',file)
                 with open(str(file), 'r') as content_file:
                     content = content_file.read()
                     (feed_dict,networks,epoch)=handle_lines(content)
-                print("Networks=",networks)
+                #print("Networks=",networks)
                 new_file_training=file_training()
                 new_file_training.name=str(prFile)+".lines"
                 for file_ in pathlistInfo:
-                    for prFile_ in files:
-                        if str(prFile_)+".info" in str(file_):
-                            with open(str(file_), 'r') as content_file:
-                                content = content_file.read()
-                                (loss,optimizer,inputs)=handle_info(content,networks,feed_dict)
-                                new_file_training.loss=loss
-                                new_file_training.optimizer=optimizer
-                                new_file_training.epoch=epoch
-                                new_file_training.inputs = inputs
-                                new_file_training.print()
-                                break
+                    if (str(prFile)+".info") in str(file_):
+                        print(str(prFile)+".info","    FOUND RE MALAKA=",str(file_))
+                        with open(str(file_), 'r') as content_file:
+                            content = content_file.read()
+                            print("NETWORKS=",networks)
+                            (loss,optimizer,inputs)=handle_info(content,networks,feed_dict)
+                            new_file_training.loss=loss
+                            new_file_training.optimizer=optimizer
+                            new_file_training.epoch=epoch
+                            new_file_training.inputs = inputs
+                            new_file_training.print()
+                            file_training_information.append(new_file_training)
+                            found_file=True
+                            break
+                    if found_file==True:
+                        break
+                if found_file==True:
+                    break
 
+    return file_training_information

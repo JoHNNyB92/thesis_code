@@ -7,9 +7,11 @@ import handle_lines_and_info
 import csv
 from modulefinder import ModuleFinder
 
-def code_in_one_file(file,imported_files):
+def code_in_one_file(file,subdir):
     found_network=False
+    total_path = os.path.join(subdir, file)
     result=""
+    handler_entities=""
     if str(file).endswith('.py'):
         hasMetric=False
         with open(file, encoding="utf8", errors='replace') as myfile:
@@ -46,23 +48,19 @@ def code_in_one_file(file,imported_files):
                 tf_run_app=False
                 if (has_def_main==True and has_tf_app_run==True):
                     tf_run_app=True
-
-                while "ERROR" not in result and "error" not in result and result != "success" and result!="batch_epoch_file_not_found":
-                    (result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(file,tf_run_app,project_structure)
-                    if result == "batch":
-                        print("ERROR:Unable to find batch number for ", file, ".Batch will be set as -1")
-                        skip += result
-                        batch_size = -1
-                    os.chdir(path)
+                #(result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(file,tf_run_app,project_structure)
+                os.chdir(path)
                 if "error" in result:
                     print("ERROR:Error occured when executing the program ", file)
+                    import sys
+                    sys.exit()
                 else:
                     print("LOGGING:Finished executing file :", os.path.basename(total_path))
                     os.chdir(path)
                     print("----------------------------------------------------------------------------")
                     # Change directory in order to be appropriate for the folder that the pbtxt parser is located.
-                    #pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\05_basic_convnet.py.pbtxt"
-                    pbtxt_file = github.folder + github.dirName + pbtxt_file.split(github.dirName)[1]
+                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\custom_split_repository.py.pbtxt"
+                    #pbtxt_file = github.folder + github.dirName + pbtxt_file.split(github.dirName)[1]
 
                     # Windows OS
                     log_file = pbtxt_file.split("\\")[-1].replace(".py.pbtxt", "")
@@ -73,7 +71,7 @@ def code_in_one_file(file,imported_files):
                         print("ERROR:There was an error with the creation of pbtxt file  ",pbtxt_file)
                     else:
                         print("LOGGING:Begin parsing pbtxt file ", pbtxt_file, " with anneto logging in ", log_file)
-                        result= tensorflow_parser.begin_parsing(os.path.basename(total_path), pbtxt_file, batch_size,
+                        (result,handler_entities)= tensorflow_parser.begin_parsing(os.path.basename(subdir), pbtxt_file, batch_size,
                                                              epoch, log_file)
                         if result == "success":
                             found_network = True
@@ -83,7 +81,7 @@ def code_in_one_file(file,imported_files):
 
                         print(
                             " ---------------------------------------------------------------------------------------------------------------------")
-    return(result,found_network)
+    return(result,found_network,handler_entities)
 
 def code_in_multiple_files(file):
     print(file)
@@ -199,6 +197,8 @@ with open('github/github.csv') as csv_file:
                 # because path is object not string
                 path_in_str = str(path)
                 imported=find_imports(path_in_str)
+                import ntpath
+                subdir=ntpath.dirname(path_in_str)
                 print("\n\n Begin searching for ",path_in_str,"with imported ",imported)
                 repo_files_imp=handle_file_with_imports(imported,files)
                 print("Found imports ", repo_files_imp)
@@ -220,10 +220,9 @@ with open('github/github.csv') as csv_file:
 
             pathlist = Path(code_repository).glob('**/*.py')
             for path in pathlist:
-                print("PATH=",str(path))
-                print("Function Files=",function_files)
+                #print("PATH=",str(path))
+                #print("Function Files=",function_files)
                 if str(path) not in function_files and "__init__" not in str(path):
-                    print("main function occured ",path)
                     used_files=file_import_dict[str(path)]
                     print(used_files)
                     project_structure=[]
@@ -241,13 +240,23 @@ with open('github/github.csv') as csv_file:
                             used_files=tmp
 
                     print("Files include in main file ",path," are ",project_structure)
-                    #code_in_one_file(str(path),set(project_structure))
-                    pathlistInfo = Path(code_repository).glob("**/*.info")
-                    pathlistLine = Path(code_repository).glob("**/*.lines")
-                    files = ["_temp_folder_test_temporary_test.py_0",
-                             "_temp_folder_train_temporary_train.py_0"]
-                    print(pathlist)
-                    handle_lines_and_info.handle_lines_and_info(files,pathlistInfo,pathlistLine)
+                    (result,found_network,handler_entities)=code_in_one_file(str(path),subdir)
+                    if found_network == True:
+                        pathlistInfo = Path(code_repository).glob("**/*.info")
+                        pathlistLine = Path(code_repository).glob("**/*.lines")
+                        timeList=[]
+                        for file in pathlistInfo:
+                            timeList.append([os.path.getmtime(str(file)),str(file)])
+                        timeList=sorted(timeList,key=lambda x:float(x[0]))
+                        pathlistInfo = Path(code_repository).glob("**/*.info")
+                        print("pathListInfo=",pathlistInfo)
+                        files = ["_temp_folder_test_temporary_test.py_1",
+                                 "_temp_folder_train_temporary_train.py_1",
+                                 "_temp_folder_train_temporary_train.py_1_co_train_2"]
+                        print(pathlist)
+                        file_dict=handle_lines_and_info.handle_lines_and_info(files,pathlistInfo,pathlistLine)
+                        sys.exit()
+                        handler_entities.find_training(file_dict,timeList)
             print("Function")
             sys.exit()
 
