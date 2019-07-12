@@ -898,7 +898,7 @@ class handle_entities:
         return ret_file
 
     def handle_multiple_networks_training(self,file_info):
-
+        print(1)
     def find_network(self,obj_func,net_outputs,network,counter,opl):
         loss=obj_func.cost_function.loss
         if loss.input_nodes!=[]:

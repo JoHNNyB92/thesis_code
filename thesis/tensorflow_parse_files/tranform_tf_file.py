@@ -105,18 +105,14 @@ def find_epoch_size(line_list,file_path):
     found_model_line=0
     num_of_space=0
     found_sess=False
-    num_found=0
     line_of_sess_run=""
     file=file_path.split("\\")[-1]
     found_run=False
     produced_files=[]
     github_path = github.folder + github.dirName + "\\"
-    same_repetition_counter=0
     session_counter=0
-    is_trained_together=0
     boolean_index=0
     added_lines=0
-    last_for=10000000
     for ind_,line in enumerate(line_list):
         if ind_>ind:
             new_line_list.append(line)
@@ -145,25 +141,36 @@ def find_epoch_size(line_list,file_path):
                     print("LINE2 IS=",new_line_list[temp_ind])
                     boolean="first_time_file_found_"+str(boolean_index)
                     print("ALOHA=",sess_space,"-",prev_line_space,"-",new_line_list[temp_ind])
+                    session_counter+=1
                     while sess_space<=prev_line_space:
                         print("GOING BACK1=",new_line_list[temp_ind],"-",prev_line_space)
                         if "sess.run" in new_line_list[temp_ind] and sess_space>prev_line_space:
+                            print("IS_CO_TRAI=true")
                             is_co_train=True
+                        if "_sEssIOn_" in new_line_list[temp_ind]:
+                            print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
+                            reg = r'\[[\s\S]*\]'
+                            new_line_list[temp_ind]=re.sub(reg, '['+str(session_counter)+']', new_line_list[temp_ind])
+                            print("FOUND SESSION WITH=", new_line_list[temp_ind])
                         temp_ind-=1
-
                         prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
                         print("GOING BACK2=", new_line_list[temp_ind], "-", prev_line_space)
+
                     new_line_list=new_line_list[:temp_ind]+[prev_line_space*" "+"first_time_file_found_"+str(boolean_index)+"=False\n"]+new_line_list[temp_ind:]
                     boolean_index+=1
                     if is_co_train==True:
-                        is_co_train=False
-                        same_repetition_counter+=1
-                        write_file = "_temporary_" + file + "_" + str(num_found) +"_SEssIOn_"+str(session_counter)+"_co_train_"+str(same_repetition_counter)+".info"
-                        write_file_line = "_temporary_" + file + "_" + str(num_found) +"_co_train_"+str(same_repetition_counter)+ ".lines"
-                        name = os.path.dirname(file_path).split(github.dirName)[1].replace("\\", "_")
-                        write_file_line = name + write_file_line
-                        write_file = name + write_file
-                        produced_files.append(name + write_file.replace(".info", ""))
+                        write_file = "_temporary_" + file + "_"+"_sEssIOn_["+str(session_counter)+"]_co_train_"+str(session_counter)+".info"
+                        write_file_line = "_temporary_" + file + "_"+"_sEssIOn_["+str(session_counter)+"]_co_train_"+str(session_counter)+ ".lines"
+                    else:
+                        write_file = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_" + str(session_counter) + ".info"
+                        write_file_line = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
+                            session_counter) + "]_" + str(session_counter) + ".lines"
+
+                    name = os.path.dirname(file_path).split(github.dirName)[1].replace("\\", "_")
+                    write_file_line = name + write_file_line
+                    write_file = name + write_file
+                    produced_files.append(name + write_file.replace(".info", ""))
+                    '''
                     else:
                         num_found += 1
                         write_file = "_temporary_" + file + "_" + str(num_found) + ".info"
@@ -172,7 +179,7 @@ def find_epoch_size(line_list,file_path):
                         write_file_line=name+write_file_line
                         write_file = name + write_file
                         produced_files.append(name+write_file.replace(".info",""))
-
+                    '''
                     #Extra check an iparxei to arxeio,tote xanagrapse to tin proti fora
                     new_line_list.append(num_of_space * " " +"abc = ''\n")
                     new_line_list.append(num_of_space * " "+"for k, v in locals().items():\n")

@@ -48,7 +48,7 @@ def code_in_one_file(file,subdir):
                 tf_run_app=False
                 if (has_def_main==True and has_tf_app_run==True):
                     tf_run_app=True
-                #(result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(file,tf_run_app,project_structure)
+                (result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(file,tf_run_app,project_structure)
                 os.chdir(path)
                 if "error" in result:
                     print("ERROR:Error occured when executing the program ", file)
