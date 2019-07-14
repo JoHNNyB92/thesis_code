@@ -13,7 +13,6 @@ def code_in_one_file(file,subdir):
     result=""
     handler_entities=""
     if str(file).endswith('.py'):
-        hasMetric=False
         with open(file, encoding="utf8", errors='replace') as myfile:
             has_sess = False
             has_run=False
@@ -38,7 +37,6 @@ def code_in_one_file(file,subdir):
             myfile.seek(0)
             if "def main(" in myfile.read():
                 has_def_main=True
-            skip = ""
             print("FILE= ",file," hasRun=",has_run," HasSess=",has_sess," is main=",is_main)
 
             if (has_sess==True and has_run==True) or is_main==True or (has_def_main==True and has_tf_app_run==True) or has_interactive==True:
@@ -46,7 +44,7 @@ def code_in_one_file(file,subdir):
                 tf_run_app=False
                 if (has_def_main==True and has_tf_app_run==True):
                     tf_run_app=True
-                #(result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(file,tf_run_app,project_structure)
+                result= tranform_tf_file.parse_file(file,tf_run_app,project_structure)
                 os.chdir(path)
                 if "error" in result:
                     print("ERROR:Error occured when executing the program ", file)
@@ -57,7 +55,10 @@ def code_in_one_file(file,subdir):
                     os.chdir(path)
                     print("----------------------------------------------------------------------------")
                     # Change directory in order to be appropriate for the folder that the pbtxt parser is located.
-                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\05_basic_convnet.py.pbtxt"
+                    pbtxt_file=github.folder + github.dirName +"\\_tensorflow\pbtxt\\"+os.path.basename(total_path)+".pbtxt"
+                    print("PBTXT=",pbtxt_file)
+                    import sys
+                    sys.exit()
                     #pbtxt_file = github.folder + github.dirName + pbtxt_file.split(github.dirName)[1]
 
                     # Windows OS
@@ -216,8 +217,6 @@ with open('github/github.csv') as csv_file:
 
             pathlist = Path(code_repository).glob('**/*.py')
             for path in pathlist:
-                #print("PATH=",str(path))
-                #print("Function Files=",function_files)
                 if str(path) not in function_files and "__init__" not in str(path):
                     used_files=file_import_dict[str(path)]
                     print(used_files)

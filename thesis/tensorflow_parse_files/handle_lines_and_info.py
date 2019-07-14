@@ -25,20 +25,16 @@ def get_feed_dict(sess_run):
             for elem in feed_dict.split(','):
                 feed.append(elem.replace(" ","").split(":")[0])
         else:
-            print("2=",feed_dict.replace(" ","").split(":")[0])
             feed.append(feed_dict.replace(" ","").split(":")[0])
     else:
         feed_dict = feed_dict.split(")")[0]
         feed=feed_dict
-    #print("feed_dict is ",feed)
     return feed
 
 
 def handle_lines(content):
     epoch=content.count("----")
-    #print("Epoch is ",epoch)
     sess_run=content.split("||||")[0]
-    #print("sess run is =",sess_run)
     networks=get_output_networks(sess_run)
     feed_dict=get_feed_dict(sess_run)
     return (feed_dict,networks,epoch)
@@ -57,14 +53,12 @@ def handle_input_var(value):
     if "tf.Tensor" in value:
         n_value=value.split("tf.Tensor")[1].replace(" ","").split("'")[1].split(":")[0]
     else:
-        print("MIASMA=",value,"-")
         n_value = value.split("Tensor(\"")[1].split("\"")[0].split(":")[0]
     return n_value
 
 def search_feed_dict(feed_dict,key,value,inputs):
     for input in feed_dict:
         if input==key:
-            print("KEY=",key,"-",input)
             in_ = handle_input_var(value)
             inputs.append(in_)
     return inputs
@@ -74,8 +68,6 @@ def handle_info(content,networks,feed_dict):
     loss=[]
     optimizer=[]
     inputs=[]
-    input_search=[]
-    not_class=False
     for element in dict:
         value=""
         try:
@@ -92,34 +84,14 @@ def handle_info(content,networks,feed_dict):
                 if case=="O":
                     optimizer.append(n_value)
                 break
-        #print("feed=",feed_dict)
         if str(type(feed_dict))=="<class 'list'>":
             inputs=search_feed_dict(feed_dict,key,value,inputs)
         else:
-            #not_class=True
             if feed_dict in key:
-                #print("ARETH-1=",key)
-                #print("ARETH-0.5=", value)
                 vars=value.split("<tf.Tensor ")
                 vars=vars[1:]
-                #print("AReth0=",vars)
                 for var in vars:
-                    #print("Areth1=",var.split("'"))
-                    #print("Areth3=",var.split("'")[1].split(":")[0])
                     inputs.append(var.split("'")[1].split(":")[0])
-    '''
-    if not_class==True:
-        for element in dict:
-            value = ""
-            try:
-                value = element.split("VALUE:")[1]
-            except:
-                continue
-            key = element.split("VALUE:")[0].split("KEY:")[1]
-            print("EVITA=",input_search,"key=",key)
-            inputs=search_feed_dict(input_search,key,value,inputs)
-            print("ARETH2=", inputs)
-    '''
     print("Returning inputs=",inputs)
     return(loss,optimizer,inputs)
 

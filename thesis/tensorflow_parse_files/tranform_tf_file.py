@@ -53,10 +53,12 @@ def parse_file(path,tf_run_app,proj):
     print("LOGGING:Created new temporary file to run with needed changes in path ",new_file)
     line_list=[]
     for line in open(path,errors="replace"):
+        if "_sEssIOn_" in line:
+            return "no_execution"
         line_list.append(line)
     #In case there is a meaningful last line,to reduce additional checks for last line
     #line_list.append(" ")
-    (pbtxt_file,batch_epoch,model_var,new_line_list)=create_new_file(line_list,path,file,tf_run_app)
+    (pbtxt_file,model_var,new_line_list)=create_new_file(line_list,path,file,tf_run_app)
     dir_ = os.getcwd()
     os.chdir(os.path.dirname(str(path)))
     (new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
@@ -65,31 +67,10 @@ def parse_file(path,tf_run_app,proj):
     result=execute_file(new_file,new_line_list,path_to_folder)
     if result=="error":
         print("ERROR:File contains inner error,cannot execute it.")
-        return ("error", None, None, None)
+        return "error"
     else:
         print("LOGGING:Successfully executed.")
-        (batch_size,epoch)=get_batch_epoch(batch_epoch)
-        if batch_size==-2 and epoch==-2:
-            print("ERROR:Could not obtain epoch/batch information")
-            return ("success",pbtxt_file,batch_size,epoch)
-        else:
-            return ("success",pbtxt_file,batch_size,epoch)
-
-def get_batch_epoch(file):
-    batch_size=-1
-    epoch=-1
-    try:
-        for line in open(file):
-            if "BATCH SIZE" in line:
-                batch_size=int(line.split(":")[1])
-            elif "EPOCH COUNTER" in line:
-                epoch=int(line.split(":")[1])
-        if epoch==-1:
-            return (-3,-3)
-        return(batch_size,epoch)
-    except FileNotFoundError:
-        return (-2,-2)
-
+        return "success"
 
 def find_epoch_size(line_list,file_path):
     new_line_list = []
@@ -221,7 +202,6 @@ def find_epoch_size(line_list,file_path):
 def create_new_file(line_list,path,file,tf_run_app):
     new_line_list=[]
     model_variable=""
-    batch_epoch=file+"_batch_epoch.txt"
     current_folder=os.getcwd()
     first_time=0
     found_main=0
@@ -278,7 +258,7 @@ def create_new_file(line_list,path,file,tf_run_app):
         for elem in return_list:
             new_line_list.append(min_space*" "+elem)
     os.chdir(current_folder)
-    return (pbtxt_file,batch_epoch,model_variable, new_line_list)
+    return (pbtxt_file,model_variable, new_line_list)
 
 def get_model_name(line):
     model_var = line.split(".")[0]

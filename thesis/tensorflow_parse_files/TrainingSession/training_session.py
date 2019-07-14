@@ -3,7 +3,6 @@ from  TrainingStep.TrainingLoop.training_loop import training_loop
 class training_session:
 
     def insert_in_annetto(self):
-        #print("Annetto::training_session-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
 
@@ -26,24 +25,24 @@ class training_session:
         self.name=name
         primaryInLoop=""
         loopSteps=[]
-        print("ULTIMATETEST:Training Session Info:",self.name)
+        print("LOGGING:Training:Training Session Info:",self.name)
         for trainingStep in trStep:
             if trainingStep.isPrimaryInLoop==True:
-                print("ULTIMATETEST:Primary In Loop:",trainingStep.name)
-                print("ULTIMATETEST:Epochs:",trainingStep.epochs)
+                print("LOGGING:Training:Primary In Loop:",trainingStep.name)
+                print("LOGGING:Training:Epochs:",trainingStep.epochs)
                 primaryInLoop=trainingStep
             elif trainingStep.isLoopingStep==True:
-                print("ULTIMATETEST:Loop Step:", trainingStep.name)
-                print("ULTIMATETEST:Epochs:", trainingStep.epochs)
+                print("LOGGING:Training:Loop Step:", trainingStep.name)
+                print("LOGGING:Training:Epochs:", trainingStep.epochs)
                 loopSteps.append(trainingStep)
             else:
-                print("ULTIMATETEST:Simple training step:", trainingStep.name)
-                print("ULTIMATETEST:Epochs:", trainingStep.epochs)
+                print("LOGGING:Training:Simple training step:", trainingStep.name)
+                print("LOGGING:Training:Epochs:", trainingStep.epochs)
                 self.hasTrainingStep=trStep
         if len(trStep)==1:
             self.hasPrimaryTrainingStep=trStep[0]
         if primaryInLoop!="":
             tr_loop=training_loop(primaryInLoop.epochs,primaryInLoop,loopSteps)
             self.hasPrimaryTrainingStep=tr_loop
-        print("ULTIMATETEST:Primary Step is:", trainingStep.name)
-        print("ULTIMATETEST:Epochs:", trainingStep.epochs)
+        print("LOGGING:Training:Primary Step is:", trainingStep.name)
+        print("LOGGING:Training:Epochs:", trainingStep.epochs)
