@@ -6,7 +6,9 @@ class file_training:
         self.epoch=-1
         self.inputs=[]
         self.objective=""
-        self.inLoop=False
+        self.next=""
+        self.network=""
+        self.next_file=""
 
 
     def print(self):
@@ -17,3 +19,8 @@ class file_training:
         print("Epoch=",self.epoch)
         if self.objective!="":
             print("Objective=",self.objective.cost_function.loss)
+        if self.next!="":
+            print("Next Session is =",self.next)
+        if self.next_file!="":
+            print("Next Session is =",self.next_file)
+        print("Network=",self.network)

@@ -11,7 +11,7 @@ def execute_file(new_file,new_line_list,path_to_folder):
         os.remove(new_file)
     except OSError:
         pass
-    with open(new_file, 'a',errors="replace") as f:
+    with open(new_file, 'w',errors="replace") as f:
         for line in new_line_list:
             f.write(line)
     file_to_execute = ntpath.basename(new_file)
@@ -26,6 +26,7 @@ def execute_file(new_file,new_line_list,path_to_folder):
 
 def handle_imported_files(proj):
     print("Started searching for project included files")
+    produced_files=[]
     for path in proj:
         line_list=[]
         for line in open(path, errors="replace"):
@@ -47,8 +48,8 @@ def handle_imported_files(proj):
 def parse_file(path,tf_run_app,proj):
     path_to_folder=os.path.dirname(path)
     file=ntpath.basename(path)
-    new_file=path_to_folder+"/summary_"+file
-    new_file=new_file[:-1]
+    new_file=path_to_folder+"/"+file
+    #new_file=new_file[:-1]
     print("LOGGING:Created new temporary file to run with needed changes in path ",new_file)
     line_list=[]
     for line in open(path,errors="replace"):
@@ -142,22 +143,27 @@ def find_epoch_size(line_list,file_path):
                     boolean="first_time_file_found_"+str(boolean_index)
                     print("ALOHA=",sess_space,"-",prev_line_space,"-",new_line_list[temp_ind])
                     session_counter+=1
-                    while sess_space<=prev_line_space:
+                    for_counter=0
+                    write_ind=0
+                    write_space=0
+                    while end_loop(for_counter,new_line_list[temp_ind])==False:
                         print("GOING BACK1=",new_line_list[temp_ind],"-",prev_line_space)
-                        if "sess.run" in new_line_list[temp_ind] and sess_space>prev_line_space:
-                            print("IS_CO_TRAI=true")
+                        if "sess.run" in new_line_list[temp_ind] and sess_space<prev_line_space:
                             is_co_train=True
                         if "_sEssIOn_" in new_line_list[temp_ind]:
                             print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
                             reg = r'\[[\s\S]*\]'
                             new_line_list[temp_ind]=re.sub(reg, '['+str(session_counter)+']', new_line_list[temp_ind])
                             print("FOUND SESSION WITH=", new_line_list[temp_ind])
+                        if sess_space > prev_line_space and new_line_list[temp_ind].replace(" ","").startswith("for"):
+                            for_counter+=1
+                            write_ind=temp_ind
+                            write_space=prev_line_space
+                            sess_space=prev_line_space
                         temp_ind-=1
                         prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
                         print("GOING BACK2=", new_line_list[temp_ind], "-", prev_line_space)
 
-                    new_line_list=new_line_list[:temp_ind]+[prev_line_space*" "+"first_time_file_found_"+str(boolean_index)+"=False\n"]+new_line_list[temp_ind:]
-                    boolean_index+=1
                     if is_co_train==True:
                         write_file = "_temporary_" + file + "_"+"_sEssIOn_["+str(session_counter)+"]_co_train_"+str(session_counter)+".info"
                         write_file_line = "_temporary_" + file + "_"+"_sEssIOn_["+str(session_counter)+"]_co_train_"+str(session_counter)+ ".lines"
@@ -165,10 +171,14 @@ def find_epoch_size(line_list,file_path):
                         write_file = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_" + str(session_counter) + ".info"
                         write_file_line = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
                             session_counter) + "]_" + str(session_counter) + ".lines"
-
                     name = os.path.dirname(file_path).split(github.dirName)[1].replace("\\", "_")
                     write_file_line = name + write_file_line
                     write_file = name + write_file
+                    temp_list = []
+                    temp_list.append((write_space) * " " + "f = open('" + write_file_line + "', 'a')\n")
+                    temp_list.append((write_space) * " " + "f.write('" + "----" + "')\n")
+                    temp_list.append((write_space) * " " + "f.close()\n")
+                    new_line_list = new_line_list[:write_ind] + temp_list + new_line_list[write_ind:]
                     produced_files.append(name + write_file.replace(".info", ""))
                     '''
                     else:
@@ -182,20 +192,21 @@ def find_epoch_size(line_list,file_path):
                     '''
                     #Extra check an iparxei to arxeio,tote xanagrapse to tin proti fora
                     new_line_list.append(num_of_space * " " +"abc = ''\n")
-                    new_line_list.append(num_of_space * " "+"for k, v in locals().items():\n")
+                    new_line_list.append(num_of_space * " " + "tmp__ = locals().copy()\n")
+                    new_line_list.append(num_of_space * " "+"for k, v in tmp__.items():\n")
                     new_line_list.append((num_of_space+1) * " "+"abc +='KEY:'+ k + 'VALUE:' + str(v) + '||||'\n")
                     new_line_list.append(num_of_space * " "+"f = open('"+write_file+"', 'w')\n")
                     new_line_list.append(num_of_space * " "+"f.write(abc)\n")
-                    new_line_list.append(num_of_space * " " +"if "+boolean+"==False:\n")
-                    new_line_list.append((num_of_space + 1) * " " + boolean+"=True\n")
-                    new_line_list.append((num_of_space+1) * " " + "f = open('"+write_file_line+"', 'w')\n")
-                    new_line_list.append((num_of_space + 1) * " " + "f.write('" + line_of_sess_run + "||||')\n")
-                    new_line_list.append((num_of_space + 1) * " " + "f.close()\n")
-                    new_line_list.append(num_of_space * " " + "else:\n")
-                    new_line_list.append((num_of_space + 1) * " " + "f = open('" + write_file_line + "', 'a')\n")
-                    new_line_list.append((num_of_space +1)* " "+"f.write('"+line_of_sess_run+"||||')\n")
-                    new_line_list.append((num_of_space+1) * " "+"f.close()\n")
-                    added_lines+=14
+                    #new_line_list.append(num_of_space * " " +"if "+boolean+"==False:\n")
+                    #new_line_list.append((num_of_space + 1) * " " + boolean+"=True\n")
+                    #new_line_list.append((num_of_space+1) * " " + "f = open('"+write_file_line+"', 'w')\n")
+                    #new_line_list.append((num_of_space + 1) * " " + "f.write('" + line_of_sess_run + "||||')\n")
+                    #new_line_list.append((num_of_space + 1) * " " + "f.close()\n")
+                    #new_line_list.append(num_of_space * " " + "else:\n")
+                    new_line_list.append((num_of_space) * " " + "f = open('" + write_file_line + "', 'a')\n")
+                    new_line_list.append((num_of_space)* " "+"f.write('"+line_of_sess_run+"||||')\n")
+                    new_line_list.append((num_of_space) * " "+"f.close()\n")
+                    added_lines+=8
                     found_sess=True
                     found_model_line=0
 
@@ -318,3 +329,17 @@ def create_code_for_pbtxt_and_tensorboard(path,file):
 
 def handle_evaluation_score(filePath):
     print("Path is:",filePath)
+
+
+
+def end_loop(cnt,line):
+    if cnt==2:
+        return True
+    elif len(line) - len(line.lstrip(' '))==0:
+        return True
+    else:
+        tmp_line=line
+        tmp_line=tmp_line.replace(" ","").lower()
+        if tmp_line.startswith("def") or tmp_line.startswith("withtf.session"):
+            return True
+    return False

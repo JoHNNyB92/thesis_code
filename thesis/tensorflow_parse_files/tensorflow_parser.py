@@ -23,7 +23,7 @@ def put_inputs_in_map(node):
         inputs.append(nodes.handler.entitiesHandler.node_map[rest])
     nodes.handler.entitiesHandler.node_map[node.name].inputs=inputs
 
-def parse_pbtxt(path,epoch,batch,part_name):
+def parse_pbtxt(path,part_name):
     graph_def = graph_pb2.GraphDef()
     with open(path, "rb") as f:
         text_format.Merge(f.read(), graph_def)
@@ -54,24 +54,26 @@ def parse_pbtxt(path,epoch,batch,part_name):
         print("PARSING FAILED")
         return result
     #TODO FOR MULTIPLE NETWORKS WE NEED MULTIPLE EVALUATION RESULTS->THUS THIS SHOULD BE MOVED
+    '''
     res=nodes.handler.entitiesHandler.check_multiple_networks()
     if res==0:
-        nodes.handler.entitiesHandler.prepare_strategy(batch, epoch, part_name)
+        nodes.handler.entitiesHandler.prepare_strategy(part_name)
     elif res==-1:
         print("ERROR:Program not a network finally")
         return "ERROR:This tensorflow program is not a network.No objective functions identified"
     print("-----------------------------------------------------")
+    '''
     return result
 
-def begin_parsing(name,pbtxt_file,epoch,batch,log_file):
+def begin_parsing(name,pbtxt_file,log_file):
     nodes.handler.entitiesHandler=handle_entities()
     part_name=name.replace(".py","")
     rdfWrapper.log_file=log_file
     rdfWrapper.new_init_data(part_name)
     rdfWrapper.new_init_new_network(part_name)
     rdfWrapper.new_init_new_evaluation(part_name+"_eval",part_name)
-    nodes.handler.entitiesHandler.set_batch_epoch(batch,epoch)
-    result=parse_pbtxt(pbtxt_file,epoch,batch,part_name)
+    #nodes.handler.entitiesHandler.set_batch_epoch(batch,epoch)
+    result=parse_pbtxt(pbtxt_file,part_name)
     #nodes.handler.entitiesHandler=""
     return (result,nodes.handler.entitiesHandler)
 

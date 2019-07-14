@@ -42,13 +42,11 @@ def code_in_one_file(file,subdir):
             print("FILE= ",file," hasRun=",has_run," HasSess=",has_sess," is main=",is_main)
 
             if (has_sess==True and has_run==True) or is_main==True or (has_def_main==True and has_tf_app_run==True) or has_interactive==True:
-                batch_size = 0
-                epoch = 0
                 path = os.getcwd()
                 tf_run_app=False
                 if (has_def_main==True and has_tf_app_run==True):
                     tf_run_app=True
-                (result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(file,tf_run_app,project_structure)
+                #(result, pbtxt_file, batch_size, epoch) = tranform_tf_file.parse_file(file,tf_run_app,project_structure)
                 os.chdir(path)
                 if "error" in result:
                     print("ERROR:Error occured when executing the program ", file)
@@ -59,7 +57,7 @@ def code_in_one_file(file,subdir):
                     os.chdir(path)
                     print("----------------------------------------------------------------------------")
                     # Change directory in order to be appropriate for the folder that the pbtxt parser is located.
-                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\custom_split_repository.py.pbtxt"
+                    pbtxt_file="..\git_repositories_temp\_tensorflow\pbtxt\\05_basic_convnet.py.pbtxt"
                     #pbtxt_file = github.folder + github.dirName + pbtxt_file.split(github.dirName)[1]
 
                     # Windows OS
@@ -71,8 +69,7 @@ def code_in_one_file(file,subdir):
                         print("ERROR:There was an error with the creation of pbtxt file  ",pbtxt_file)
                     else:
                         print("LOGGING:Begin parsing pbtxt file ", pbtxt_file, " with anneto logging in ", log_file)
-                        (result,handler_entities)= tensorflow_parser.begin_parsing(os.path.basename(subdir), pbtxt_file, batch_size,
-                                                             epoch, log_file)
+                        (result,handler_entities)= tensorflow_parser.begin_parsing(os.path.basename(subdir), pbtxt_file,log_file)
                         if result == "success":
                             found_network = True
                         print(
@@ -177,8 +174,7 @@ with open('github/github.csv') as csv_file:
         main_files=[]
         function_files=[]
         file_import_dict={}
-        if "temp_folder" in code_repository:
-
+        if "simple_file" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -248,16 +244,26 @@ with open('github/github.csv') as csv_file:
                         for file in pathlistInfo:
                             timeList.append([os.path.getmtime(str(file)),str(file)])
                         timeList=sorted(timeList,key=lambda x:float(x[0]))
+                        timeList=[x[1] for x in timeList]
                         pathlistInfo = Path(code_repository).glob("**/*.info")
                         print("pathListInfo=",pathlistInfo)
-                        files = ["_temp_folder_test_temporary_test.py_1",
-                                 "_temp_folder_train_temporary_train.py_1",
-                                 "_temp_folder_train_temporary_train.py_1_co_train_2"]
-                        print(pathlist)
+                        files = [
+                                 "_simple_file_temporary_05_basic_convnet.py__sEssIOn_[2]_1",
+                                 "_simple_file_temporary_05_basic_convnet.py__sEssIOn_[2]_co_train_2",
+                                 ]
+
                         file_dict=handle_lines_and_info.handle_lines_and_info(files,pathlistInfo,pathlistLine)
-                        sys.exit()
-                        handler_entities.find_training(file_dict,timeList)
-            print("Function")
+                        print("\n\n\n\n\n\n\n\n\n",file_dict)
+                        for d in file_dict:
+                            print('ELELELELE=',file_dict[d].epoch)
+                        import ntpath
+                        for ind,elem in enumerate(timeList):
+                            file_dict[ntpath.basename(elem).replace(".info","")].next_file=ntpath.basename(timeList[ind+1]).replace(".info","")
+                            if ind+2==len(timeList):
+                                break
+                        for ind,elem in enumerate(timeList):
+                            print(elem.replace(".info",""),"->",file_dict[ntpath.basename(elem).replace(".info","")].next_file)
+                        handler_entities.find_training(file_dict)
             sys.exit()
 
 

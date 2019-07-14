@@ -1,16 +1,19 @@
 from file_training import file_training
 
 def get_output_networks(sess_run):
-    networks=sess_run.split('[')[1].split("]")[0].replace(" ","")
-    network_list=[]
-    if "," in networks:
-        print('1')
-        for elem in networks.split(','):
-            network_list.append(elem.replace(" ",""))
+    networks=sess_run.split('sess.run(')[1].split(",")[0].replace(" ","")
+    network_list = []
+    if "[" in networks:
+        if "," in networks:
+            print('1')
+            for elem in networks.split(','):
+                network_list.append(elem.replace(" ",""))
+        else:
+            print("2")
+            network_list.append(networks.replace(" ",""))
+        #print("networks are ",network_list)
     else:
-        print("2")
-        network_list.append(networks.replace(" ",""))
-    #print("networks are ",network_list)
+        network_list.append(networks)
     return network_list
 
 def get_feed_dict(sess_run):
@@ -32,7 +35,7 @@ def get_feed_dict(sess_run):
 
 
 def handle_lines(content):
-    epoch=content.count("||||")
+    epoch=content.count("----")
     #print("Epoch is ",epoch)
     sess_run=content.split("||||")[0]
     #print("sess run is =",sess_run)
@@ -46,6 +49,7 @@ def handle_network_var(value):
         n_value=value.split("Tensor(\"")[1].split("\"")[0]
         return ("L", n_value)
     else:
+        print(value)
         n_value = value.replace(" ","").split("name:\"")[1].split("\"")[0]
         return ("O", n_value)
 
@@ -53,12 +57,14 @@ def handle_input_var(value):
     if "tf.Tensor" in value:
         n_value=value.split("tf.Tensor")[1].replace(" ","").split("'")[1].split(":")[0]
     else:
+        print("MIASMA=",value,"-")
         n_value = value.split("Tensor(\"")[1].split("\"")[0].split(":")[0]
     return n_value
 
 def search_feed_dict(feed_dict,key,value,inputs):
     for input in feed_dict:
-        if input in key:
+        if input==key:
+            print("KEY=",key,"-",input)
             in_ = handle_input_var(value)
             inputs.append(in_)
     return inputs
@@ -119,7 +125,7 @@ def handle_info(content,networks,feed_dict):
 
 def handle_lines_and_info(files,pathlistInfo,pathlistLine):
     pathlistInfo=list(pathlistInfo)
-    file_training_information=[]
+    file_training_information={}
     for file in pathlistLine:
         print("begin searching for ",file)
         found_file = False
@@ -133,10 +139,9 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine):
                     (feed_dict,networks,epoch)=handle_lines(content)
                 #print("Networks=",networks)
                 new_file_training=file_training()
-                new_file_training.name=str(prFile)+".lines"
+                new_file_training.name=str(prFile)
                 for file_ in pathlistInfo:
                     if (str(prFile)+".info") in str(file_):
-                        print(str(prFile)+".info","    FOUND RE MALAKA=",str(file_))
                         with open(str(file_), 'r') as content_file:
                             content = content_file.read()
                             print("NETWORKS=",networks)
@@ -146,7 +151,7 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine):
                             new_file_training.epoch=epoch
                             new_file_training.inputs = inputs
                             new_file_training.print()
-                            file_training_information.append(new_file_training)
+                            file_training_information[new_file_training.name]=new_file_training
                             found_file=True
                             break
                     if found_file==True:

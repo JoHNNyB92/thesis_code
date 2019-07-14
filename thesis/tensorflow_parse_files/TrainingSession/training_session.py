@@ -1,5 +1,5 @@
 import virtuosoWrapper.virtuosoWrapper as rdfWrapper
-
+from  TrainingStep.TrainingLoop.training_loop import training_loop
 class training_session:
 
     def insert_in_annetto(self):
@@ -21,10 +21,29 @@ class training_session:
             print("ERROR:PrimaryTrainingStep is empty")
 
 
-    def __init__(self,name,trStep,primaryTrStep):
+    def __init__(self,name,trStep):
         self.type="TrainingSession"
         self.name=name
-        self.hasTrainingStep=trStep
-        self.hasPrimaryTrainingStep=primaryTrStep
-
-
+        primaryInLoop=""
+        loopSteps=[]
+        print("ULTIMATETEST:Training Session Info:",self.name)
+        for trainingStep in trStep:
+            if trainingStep.isPrimaryInLoop==True:
+                print("ULTIMATETEST:Primary In Loop:",trainingStep.name)
+                print("ULTIMATETEST:Epochs:",trainingStep.epochs)
+                primaryInLoop=trainingStep
+            elif trainingStep.isLoopingStep==True:
+                print("ULTIMATETEST:Loop Step:", trainingStep.name)
+                print("ULTIMATETEST:Epochs:", trainingStep.epochs)
+                loopSteps.append(trainingStep)
+            else:
+                print("ULTIMATETEST:Simple training step:", trainingStep.name)
+                print("ULTIMATETEST:Epochs:", trainingStep.epochs)
+                self.hasTrainingStep=trStep
+        if len(trStep)==1:
+            self.hasPrimaryTrainingStep=trStep[0]
+        if primaryInLoop!="":
+            tr_loop=training_loop(primaryInLoop.epochs,primaryInLoop,loopSteps)
+            self.hasPrimaryTrainingStep=tr_loop
+        print("ULTIMATETEST:Primary Step is:", trainingStep.name)
+        print("ULTIMATETEST:Epochs:", trainingStep.epochs)

@@ -282,14 +282,14 @@ class handle_entities:
         for elem in set(layers_del):
             del self.data.annConfiguration.networks[self.current_network].layer[elem]
     '''
-    def prepare_strategy(self,batch,epochs,part_name):
+    def one_network_training(self,file,part_name):
         #There is a case where a second optimizer is used as an initialization optimizer for some variables of the network.
         #This function is used for the case of only one neural network.
         #Thus after the call to find which optimizer belong to the networ,we break the iteration.
         for obj in self.data.annConfiguration.networks[self.current_network].objective.keys():
             opl=self.find_optimizer()
             (n_name,_,_,_)=\
-                self.find_network(self.data.annConfiguration.networks[self.current_network].objective[obj],[],self.current_network,0,opl)
+                self.find_network(self.data.annConfiguration.networks[self.current_network].objective[obj],self.current_network,0,opl)
             break
                 #self.find_network(obj_func, network_outputs, self.current_network, net_cnt, optimizer_per_layer)
         tr_model=handler_functions.handle_trained_model(self.data.AnnConfig+"_trained_model")
@@ -306,10 +306,15 @@ class handle_entities:
         for key in optimizer.keys():
             optimizer_node=optimizer[key]
         IOPipe=handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name],"train")
-        tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,optimizer_node,epochs,batch)
+        epoch=0
+        for fl in file:
+            if optimizer_node.name in file[fl].optimizer:
+                epoch=file[fl].epoch
+        print("\n\n\n\n\n\n epoch is ",epoch)
+        tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,optimizer_node,epoch,0,"")
         tr_list_step=[]
         tr_list_step.append(tr_step)
-        tr_session=handler_functions.handle_training_session(part_name+"_training_session",tr_list_step,"")
+        tr_session=handler_functions.handle_training_session(part_name+"_training_session",tr_list_step)
         tr_strategy=handler_functions.handle_training_strategy(part_name+"_training_strategy",tr_session,tr_model)
         self.data.evaluationResult.train_strategy=tr_strategy
         self.data.annConfiguration.training_strategy[tr_strategy.name]=tr_strategy
@@ -368,7 +373,7 @@ class handle_entities:
     def handle_possible_loss_functions(self):
         for poss in self.possible_loss_function.keys():
             cnt=0
-            print(self.possible_loss_function[poss])
+            print("POSSIBLE LOSS FUNCTION ARE:",self.possible_loss_function[poss])
             for layer in self.data.annConfiguration.networks[self.current_network].layer:
                 if len(set(self.possible_loss_function[poss]).intersection(set(self.data.annConfiguration.networks[self.current_network].layer[layer].output_nodes)))>0:
                         cnt+=1
@@ -417,7 +422,7 @@ class handle_entities:
 
 
 
-    def find_network_input_layer_and_layers(self,output,net_outputs):
+    def find_network_input_layer_and_layers(self,output):
         layers = self.data.annConfiguration.networks[self.current_network].layer
         prev=output.name
         net_layers = {}
@@ -631,7 +636,7 @@ class handle_entities:
 
                         self.insert_network(new_networks[key].layer,name,
                                             new_networks[key].input_layer,
-                                            new_networks[key].output_layer,"",{})
+                                            new_networks[key].output_layer,self.data.annConfiguration.networks[name].objective[key],{})
                 print("LOGGING:Network changed-Layers:", layers)
                 print("LOGGING:Network changed-Key:", key)
                 print("LOGGING:Network changed-New Inputs:", new_inputs)
@@ -667,44 +672,15 @@ class handle_entities:
             self.data.annConfiguration.networks[name].datasets=datasets
         print("\n---------------END NEW NETWORK-----------------\n")
 
-    def insert_training(self,optimizer):
-        trSteps=[]
-        optimizer=self.data.annConfiguration.networks[self.current_network].optimizer[optimizer]
-        networks=self.data.annConfiguration.networks.keys()
-        for network in networks:
-            if self.current_network!=network:
-                layers=[]
-                for layer in self.data.annConfiguration.networks[network].layer.keys():
-                    layers.append(layer)
-                    self.data.annConfiguration.networks[network].optimizer[optimizer]=optimizer
-                    input_layer=self.data.annConfiguration.networks[network].input_layer
-                    print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer.name)
-                    IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network],"train")
-                    #TODO:EDW TI NA KANW POU XRIAZONTE POLLAPLA EPOCH AND BATCHES???????
-                    tr_step = handler_functions.handle_training_single(network + "_training_step", network, IOPipe,optimizer, 0, 0)
-                    trSteps.append(tr_step)
-                else:
-                    st=""
-                    for x in layers:
-                        st=st+"\n"+x
-                    print("ERROR:The following layers are not part of an optimization procedure:",st)
-        tr_model = handler_functions.handle_trained_model(self.data.AnnConfig + "_trained_model")
-        layers = self.data.annConfiguration.networks[network].layer
-        counter = 0
-        for layer in layers.keys():
-            if len(layers[layer].previous_layer) != 0:
-                for elem_in in layers[layer].previous_layer:
-                    counter += 1
-                    weight = handler_functions.handle_weights('W' + str(counter), elem_in, layer)
-                    tr_model.add_weight(weight)
-        tr_session = handler_functions.handle_training_session(network + "_training_session", trSteps, "",)
-        tr_strategy = handler_functions.handle_training_strategy(network + "_training_strategy", tr_session, tr_model)
-
-        IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network],"test")
-        self.check_metric(IOPipe,network)
-        self.data.evaluationResult.train_strategy = tr_strategy
-        self.data.annConfiguration.training_strategy[tr_strategy.name] = tr_strategy
-        self.data.evaluationResult.ann_conf = self.data.annConfiguration
+    def create_tr_step(self,optimizer,network,file_info):
+        for opt in optimizer:
+            optimizer_=self.data.annConfiguration.networks[self.current_network].optimizer[opt]
+            self.data.annConfiguration.networks[network].optimizer[opt]=optimizer_
+        input_layer=self.data.annConfiguration.networks[network].input_layer
+        print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer)
+        IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network],"train")
+        tr_step = handler_functions.handle_training_single(network + "_training_step", network, IOPipe,optimizer, file_info.epoch, 0,file_info.next)
+        return tr_step
 
     def check_metric(self,IOPipe,network):
         if self.data.evaluationResult.metric!="":
@@ -799,16 +775,32 @@ class handle_entities:
                             optimizer_per_layer[optimizer]=[]
                         if elem_ not in optimizer_per_layer[optimizer]:
                             optimizer_per_layer[optimizer].append(elem_)
-                            print("FOUND:\nOptimizer=",optimizer,"\nLname=",elem_,"\ngradient=",gradient)
+                            #print("FOUND:\nOptimizer=",optimizer,"\nLname=",elem_,"\ngradient=",gradient)
                             print(optimizer_per_layer)
-        print("LOCO=",optimizer_per_layer)
+        #print("LOCO=",optimizer_per_layer)
         for key in optimizer_per_layer.keys():
             str=""
             for x in optimizer_per_layer[key]:
                 str=str+x+"\n"
-            print("Key:",key,"List:",str)
+            #print("Key:",key,"List:",str)
         return (optimizer_per_layer)
 
+    def insert_strategy(self,trSessions):
+        tr_model = handler_functions.handle_trained_model(self.data.AnnConfig + "_trained_model")
+        layers = self.data.annConfiguration.networks[self.current_network].layer
+        counter = 0
+        for layer in layers.keys():
+            if len(layers[layer].previous_layer) != 0:
+                for elem_in in layers[layer].previous_layer:
+                    counter += 1
+                    weight = handler_functions.handle_weights('W' + str(counter), elem_in, layer)
+                    tr_model.add_weight(weight)
+        tr_strategy = handler_functions.handle_training_strategy(str(self.current_network) + "_training_strategy", trSessions, tr_model)
+        IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[self.current_network], "test")
+        self.check_metric(IOPipe, self.current_network)
+        self.data.evaluationResult.train_strategy = tr_strategy
+        self.data.annConfiguration.training_strategy[tr_strategy.name] = tr_strategy
+        self.data.evaluationResult.ann_conf = self.data.annConfiguration
 
     def clear_layers(self):
         layer_names=list(self.data.annConfiguration.networks[self.current_network].layer.keys())
@@ -831,75 +823,120 @@ class handle_entities:
                     del self.data.annConfiguration.networks[self.current_network].layer[layer_names[0]]
                 layer_names.remove(layer_names[0])
                 print(len(layer_names))
-    '''
-    def transform_layers_to_ins_outs(self,inputs,curr):
-        for elem in self.data.annConfiguration.networks[self.current_network].layer.keys():
-            # If only one input and that input is placeholder then it an input layer
-            if nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[elem].is_input == True and \
-                    len(nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[
-                            elem].previous_layer) == 1:
-                inputs.append(elem)
-    '''
 
-    def find_training(self,file_dict,timeList):
-        layer_names = list(self.data.annConfiguration.networks.keys())
-        print("TELOS=",layer_names)
+    def find_training(self,file_dict):
+        for d in file_dict:
+            print('OLOLOLOLO=', file_dict[d].epoch)
         res = self.check_multiple_networks()
         if res == 0:
-            self.prepare_strategy(0, file_dict[0].epoch, self.current_network)
+            print("LOGGING:Only one network presented.")
+            self.one_network_training(file_dict, self.current_network)
+            return res
         elif res == -1:
             print("ERROR:Program not a network finally")
             return "ERROR:This tensorflow program is not a network.No objective functions identified"
-
         objectives = []
         for l in self.data.annConfiguration.networks[self.current_network].objective.keys():
             objectives.append(l)
         optimizer_per_layer = self.find_optimizer()
-        # self.find_combined_losses(objectives)
-        self.preprocess_files(file_dict)
+        optimizer_map={}
+        #self.find_combined_losses(objectives)
+        (trSessions,optimizer_per_layer)=self.preprocess_files(file_dict,optimizer_per_layer)
+        print("LOGGING:Found the following sessions ",trSessions.keys())
+        net_cnt=0
+        allSessions=[]
         for obj in sorted(objectives):
-            file_training=""
-            for file_info in file_dict:
-
-                if len(file_info.loss)>1:
-                    self.handle_multiple_networks_training(file_info)
-                if len(file_info.loss)==1:
-                    print("This is a single step ",file_info.name)
-                    #self.handle_training_step()
-                if len(file_info.loss)==0:
-                    #Keep name,search list again for re appearance of the name,this is evaluation,evaluates the network with that input
-                    #if present
-                    print("This is a generator/no loss function ", file_info.name)
-                    #self.check_if_evaluation()
-            print("Encountered objective ",
+            print("LOGGING:Encountered objective ",
                   self.data.annConfiguration.networks[self.current_network].objective[obj].name)
             obj_func = self.data.annConfiguration.networks[self.current_network].objective[obj]
-            (output_layers, output, net_cnt, optimizer) = self.find_network(obj_func, network_outputs,
-                                                                            self.current_network, net_cnt,
-                                                                            optimizer_per_layer)
-
-        self.insert_training(optimizer)
+            (n_name, output, net_cnt, optimizer) = self.find_network(obj_func,self.current_network, net_cnt,optimizer_per_layer)
+            print("ASSOCIATE ",n_name," optimizer ",optimizer)
+            optimizer_map[n_name]=optimizer
+        for trSession in trSessions.keys():
+            print("LOGGING:Begin searching for session",trSession)
+            trSessionElem=trSessions[trSession]
+            isLoop = False
+            for file in trSessionElem:
+                if "co_train" in file.name:
+                    isLoop=True
+            if isLoop==True:
+                print("LOGGING:Begin handling session ",trSession," that is a loop session.")
+                tr_session=self.handle_training_step(trSessionElem,trSession,optimizer_map,True)
+            else:
+                print("LOGGING:Begin handling session ", trSession, " that is a normal session.")
+                tr_session=self.handle_training_step(trSessionElem,trSession,optimizer_map,False)
+            if tr_session!=None:
+                allSessions.append(tr_session)
+            else:
+                print("ERROR:",trSession," had no kind of training steps.Thus not training session added.")
+        self.insert_strategy(allSessions)
         del self.data.annConfiguration.networks[self.current_network]
         return 1
-        print("-----------------------------------------------------")
-        for file_info in file_dict:
-            print("---------------------------------------------")
-            file_info.print()
-            print("---------------------------------------------")
 
-    def preprocess_files(self,files):
-        ret_file=files.copy()
-        for ind,file in enumerate(files):
-            name=file.name
-            for ind_,file_ in enumerate(files):
-                if name in file_.name:
-                    ret_file[ind].inLoop=True
-                    ret_file[ind_].inLoop = True
-        return ret_file
+    def handle_training_step(self,trSession,trSessionName,optimizer_map,isLoop):
+        #new trSession
+        trSteps=[]
+        print("ISLOOP=",isLoop)
+        for file in trSession:
+            if len(file.optimizer)==0:
+                print("ERROR:Return,no optimizer handle it smh after,skip it for now")
+            elif len(file.optimizer)>1:
+                print("LOGGING:Multiple co training of networks")
+                for network in self.data.annConfiguration.networks:
+                    if network in optimizer_map.keys():
+                        found = True
+                        for optimizer in optimizer_map[network]:
+                            if optimizer not in file.optimizer:
+                                found=False
+                                break
+                        if found==True:
+                            trStep=self.create_tr_step(file.optimizer,network,file)
+                            if isLoop==True:
+                                trStep.isInLoop=True
+                                if "_co_train" in file.name:
+                                    trStep.isPrimaryInLoop=True
+                                else:
+                                    trStep.isLoopingStep=True
+                            trSteps.append(trStep)
+                        else:
+                            print(network," OPTIMIZER ",optimizer_map[network]," not in ",file.optimizer)
+                    else:
+                        print("ERROR:Network ",network," with no optimizer.")
+            else:
+                print("LOGGING:Only one optimizer-network")
+                for network in self.data.annConfiguration.networks:
+                    if network in optimizer_map.keys():
+                        for optimizer in optimizer_map[network]:
+                            if optimizer ==file.optimizer[0]:
+                                trStep = self.create_tr_step([optimizer], network, file)
+                                trSteps.append(trStep)
+                    else:
+                        print("ERROR:Network ",network," with no optimizer.")
+        if trSteps==[]:
+            print("ERROR:Unable to find any kind of training steps for ",trSessionName)
+            return None
+        tr_session = handler_functions.handle_training_session(trSessionName + "_training_session", trSteps)
+        return tr_session
 
-    def handle_multiple_networks_training(self,file_info):
-        print(1)
-    def find_network(self,obj_func,net_outputs,network,counter,opl):
+    def preprocess_files(self,files,opl):
+        trSessions={}
+        tmp_opl=opl.copy()
+        for ind,name in enumerate(files):
+            if files[name].name.split("]")[0] not in trSessions.keys():
+                trSessions[files[name].name.split("]")[0]]=[]
+            trSessions[files[name].name.split("]")[0]].append(files[name])
+            for optimizer in files[name].optimizer:
+                print("OPTIMIZER IS ",optimizer)
+                if optimizer in tmp_opl.keys():
+                    print("DELETING ",optimizer)
+                    del tmp_opl[optimizer]
+        for key in tmp_opl.keys():
+            del opl[key]
+            print("ERROR:DELETED OPTIMIZER NOT FOUND IN FILE TRAINING ",key)
+        print("\n\n\n\n\n\n\n\n\n\n\n TrSessions=",trSessions)
+        return (trSessions,opl)
+
+    def find_network(self,obj_func,network,counter,opl):
         loss=obj_func.cost_function.loss
         if loss.input_nodes!=[]:
             children=loss.input_nodes
@@ -912,22 +949,31 @@ class handle_entities:
         layers = {}
         inputs=[]
         for ind,mem in enumerate(layer_outputs):
-            (tinput,tlayers)=self.find_network_input_layer_and_layers(mem,net_outputs)
+            (tinput,tlayers)=self.find_network_input_layer_and_layers(mem)
             for inp in tinput:
                 if inp not in inputs:
                     inputs.append(inp)
             for k,v in tlayers.items():
                 layers[k]=v
         l_outputs=[]
-
-
+        '''
         for output in outputs:
             l_outputs.append(self.data.annConfiguration.networks[self.current_network].layer[output.get_name()])
-        (optimizer,layers,inputs,counter)=self.handle_optimizer_per_layer(layers,opl,inputs,network,counter)
+        
+        (optimizer,layers,inputs,counter,)=self.handle_optimizer_per_layer(layers,opl,inputs,network,counter)
+        '''
         n_name = network + "_" + str(counter)
         self.insert_network(layers,n_name, inputs, l_outputs, obj_func,datasets)
         counter += 1
         st=""
         for x in layers.keys():
             st=st+"\n"+x
-        return (n_name,outputs,counter,optimizer)
+        network_optimizers=[]
+        for optimizer in opl.keys():
+            found_optimizer=True
+            for layer in layers.keys():
+                print("searching for layer ", layer, " in ", optimizer," with ",opl[optimizer])
+                if layer in opl[optimizer]:
+                    network_optimizers.append(optimizer)
+                    break
+        return (n_name,outputs,counter,set(network_optimizers))

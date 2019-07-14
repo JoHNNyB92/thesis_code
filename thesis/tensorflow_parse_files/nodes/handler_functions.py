@@ -250,8 +250,8 @@ def handle_deconv2d(node):
 def handle_trained_model(name):
     return trained_model(name)
 
-def handle_training_single(name,network,IOPipe,optimizer,epochs,batch):
-    return training_single(name,network,IOPipe,optimizer,epochs,batch)
+def handle_training_single(name,network,IOPipe,optimizer,epochs,batch,nextTrStep):
+    return training_single(name,network,IOPipe,optimizer,epochs,batch,nextTrStep)
 
 def handle_training_strategy(name,session,model):
     return training_strategy(name,session,model)
@@ -279,8 +279,8 @@ def handle_out_layer(layer):
 def handle_in_layer(layer):
     return input_layer(layer)
 
-def handle_training_session(name,trStep,primaryTrStep):
-    return training_session(name,trStep,primaryTrStep)
+def handle_training_session(name,trStep):
+    return training_session(name,trStep)
 
 def handle_mul_as_cross_entropy(node,c_name):
     children = node.get_inputs()
@@ -314,7 +314,6 @@ def handle_weights(name,in_,out_):
 
 def handle_relu( node):
     return relu(node.get_name(), node, node.get_op())
-
 
 def handle_maxpool( node):
     return maxpool_layer(node)

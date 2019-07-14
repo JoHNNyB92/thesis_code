@@ -21,14 +21,18 @@ class training_single(network_specific):
                 break
 
 
-    def __init__(self,name,network,IOPipe,trainingOptimizer,epochs,batch):
+    def __init__(self,name,network,IOPipe,trainingOptimizer,epochs,batch,nextTrStep):
         super(training_single, self).__init__(name)
         self.type="TrainingSingle"
         self.network=network
         self.IOPipe=IOPipe
+        self.nextTrStep=nextTrStep
         self.trainingOptimizer=trainingOptimizer
         self.epochs=epochs
         self.batch=batch
         self.find_learning_rate_decay()
         self.learning_rate_decay=""
         self.epoch_decay=""
+        self.isInLoop=False
+        self.isPrimaryInLoop=False
+        self.isLoopingStep=False
