@@ -54,6 +54,9 @@ def parse_file(path,tf_run_app,proj):
     line_list=[]
     for line in open(path,errors="replace"):
         if "_sEssIOn_" in line:
+            import sys
+            print("DIE")
+            sys.exit()
             return "no_execution"
         line_list.append(line)
     #In case there is a meaningful last line,to reduce additional checks for last line
@@ -82,7 +85,6 @@ def find_epoch_size(line_list,file_path):
             if "__future__" not in line_list:
                 break
     print("End iterating")
-    new_line_list.append("import json\n")
     cnt=0
     found_model_line=0
     num_of_space=0
@@ -91,112 +93,132 @@ def find_epoch_size(line_list,file_path):
     file=file_path.split("\\")[-1]
     found_run=False
     produced_files=[]
-    github_path = github.folder + github.dirName + "\\"
     session_counter=0
-    boolean_index=0
     added_lines=0
+    before_sess_run=0
+    files_added=0
     for ind_,line in enumerate(line_list):
         if ind_>ind:
             new_line_list.append(line)
-            if line.replace(" ","").startswith("for"):
-                line_len=len(line) - len(line.lstrip(' '))
-
+            #num_of_space = len(line) - len(line.lstrip(' '))
             if ".run" in line:
-                print("Found run")
                 num_of_space = len(line) - len(line.lstrip(' '))
-                line_of_sess_run=line.replace("\n","").replace(" ","")
+                print("Found run=",num_of_space)
+                line_of_sess_run=line
                 found_run=True
+                before_sess_run=ind_+added_lines
+                print("1BEFORE ADDING=", new_line_list[before_sess_run])
             elif found_run==True:
                 print("Continuous line for sess run")
-                line_of_sess_run+=line.replace("\n","").replace(" ","")
+                line_of_sess_run+=line
             if "feed_dict" in line:
-                print("Feed dict")
                 found_model_line = 1
-            if line.replace("\n", "").endswith(')') == True  and found_model_line == 1:
-                if ind_+1 >=len(line_list) or line_list[ind_ + 1][0].replace(" ","") != ".":
-                    temp_ind=ind_+added_lines
-                    sess_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                    #temp_ind-=1
-                    prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                    is_co_train=False
-                    print("LINE IS=",line_of_sess_run)
-                    print("LINE2 IS=",new_line_list[temp_ind])
-                    boolean="first_time_file_found_"+str(boolean_index)
-                    print("ALOHA=",sess_space,"-",prev_line_space,"-",new_line_list[temp_ind])
-                    session_counter+=1
-                    for_counter=0
-                    write_ind=0
-                    write_space=0
-                    while end_loop(for_counter,new_line_list[temp_ind])==False:
-                        print("GOING BACK1=",new_line_list[temp_ind],"-",prev_line_space)
-                        if "sess.run" in new_line_list[temp_ind] and sess_space<prev_line_space:
-                            is_co_train=True
-                        if "_sEssIOn_" in new_line_list[temp_ind]:
-                            print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
-                            reg = r'\[[\s\S]*\]'
-                            new_line_list[temp_ind]=re.sub(reg, '['+str(session_counter)+']', new_line_list[temp_ind])
-                            print("FOUND SESSION WITH=", new_line_list[temp_ind])
-                        if sess_space > prev_line_space and new_line_list[temp_ind].replace(" ","").startswith("for"):
-                            for_counter+=1
-                            write_ind=temp_ind
-                            write_space=prev_line_space
-                            sess_space=prev_line_space
-                        temp_ind-=1
+            if found_model_line == 1:
+                if line.replace("\n", "").endswith(')') == True:
+                    line_of_sess_run=line_of_sess_run.replace("\n", "").replace(" ", "")
+                    line_list_for_feed = handle_feed_dict(line_of_sess_run, num_of_space)
+                    if ind_+1 >=len(line_list) or line_list[ind_ + 1][0].replace(" ","") != ".":
+                        temp_ind=ind_+added_lines
+                        sess_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                        #temp_ind-=1
                         prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                        print("GOING BACK2=", new_line_list[temp_ind], "-", prev_line_space)
-
-                    if is_co_train==True:
-                        write_file = "_temporary_" + file + "_"+"_sEssIOn_["+str(session_counter)+"]_co_train_"+str(session_counter)+".info"
-                        write_file_line = "_temporary_" + file + "_"+"_sEssIOn_["+str(session_counter)+"]_co_train_"+str(session_counter)+ ".lines"
-                    else:
-                        write_file = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_" + str(session_counter) + ".info"
-                        write_file_line = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
-                            session_counter) + "]_" + str(session_counter) + ".lines"
-                    name = os.path.dirname(file_path).split(github.dirName)[1].replace("\\", "_")
-                    write_file_line = name + write_file_line
-                    write_file = name + write_file
-                    temp_list = []
-                    temp_list.append((write_space) * " " + "f = open('" + write_file_line + "', 'a')\n")
-                    temp_list.append((write_space) * " " + "f.write('" + "----" + "')\n")
-                    temp_list.append((write_space) * " " + "f.close()\n")
-                    new_line_list = new_line_list[:write_ind] + temp_list + new_line_list[write_ind:]
-                    produced_files.append(name + write_file.replace(".info", ""))
-                    '''
-                    else:
-                        num_found += 1
-                        write_file = "_temporary_" + file + "_" + str(num_found) + ".info"
-                        write_file_line = "_temporary_" + file + "_" + str(num_found) + ".lines"
-                        name=os.path.dirname(file_path).split(github.dirName)[1].replace("\\","_")
-                        write_file_line=name+write_file_line
-                        write_file = name + write_file
-                        produced_files.append(name+write_file.replace(".info",""))
-                    '''
-                    #Extra check an iparxei to arxeio,tote xanagrapse to tin proti fora
-                    new_line_list.append(num_of_space * " " +"abc = ''\n")
-                    new_line_list.append(num_of_space * " " + "tmp__ = locals().copy()\n")
-                    new_line_list.append(num_of_space * " "+"for k, v in tmp__.items():\n")
-                    new_line_list.append((num_of_space+1) * " "+"abc +='KEY:'+ k + 'VALUE:' + str(v) + '||||'\n")
-                    new_line_list.append(num_of_space * " "+"f = open('"+write_file+"', 'w')\n")
-                    new_line_list.append(num_of_space * " "+"f.write(abc)\n")
-                    #new_line_list.append(num_of_space * " " +"if "+boolean+"==False:\n")
-                    #new_line_list.append((num_of_space + 1) * " " + boolean+"=True\n")
-                    #new_line_list.append((num_of_space+1) * " " + "f = open('"+write_file_line+"', 'w')\n")
-                    #new_line_list.append((num_of_space + 1) * " " + "f.write('" + line_of_sess_run + "||||')\n")
-                    #new_line_list.append((num_of_space + 1) * " " + "f.close()\n")
-                    #new_line_list.append(num_of_space * " " + "else:\n")
-                    new_line_list.append((num_of_space) * " " + "f = open('" + write_file_line + "', 'a')\n")
-                    new_line_list.append((num_of_space)* " "+"f.write('"+line_of_sess_run+"||||')\n")
-                    new_line_list.append((num_of_space) * " "+"f.close()\n")
-                    added_lines+=8
-                    found_sess=True
-                    found_model_line=0
-
+                        is_co_train=False
+                        #print("LINE IS=",line_of_sess_run)
+                        #print("LINE2 IS=",new_line_list[temp_ind])
+                        #print("ALOHA=",sess_space,"-",prev_line_space,"-",new_line_list[temp_ind])
+                        session_counter+=1
+                        for_counter=0
+                        write_ind=0
+                        write_space=0
+                        #print("2BEFORE ADDING=", new_line_list[before_sess_run])
+                        while end_loop(for_counter,new_line_list[temp_ind])==False:
+                            if "sess.run" in new_line_list[temp_ind] and num_of_space<prev_line_space:
+                                is_co_train=True
+                            if "_sEssIOn_" in new_line_list[temp_ind]:
+                                #print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
+                                reg = r'\[[\s\S]*\]'
+                                new_line_list[temp_ind]=re.sub(reg, '['+str(session_counter)+']', new_line_list[temp_ind])
+                                #print("FOUND SESSION WITH=", new_line_list[temp_ind])
+                            if num_of_space > prev_line_space:
+                                for_counter+=1
+                                if new_line_list[temp_ind].replace(" ", "").startswith("for"):
+                                    write_ind=temp_ind
+                                    write_space=prev_line_space
+                            temp_ind-=1
+                            prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                            #print("GOING BACK2=", new_line_list[temp_ind], "-", prev_line_space)
+                        #print("3BEFORE ADDING=", new_line_list[before_sess_run])
+                        files_added+=1
+                        (write_file, write_file_line, write_file_batch,temp_list, name)=prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path)
+                        (file,new_line_list)=append_file_lines(name,line_of_sess_run, \
+                                          new_line_list,temp_list,line_list_for_feed, \
+                                          write_file,write_file_line,write_file_batch,write_ind,
+                                          before_sess_run,num_of_space,files_added)
+                        added_lines=added_lines+len(line_list_for_feed)+10
+                        produced_files.append(file)
+                        found_sess=True
+                        found_model_line=0
             cnt+=1
     for i,v in enumerate(line_list):
         if i > cnt:
             new_line_list.append(v)
     return ( new_line_list,found_sess,produced_files)
 
+
+def handle_feed_dict(line,num_of_space):
+    print("\n\n\n\n\n\n\ LINE IS",line)
+    feed_dict=line.split("feed_dict=")[1].replace(")","").replace(" ","")
+    print("FEED DICT=",feed_dict)
+    before_list=[]
+    before_list.append((num_of_space) * " " + "f = open('FILE', 'w')\n")
+    if "{" in feed_dict:
+        before_list.append(num_of_space*" "+"feed_dict="+feed_dict+"\n")
+        before_list.append(num_of_space * " " + "for key,value in feed_dict.items():\n")
+    else:
+        before_list.append((num_of_space) * " " + "f = open('FILE', 'w')\n")
+        before_list.append(num_of_space * " " + "for key,value in "+feed_dict+".items():\n")
+    before_list.append((num_of_space + 1) * " " + "f.write('VALUE:'+str(tf.shape(key).shape[0]+'||||'))\n")
+    before_list.append(num_of_space * " " + "f.close()\n")
+    return before_list
+
+def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path):
+    if is_co_train == True:
+        write_file = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_co_train_" + str(
+            session_counter) + ".info"
+        write_file_line = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_co_train_" + str(
+            session_counter) + ".lines"
+        write_file_batch = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_co_train_" + str(
+            session_counter) + ".batch"
+    else:
+        write_file = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_" + str(
+            session_counter) + ".info"
+        write_file_line = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
+            session_counter) + "]_" + str(session_counter) + ".lines"
+        write_file_batch = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
+            session_counter) + "]_co_train_" + str(session_counter) + ".batch"
+    name = os.path.dirname(file_path).split(github.dirName)[1].replace("\\", "_")
+    temp_list = []
+    temp_list.append((write_space) * " " + "f = open('" + write_file_line + "', 'a')\n")
+    temp_list.append((write_space) * " " + "f.write('" + "----" + "')\n")
+    temp_list.append((write_space) * " " + "f.close()\n")
+    return (write_file,write_file_line,write_file_batch,temp_list,name)
+
+def append_file_lines(name,line_of_sess_run,new_line_list,temp_list,line_list_for_feed,write_file,write_file_line,write_file_batch,write_ind,before_sess_run,num_of_space,files_written):
+    new_line_list = new_line_list[:write_ind] + temp_list + new_line_list[write_ind:]
+    line_list_for_feed = [x.replace("FILE", write_file_batch) for x in line_list_for_feed]
+    new_line_list = new_line_list[:before_sess_run + files_written*3] + line_list_for_feed + new_line_list[before_sess_run + files_written*3:]
+    file = (name + write_file.replace(".info", ""))
+    new_line_list.append(num_of_space * " " + "abc = ''\n")
+    new_line_list.append(num_of_space * " " + "tmp__ = locals().copy()\n")
+    new_line_list.append(num_of_space * " " + "for k, v in tmp__.items():\n")
+    new_line_list.append((num_of_space + 1) * " " + "abc +='KEY:'+ k + 'VALUE:' + str(v) + '||||'\n")
+    new_line_list.append(num_of_space * " " + "f = open('" + write_file + "', 'w')\n")
+    new_line_list.append(num_of_space * " " + "f.write(abc)\n")
+    new_line_list.append((num_of_space) * " " + "f.close()\n")
+    new_line_list.append((num_of_space) * " " + "f = open('" + write_file_line + "', 'a')\n")
+    new_line_list.append((num_of_space) * " " + "f.write('" + line_of_sess_run + "||||')\n")
+    new_line_list.append((num_of_space) * " " + "f.close()\n")
+    return(file,new_line_list)
 
 
 def create_new_file(line_list,path,file,tf_run_app):

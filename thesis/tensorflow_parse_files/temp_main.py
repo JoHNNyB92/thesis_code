@@ -56,11 +56,6 @@ def code_in_one_file(file,subdir):
                     print("----------------------------------------------------------------------------")
                     # Change directory in order to be appropriate for the folder that the pbtxt parser is located.
                     pbtxt_file=github.folder + github.dirName +"\\_tensorflow\pbtxt\\"+os.path.basename(total_path)+".pbtxt"
-                    print("PBTXT=",pbtxt_file)
-                    import sys
-                    sys.exit()
-                    #pbtxt_file = github.folder + github.dirName + pbtxt_file.split(github.dirName)[1]
-
                     # Windows OS
                     log_file = pbtxt_file.split("\\")[-1].replace(".py.pbtxt", "")
                     # Unix OS
@@ -98,7 +93,6 @@ def find_imports(toCheck):
     in if/else or try/except blocks will always be included.
     """
     importedItems = []
-    print("elelele")
     with open(toCheck, 'r') as pyFile:
         for line in pyFile:
             # ignore comments
@@ -149,7 +143,6 @@ def handle_file_with_imports(imports,files):
     return repository_files_imp
 
 def check_if_file_in_files(elem,files):
-    print("Locoooooo=",elem," is ",files)
     for tmp in files:
         if len(elem)==1:
             print("hooray1=",elem," tmp1=",tmp[-1])
@@ -199,7 +192,6 @@ with open('github/github.csv') as csv_file:
                 print("\n\n Begin searching for ",path_in_str,"with imported ",imported)
                 repo_files_imp=handle_file_with_imports(imported,files)
                 print("Found imports ", repo_files_imp)
-                #file_import_dict["/".join(path_in_str)+".py"]
                 import_paths=[]
                 for imports in repo_files_imp:
                     t_key="/".join(imports)
