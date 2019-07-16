@@ -39,6 +39,9 @@ def handle_lines(content):
     feed_dict=get_feed_dict(sess_run)
     return (feed_dict,networks,epoch)
 
+def handle_batch(content):
+    batches_list=content.split("||||")
+    return batches_list
 
 def handle_network_var(value):
     if "Tensor" in value:
@@ -95,8 +98,10 @@ def handle_info(content,networks,feed_dict):
     print("Returning inputs=",inputs)
     return(loss,optimizer,inputs)
 
-def handle_lines_and_info(files,pathlistInfo,pathlistLine):
+def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch):
     pathlistInfo=list(pathlistInfo)
+    pathlistLine = list(pathlistLine)
+    pathlistBatch=list(pathlistBatch)
     file_training_information={}
     for file in pathlistLine:
         print("begin searching for ",file)
@@ -122,12 +127,18 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine):
                             new_file_training.optimizer=optimizer
                             new_file_training.epoch=epoch
                             new_file_training.inputs = inputs
+                for file_ in pathlistBatch:
+                    if (str(prFile) + ".batch") in str(file_):
+                        with open(str(file_), 'r') as content_file:
+                            content = content_file.read()
+                            (batch_list)=handle_batch(content)
+                            new_file_training.batches=batch_list
+                            file_training_information[new_file_training.name] = new_file_training
                             new_file_training.print()
-                            file_training_information[new_file_training.name]=new_file_training
                             found_file=True
                             break
-                    if found_file==True:
-                        break
+                        if found_file==True:
+                            break
                 if found_file==True:
                     break
 

@@ -44,7 +44,7 @@ def code_in_one_file(file,subdir):
                 tf_run_app=False
                 if (has_def_main==True and has_tf_app_run==True):
                     tf_run_app=True
-                result= tranform_tf_file.parse_file(file,tf_run_app,project_structure)
+                (result,produced_files)= tranform_tf_file.parse_file(file,tf_run_app,project_structure)
                 os.chdir(path)
                 if "error" in result:
                     print("ERROR:Error occured when executing the program ", file)
@@ -74,7 +74,7 @@ def code_in_one_file(file,subdir):
 
                         print(
                             " ---------------------------------------------------------------------------------------------------------------------")
-    return(result,found_network,handler_entities)
+    return(result,found_network,handler_entities,produced_files)
 
 def code_in_multiple_files(file):
     print(file)
@@ -227,26 +227,19 @@ with open('github/github.csv') as csv_file:
                             used_files=tmp
 
                     print("Files include in main file ",path," are ",project_structure)
-                    (result,found_network,handler_entities)=code_in_one_file(str(path),subdir)
+                    (result,found_network,handler_entities,produced_files)=code_in_one_file(str(path),subdir)
+                    print("Produced files are =",produced_files)
                     if found_network == True:
                         pathlistInfo = Path(code_repository).glob("**/*.info")
                         pathlistLine = Path(code_repository).glob("**/*.lines")
+                        pathlistBatch = Path(code_repository).glob("**/*.batch")
                         timeList=[]
                         for file in pathlistInfo:
                             timeList.append([os.path.getmtime(str(file)),str(file)])
                         timeList=sorted(timeList,key=lambda x:float(x[0]))
                         timeList=[x[1] for x in timeList]
                         pathlistInfo = Path(code_repository).glob("**/*.info")
-                        print("pathListInfo=",pathlistInfo)
-                        files = [
-                                 "_simple_file_temporary_05_basic_convnet.py__sEssIOn_[2]_1",
-                                 "_simple_file_temporary_05_basic_convnet.py__sEssIOn_[2]_co_train_2",
-                                 ]
-
-                        file_dict=handle_lines_and_info.handle_lines_and_info(files,pathlistInfo,pathlistLine)
-                        print("\n\n\n\n\n\n\n\n\n",file_dict)
-                        for d in file_dict:
-                            print('ELELELELE=',file_dict[d].epoch)
+                        file_dict=handle_lines_and_info.handle_lines_and_info(produced_files,pathlistInfo,pathlistLine,pathlistBatch)
                         import ntpath
                         for ind,elem in enumerate(timeList):
                             file_dict[ntpath.basename(elem).replace(".info","")].next_file=ntpath.basename(timeList[ind+1]).replace(".info","")

@@ -52,12 +52,10 @@ def parse_file(path,tf_run_app,proj):
     #new_file=new_file[:-1]
     print("LOGGING:Created new temporary file to run with needed changes in path ",new_file)
     line_list=[]
+    no_execution=False
     for line in open(path,errors="replace"):
         if "_sEssIOn_" in line:
-            import sys
-            print("DIE")
-            sys.exit()
-            return "no_execution"
+            no_execution=True
         line_list.append(line)
     #In case there is a meaningful last line,to reduce additional checks for last line
     #line_list.append(" ")
@@ -65,15 +63,18 @@ def parse_file(path,tf_run_app,proj):
     dir_ = os.getcwd()
     os.chdir(os.path.dirname(str(path)))
     (new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
+    if no_execution==True:
+        return ("no execution",produced_files)
     os.chdir(str(dir_))
     handle_imported_files(proj)
     result=execute_file(new_file,new_line_list,path_to_folder)
+
     if result=="error":
         print("ERROR:File contains inner error,cannot execute it.")
-        return "error"
+        return ("error",[])
     else:
         print("LOGGING:Successfully executed.")
-        return "success"
+        return ("success",produced_files)
 
 def find_epoch_size(line_list,file_path):
     new_line_list = []
@@ -132,6 +133,7 @@ def find_epoch_size(line_list,file_path):
                         write_ind=0
                         write_space=0
                         #print("2BEFORE ADDING=", new_line_list[before_sess_run])
+                        previous_for=0
                         while end_loop(for_counter,new_line_list[temp_ind])==False:
                             if "sess.run" in new_line_list[temp_ind] and num_of_space<prev_line_space:
                                 is_co_train=True
@@ -140,10 +142,11 @@ def find_epoch_size(line_list,file_path):
                                 reg = r'\[[\s\S]*\]'
                                 new_line_list[temp_ind]=re.sub(reg, '['+str(session_counter)+']', new_line_list[temp_ind])
                                 #print("FOUND SESSION WITH=", new_line_list[temp_ind])
-                            if num_of_space > prev_line_space:
-                                for_counter+=1
+                            if num_of_space > prev_line_space and prev_line_space<previous_for:
                                 if new_line_list[temp_ind].replace(" ", "").startswith("for"):
+                                    for_counter += 1
                                     write_ind=temp_ind
+                                    previous_for=prev_line_space
                                     write_space=prev_line_space
                             temp_ind-=1
                             prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
@@ -157,12 +160,14 @@ def find_epoch_size(line_list,file_path):
                                           before_sess_run,num_of_space,files_added)
                         added_lines=added_lines+len(line_list_for_feed)+10
                         produced_files.append(prod_file)
+                        print("2ARETH=",produced_files)
                         found_sess=True
                         found_model_line=0
             cnt+=1
     for i,v in enumerate(line_list):
         if i > cnt:
             new_line_list.append(v)
+
     return ( new_line_list,found_sess,produced_files)
 
 
@@ -178,7 +183,7 @@ def handle_feed_dict(line,num_of_space):
     else:
         before_list.append((num_of_space) * " " + "f = open('FILE', 'w')\n")
         before_list.append(num_of_space * " " + "for key,value in "+feed_dict+".items():\n")
-    before_list.append((num_of_space + 1) * " " + "f.write('VALUE:'+str(tf.shape(key).shape[0])+'||||')\n")
+    before_list.append((num_of_space + 1) * " " + "f.write(str(tf.shape(key).shape[0])+'||||')\n")
     before_list.append(num_of_space * " " + "f.close()\n")
     return before_list
 
@@ -209,7 +214,7 @@ def append_file_lines(name,line_of_sess_run,new_line_list,temp_list,line_list_fo
     new_line_list = new_line_list[:write_ind] + temp_list + new_line_list[write_ind:]
     line_list_for_feed = [x.replace("FILE", write_file_batch) for x in line_list_for_feed]
     new_line_list = new_line_list[:before_sess_run + files_written*3] + line_list_for_feed + new_line_list[before_sess_run + files_written*3:]
-    file = (name + write_file.replace(".info", ""))
+    file = write_file.replace(".info", "")
     new_line_list.append(num_of_space * " " + "abc = ''\n")
     new_line_list.append(num_of_space * " " + "tmp__ = locals().copy()\n")
     new_line_list.append(num_of_space * " " + "for k, v in tmp__.items():\n")
