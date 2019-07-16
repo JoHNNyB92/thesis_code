@@ -90,7 +90,8 @@ def find_epoch_size(line_list,file_path):
     num_of_space=0
     found_sess=False
     line_of_sess_run=""
-    file=file_path.split("\\")[-1]
+    file=file_path.split("\\")[2:]
+    file="_".join(file)
     found_run=False
     produced_files=[]
     session_counter=0
@@ -150,12 +151,12 @@ def find_epoch_size(line_list,file_path):
                         #print("3BEFORE ADDING=", new_line_list[before_sess_run])
                         files_added+=1
                         (write_file, write_file_line, write_file_batch,temp_list, name)=prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path)
-                        (file,new_line_list)=append_file_lines(name,line_of_sess_run, \
+                        (prod_file,new_line_list)=append_file_lines(name,line_of_sess_run, \
                                           new_line_list,temp_list,line_list_for_feed, \
                                           write_file,write_file_line,write_file_batch,write_ind,
                                           before_sess_run,num_of_space,files_added)
                         added_lines=added_lines+len(line_list_for_feed)+10
-                        produced_files.append(file)
+                        produced_files.append(prod_file)
                         found_sess=True
                         found_model_line=0
             cnt+=1
@@ -177,11 +178,12 @@ def handle_feed_dict(line,num_of_space):
     else:
         before_list.append((num_of_space) * " " + "f = open('FILE', 'w')\n")
         before_list.append(num_of_space * " " + "for key,value in "+feed_dict+".items():\n")
-    before_list.append((num_of_space + 1) * " " + "f.write('VALUE:'+str(tf.shape(key).shape[0]+'||||'))\n")
+    before_list.append((num_of_space + 1) * " " + "f.write('VALUE:'+str(tf.shape(key).shape[0])+'||||')\n")
     before_list.append(num_of_space * " " + "f.close()\n")
     return before_list
 
 def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path):
+    print("1ARETH=FILE",file," Session counter=",str(session_counter))
     if is_co_train == True:
         write_file = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_co_train_" + str(
             session_counter) + ".info"
