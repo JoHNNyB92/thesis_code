@@ -1,6 +1,9 @@
 from file_training import file_training
 
 def get_output_networks(sess_run):
+    print("1=",sess_run.split('sess.run('))
+    print("2=",sess_run.split('sess.run(')[1].split(","))
+    print("3=",sess_run.split('sess.run(')[1].split(",")[0].replace(" ",""))
     networks=sess_run.split('sess.run(')[1].split(",")[0].replace(" ","")
     network_list = []
     if "[" in networks:
