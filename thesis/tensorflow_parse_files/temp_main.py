@@ -38,7 +38,7 @@ def code_in_one_file(file,subdir):
             if "def main(" in myfile.read():
                 has_def_main=True
             print("FILE= ",file," hasRun=",has_run," HasSess=",has_sess," is main=",is_main)
-
+            produced_files=[]
             if (has_sess==True and has_run==True) or is_main==True or (has_def_main==True and has_tf_app_run==True) or has_interactive==True:
                 path = os.getcwd()
                 tf_run_app=False
@@ -100,7 +100,6 @@ def find_imports(toCheck):
                 if "from" not in line:
                     #print("ELEOR=",line)
                     line_=line.replace("import ","").replace("\n","").split(" ")
-                    print("\n\n\n\n\n\nLINE_=",line_)
                     final_import=[]
                     for elem in line_:
                         if elem=="as":

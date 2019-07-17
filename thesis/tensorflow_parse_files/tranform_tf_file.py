@@ -53,18 +53,22 @@ def parse_file(path,tf_run_app,proj):
     print("LOGGING:Created new temporary file to run with needed changes in path ",new_file)
     line_list=[]
     no_execution=False
-    for line in open(path,errors="replace"):
+    produced_files=[]
+    for ind,line in enumerate(open(path,errors="replace")):
         if "_sEssIOn_" in line:
+            print("LINE=",line)
+            print("LINE=",line.split('\'')[1])
+            produced_files.append(line.split('\'')[1].split('.')[0])
             no_execution=True
         line_list.append(line)
+    if no_execution==True:
+        return ("no execution",list(set(produced_files)))
     #In case there is a meaningful last line,to reduce additional checks for last line
     #line_list.append(" ")
     (pbtxt_file,model_var,new_line_list)=create_new_file(line_list,path,file,tf_run_app)
     dir_ = os.getcwd()
     os.chdir(os.path.dirname(str(path)))
     (new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
-    if no_execution==True:
-        return ("no execution",produced_files)
     os.chdir(str(dir_))
     handle_imported_files(proj)
     result=execute_file(new_file,new_line_list,path_to_folder)
@@ -121,6 +125,7 @@ def find_epoch_size(line_list,file_path):
                     line_list_for_feed = handle_feed_dict(line_of_sess_run, num_of_space)
                     if ind_+1 >=len(line_list) or line_list[ind_ + 1][0].replace(" ","") != ".":
                         temp_ind=ind_+added_lines
+                        temp_ind_copy=temp_ind
                         sess_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
                         #temp_ind-=1
                         prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
@@ -132,26 +137,43 @@ def find_epoch_size(line_list,file_path):
                         for_counter=0
                         write_ind=0
                         write_space=0
-                        #print("2BEFORE ADDING=", new_line_list[before_sess_run])
-                        previous_for=0
+                        previous_for=10000
+                        files_replace=[]
                         while end_loop(for_counter,new_line_list[temp_ind])==False:
                             if "sess.run" in new_line_list[temp_ind] and num_of_space<prev_line_space:
                                 is_co_train=True
                             if "_sEssIOn_" in new_line_list[temp_ind]:
-                                #print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
+                                #Line format:
+                                #f = open('_temporary_path_[x].batch', 'w')
+                                files_replace.append(new_line_list[temp_ind].split('\'')[1].split('.')[0])
+                                print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
                                 reg = r'\[[\s\S]*\]'
                                 new_line_list[temp_ind]=re.sub(reg, '['+str(session_counter)+']', new_line_list[temp_ind])
                                 #print("FOUND SESSION WITH=", new_line_list[temp_ind])
-                            if num_of_space > prev_line_space and prev_line_space<previous_for:
-                                if new_line_list[temp_ind].replace(" ", "").startswith("for"):
-                                    for_counter += 1
-                                    write_ind=temp_ind
-                                    previous_for=prev_line_space
-                                    write_space=prev_line_space
+
+                            if num_of_space > prev_line_space:
+                                print("1ELENHLINE=", new_line_list[temp_ind])
+                                if prev_line_space<previous_for:
+                                    print("2ELENHLINE=", new_line_list[temp_ind])
+                                    if new_line_list[temp_ind].replace(" ", "").startswith("for"):
+                                        print("3ELENHLINE=",new_line_list[temp_ind])
+                                        for_counter += 1
+                                        write_ind=temp_ind
+                                        previous_for=prev_line_space
+                                        write_space=prev_line_space
                             temp_ind-=1
                             prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                            #print("GOING BACK2=", new_line_list[temp_ind], "-", prev_line_space)
-                        #print("3BEFORE ADDING=", new_line_list[before_sess_run])
+                        temp_ind_copy=temp_ind
+                        while temp_ind_copy>0:
+                            for file_to_be_replaced in set(files_replace):
+                                if file_to_be_replaced in new_line_list[temp_ind_copy]:
+                                    print("re file=",file_to_be_replaced," ",new_line_list[temp_ind_copy])
+                                    print("FOUND OUTER SESSION WITH REGEXP=", new_line_list[temp_ind_copy])
+                                    produced_files.remove(file_to_be_replaced)
+                                    reg = r'\[[\s\S]*\]'
+                                    new_line_list[temp_ind_copy] = re.sub(reg, '[' + str(session_counter) + ']',new_line_list[temp_ind_copy])
+                                    produced_files.append(new_line_list[temp_ind_copy].split('\'')[1].split('.')[0])
+                            temp_ind_copy-=1
                         files_added+=1
                         (write_file, write_file_line, write_file_batch,temp_list, name)=prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path)
                         (prod_file,new_line_list)=append_file_lines(name,line_of_sess_run, \
@@ -189,6 +211,7 @@ def handle_feed_dict(line,num_of_space):
 
 def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path):
     print("1ARETH=FILE",file," Session counter=",str(session_counter))
+    file=file.replace(".py","")
     if is_co_train == True:
         write_file = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_co_train_" + str(
             session_counter) + ".info"
@@ -202,7 +225,7 @@ def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_pa
         write_file_line = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
             session_counter) + "]_" + str(session_counter) + ".lines"
         write_file_batch = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
-            session_counter) + "]_co_train_" + str(session_counter) + ".batch"
+            session_counter) + "]_"+str(session_counter) + ".batch"
     name = os.path.dirname(file_path).split(github.dirName)[1].replace("\\", "_")
     temp_list = []
     temp_list.append((write_space) * " " + "f = open('" + write_file_line + "', 'a')\n")
@@ -344,7 +367,7 @@ def handle_evaluation_score(filePath):
 def end_loop(cnt,line):
     if cnt==2:
         return True
-    elif len(line) - len(line.lstrip(' '))==0:
+    elif len(line) - len(line.lstrip(' '))==0 and line.startswith("for")==False:
         return True
     else:
         tmp_line=line

@@ -270,11 +270,18 @@ class handle_entities:
             optimizer_node=optimizer[key]
         IOPipe=handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name],"train")
         epoch=0
+        batch=0
         for fl in file:
             if optimizer_node.name in file[fl].optimizer:
                 epoch=file[fl].epoch
+                for input,ind in enumerate(file[fl].inputs):
+                    for inp_ in self.data.annConfiguration.networks[n_name].inputlayer:
+                        print("MPAMPIAS=",input,"-",inp_)
+                        if input==inp_:
+                            batch=file[fl].batches[ind]
+
         print("\n\n\n\n\n\n epoch is ",epoch)
-        tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,optimizer_node,epoch,0,"")
+        tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,optimizer_node,epoch,batch,"")
         tr_list_step=[]
         tr_list_step.append(tr_step)
         tr_session=handler_functions.handle_training_session(part_name+"_training_session",tr_list_step)
@@ -487,7 +494,7 @@ class handle_entities:
         input_layer=self.data.annConfiguration.networks[network].input_layer
         print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer)
         IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network],"train")
-        tr_step = handler_functions.handle_training_single(network + "_training_step", network, IOPipe,optimizer, file_info.epoch, 0,file_info.next)
+        tr_step = handler_functions.handle_training_single(network + "_training_step", network, IOPipe,optimizer, file_info.epoch, file_info.next,file_info.next)
         return tr_step
 
     def check_metric(self,IOPipe,network):
@@ -633,7 +640,7 @@ class handle_entities:
 
     def find_training(self,file_dict):
         for d in file_dict:
-            print('OLOLOLOLO=', file_dict[d].epoch)
+            print('LOGGING:FILE INFORMATION ', file_dict[d].print())
         res = self.check_multiple_networks()
         if res == 0:
             print("LOGGING:Only one network presented.")

@@ -1,6 +1,7 @@
 from file_training import file_training
 
 def get_output_networks(sess_run):
+    print("0=",sess_run)
     print("1=",sess_run.split('sess.run('))
     print("2=",sess_run.split('sess.run(')[1].split(","))
     print("3=",sess_run.split('sess.run(')[1].split(",")[0].replace(" ",""))
