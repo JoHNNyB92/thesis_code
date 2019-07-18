@@ -279,6 +279,7 @@ class handle_entities:
         self.data.annConfiguration.training_strategy[tr_strategy.name]=tr_strategy
         self.insert_to_evaluation_pipe(n_name)
         del self.data.annConfiguration.networks[self.current_network]
+
     def check_multiple_networks(self):
         self.handle_possible_loss_functions()
         print("OBJECTIVES ARE :",self.data.annConfiguration.networks[self.current_network].objective.keys())
@@ -344,9 +345,6 @@ class handle_entities:
                         del self.data.annConfiguration.networks[self.current_network].objective[obj_in]
                         return True
         return False
-
-
-
 
 
     def find_network_input_layer_and_layers(self,output):
@@ -644,15 +642,15 @@ class handle_entities:
         return 1
 
     def handle_training_step(self,trSession,trSessionName,optimizer_map,isLoop):
-        trSteps=[]
         print("ISLOOP=",isLoop)
+        trSteps=[]
+        primary_in_loop_tr_step = ""
+        looping_steps = []
         for file in trSession:
             if len(file.optimizer)==0:
                 print("ERROR:Return,no optimizer handle it smh after,skip it for now")
             elif len(file.optimizer)>1:
                 print("LOGGING:Multiple co training of networks")
-                primary_in_loop_tr_step=""
-                looping_steps=[]
                 for network in self.data.annConfiguration.networks:
                     if network in optimizer_map.keys():
                         found = True

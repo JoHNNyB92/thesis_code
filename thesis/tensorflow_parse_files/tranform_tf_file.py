@@ -21,7 +21,6 @@ def execute_file(new_file,new_line_list,path_to_folder):
         subprocess.check_output([sys.executable, file_to_execute], stderr=subprocess.STDOUT)
         return file_to_execute
     except subprocess.CalledProcessError as e:
-        traceback = str(e)
         return "error"
 
 def handle_imported_files(proj):
@@ -33,7 +32,9 @@ def handle_imported_files(proj):
             line_list.append(line)
         dir_ = os.getcwd()
         os.chdir(os.path.dirname(str(path)))
-        (new_line_list,found,produced_files)=find_epoch_size(line_list,str(path))
+        (new_line_list,found,produced_files_one_file)=find_epoch_size(line_list,str(path))
+        for produced_file in produced_files_one_file:
+            produced_files.append(produced_file)
         import ntpath
         real_path=ntpath.basename(str(path))
         if found==True:
@@ -49,22 +50,9 @@ def parse_file(path,tf_run_app,proj):
     path_to_folder=os.path.dirname(path)
     file=ntpath.basename(path)
     new_file=path_to_folder+"/"+file
-    #new_file=new_file[:-1]
-    print("LOGGING:Created new temporary file to run with needed changes in path ",new_file)
-    line_list=[]
-    no_execution=False
-    produced_files=[]
-    for ind,line in enumerate(open(path,errors="replace")):
-        if "_sEssIOn_" in line:
-            print("LINE=",line)
-            print("LINE=",line.split('\'')[1])
-            produced_files.append(line.split('\'')[1].split('.')[0])
-            no_execution=True
-        line_list.append(line)
+    (no_execution,line_list,produced_files)=check_if_already_executed(path,proj)
     if no_execution==True:
         return ("no execution",list(set(produced_files)))
-    #In case there is a meaningful last line,to reduce additional checks for last line
-    #line_list.append(" ")
     (pbtxt_file,model_var,new_line_list)=create_new_file(line_list,path,file,tf_run_app)
     dir_ = os.getcwd()
     os.chdir(os.path.dirname(str(path)))
@@ -72,13 +60,36 @@ def parse_file(path,tf_run_app,proj):
     os.chdir(str(dir_))
     handle_imported_files(proj)
     result=execute_file(new_file,new_line_list,path_to_folder)
-
     if result=="error":
         print("ERROR:File contains inner error,cannot execute it.")
         return ("error",[])
     else:
         print("LOGGING:Successfully executed.")
         return ("success",produced_files)
+
+
+def check_if_already_executed(path,proj):
+    prod_files=[]
+    line_list=[]
+    no_execution=False
+    for ind, line in enumerate(open(path, errors="replace")):
+        if "_sEssIOn_" in line:
+            print("LINE=", line)
+            print("LINE=", line.split('\'')[1])
+            prod_files.append(line.split('\'')[1].split('.')[0])
+            no_execution = True
+        line_list.append(line)
+    for filepath in proj:
+        for ind, line in enumerate(open(filepath, errors="replace")):
+            if "_sEssIOn_" in line:
+                print("LINE=", line)
+                print("LINE=", line.split('\'')[1])
+                prod_files.append(line.split('\'')[1].split('.')[0])
+                no_execution = True
+
+    return (no_execution,line_list,prod_files)
+
+
 
 def find_epoch_size(line_list,file_path):
     new_line_list = []
@@ -202,7 +213,6 @@ def handle_feed_dict(line,num_of_space):
         before_list.append(num_of_space*" "+"feed_dict="+feed_dict+"\n")
         before_list.append(num_of_space * " " + "for key,value in feed_dict.items():\n")
     else:
-        before_list.append((num_of_space) * " " + "f = open('FILE', 'w')\n")
         before_list.append(num_of_space * " " + "for key,value in "+feed_dict+".items():\n")
     before_list.append((num_of_space + 1) * " " + "f.write(str(tf.shape(key).shape[0])+'||||')\n")
     before_list.append(num_of_space * " " + "f.close()\n")
