@@ -5,6 +5,8 @@ import os
 import ntpath
 import sys
 import github.github as github
+from sklearn.utils.bench import total_seconds
+
 
 def execute_file(new_file,new_line_list,path_to_folder):
     try:
@@ -114,9 +116,20 @@ def find_epoch_size(line_list,file_path):
     added_lines=0
     before_sess_run=0
     files_added=0
+    found_total_session=False
+    found_total_session_space=0
+    close_=""
     for ind_,line in enumerate(line_list):
         if ind_>ind:
             new_line_list.append(line)
+            line_space=len(line) - len(line.lstrip(' '))
+            if line.replace(" ","").startswith("for")==True and found_total_session_space==True and found_total_session_space<=line_space:
+                print("DEBUG:Epoch size:New for found  ", line)
+                found_total_session = False
+                found_total_session_space=0
+                #new_line_list=new_line_list[-2:]+[close_]+new_line_list[-2:]
+                #added_lines+=1
+                #new_line_list[(ind+(len(new_line_list)-len(line_list))):]+[close_]+new_line_list[:(ind+(len(new_line_list)-len(line_list)))]
             #num_of_space = len(line) - len(line.lstrip(' '))
             if ".run" in line:
                 num_of_space = len(line) - len(line.lstrip(' '))
@@ -150,7 +163,10 @@ def find_epoch_size(line_list,file_path):
                         write_space=0
                         previous_for=10000
                         files_replace=[]
-                        while end_loop(for_counter,new_line_list[temp_ind])==False:
+                        if found_total_session==False:
+                            print("DEBUG")
+                            (number_of_fors,session_for_ind,first_for_space)=find_number_of_fors(temp_ind,new_line_list)
+                        while end_loop(for_counter,new_line_list[temp_ind],number_of_fors,found_total_session) ==False:
                             if "sess.run" in new_line_list[temp_ind] and num_of_space<prev_line_space:
                                 is_co_train=True
                             if "_sEssIOn_" in new_line_list[temp_ind]:
@@ -168,11 +184,33 @@ def find_epoch_size(line_list,file_path):
                                     if new_line_list[temp_ind].replace(" ", "").startswith("for"):
                                         print("3ELENHLINE=",new_line_list[temp_ind])
                                         for_counter += 1
-                                        write_ind=temp_ind
+                                        if for_counter==1:
+                                            if found_total_session == False:
+                                                write_ind=temp_ind+1
+                                            else:
+                                                write_ind = temp_ind
+                                            print("POUTANES=",new_line_list[temp_ind])
+                                            write_space = len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                                            print("WRITE SPACE =", write_space)
                                         previous_for=prev_line_space
-                                        write_space=prev_line_space
                             temp_ind-=1
                             prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                        if found_total_session==False:
+                            found_total_session=True
+                            total_session = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
+                                session_counter) + "]_" + str(
+                                session_counter) + ".total_session"
+                            temp_space= len(line_list[session_for_ind+1]) - len(line_list[session_for_ind+1].lstrip(' '))
+                            open_=(first_for_space)* " " + "f = open('" + total_session + "', 'w')\n"
+                            write_=(temp_space)* " " + "f.write('" + total_session + "','ale')\n"
+                            close_=(temp_space)* " " + "f = close(" + total_session+")\n"
+                            new_line_list = new_line_list[:session_for_ind] + [open_] + new_line_list[session_for_ind:]
+                            new_line_list = new_line_list[:session_for_ind +2] + [write_] + new_line_list[
+                                                                                            session_for_ind +2:]
+                            before_sess_run+=2
+                            added_lines+=2
+
+
                         temp_ind_copy=temp_ind
                         while temp_ind_copy>0:
                             for file_to_be_replaced in set(files_replace):
@@ -201,6 +239,40 @@ def find_epoch_size(line_list,file_path):
             new_line_list.append(v)
 
     return ( new_line_list,found_sess,produced_files)
+
+def find_number_of_fors(ind_,line_list):
+    for_counter=0
+    for_space=-1
+    ret_for_space=-1
+    ret_for_ind=-1
+    first_time=True
+    for ind,line in enumerate(line_list):
+        if ind<ind_:
+            print("DEBUG in forsssssssssssss=",line)
+            if line.replace(" ","").startswith("for")==True:
+                num_of_space = len(line) - len(line.lstrip(' '))
+                print("DEBUG FIRST TIME IS ",first_time)
+                if first_time==True:
+                    print("DEBUG:Find:Line with first time for is=",line)
+                    first_time=False
+                    ret_for_space=num_of_space
+                    ret_for_ind=ind
+                if num_of_space>for_space:
+                    for_counter+=1
+                    print("DEBUG:Find:for counter= ", for_counter)
+                    print("DEBUG:Find:for counter line= ", for_counter)
+                else:
+                    print("DEBUG:Find:Found new for iteration=", line)
+                    first_time = False
+                    for_counter = 1
+                    ret_for_space = -1
+                    ret_for_ind = -1
+                for_space = num_of_space
+        else:
+            break
+    print("DEBUG RETURNING=IND",ret_for_ind," For_counter=",for_counter," ret_for_space=",ret_for_space)
+    return (for_counter,ret_for_ind,ret_for_space)
+
 
 
 def handle_feed_dict(line,num_of_space):
@@ -373,7 +445,14 @@ def handle_evaluation_score(filePath):
 
 
 
-def end_loop(cnt,line):
+def end_loop(cnt,line,number_of_fors,found_total_session):
+    if found_total_session==False:
+        if number_of_fors==cnt:
+            return True
+    if ".total_session" in line:
+        return True
+    return False
+    '''
     if cnt==2:
         return True
     elif len(line) - len(line.lstrip(' '))==0 and line.startswith("for")==False:
@@ -384,3 +463,4 @@ def end_loop(cnt,line):
         if tmp_line.startswith("def") or tmp_line.startswith("withtf.session"):
             return True
     return False
+    '''
