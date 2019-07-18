@@ -37,7 +37,7 @@ def print_topology():
         print("_____________________________________________________________________________________")
         print("NM:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].name)
         print("NL:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].next_layer)
-        print("NL:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].output_intermediate_nodes)
+        #print("NL:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].output_intermediate_nodes)
         if nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].activation!=None:
             print("AC:", nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer[key].activation.name)
         else:

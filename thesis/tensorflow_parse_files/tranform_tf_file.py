@@ -143,7 +143,6 @@ def find_epoch_size(line_list,file_path):
                             if "sess.run" in new_line_list[temp_ind] and num_of_space<prev_line_space:
                                 is_co_train=True
                             if "_sEssIOn_" in new_line_list[temp_ind]:
-                                #Line format:
                                 #f = open('_temporary_path_[x].batch', 'w')
                                 files_replace.append(new_line_list[temp_ind].split('\'')[1].split('.')[0])
                                 print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])

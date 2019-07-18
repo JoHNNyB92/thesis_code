@@ -8,8 +8,6 @@ import copy
 class handle_entities:
     def __init__(self):
         self.data=dataMgnt()
-        self.batch=0
-        self.epochs=0
         self.node_map={}
         self.current_network=""
         self.possible_loss_function={}
@@ -29,19 +27,12 @@ class handle_entities:
         self.layers_to_nodes = {}
         self.regularizers=["L2Loss"]
         self.loss=["Equal","Mean"]
-        self.batch=""
-        self.epoch=""
         self.discovered_loss = []
         self.discovered_optimizers = []
         self.input_layers = []
         self.names_into_separator=[]
         self.output_layer=[]
         self.input_layer=[]
-
-    def set_batch_epoch(self,batch,epoch):
-        #Set batch and epoch,though program has some limitations due to lack of gpu.
-        self.batch=batch
-        self.epoch=epoch
 
     #The following function is used only if there is only one network presented.
     def insert_to_evaluation_pipe(self,network):
@@ -265,45 +256,29 @@ class handle_entities:
                     weight=handler_functions.handle_weights('W'+str(counter),elem_in,layer)
                     tr_model.add_weight(weight)
         optimizer=self.data.annConfiguration.networks[self.current_network].optimizer
-        optimizer_node=""
-        for key in optimizer.keys():
-            optimizer_node=optimizer[key]
-        IOPipe=handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name],"train")
+
+
         epoch=0
         batch=0
-        for fl in file:
-            if optimizer_node.name in file[fl].optimizer:
-                epoch=file[fl].epoch
-                for input,ind in enumerate(file[fl].inputs):
-                    for inp_ in self.data.annConfiguration.networks[n_name].inputlayer:
-                        print("MPAMPIAS=",input,"-",inp_)
-                        if input==inp_:
-                            batch=file[fl].batches[ind]
-
-        print("\n\n\n\n\n\n epoch is ",epoch)
-        tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,optimizer_node,epoch,batch,"")
-        tr_list_step=[]
-        tr_list_step.append(tr_step)
-        tr_session=handler_functions.handle_training_session(part_name+"_training_session",tr_list_step)
+        for key in optimizer.keys():
+            for fl in file:
+                print("Optimizer node name =",optimizer[key].name," file ",file[fl].optimizer)
+                if optimizer[key].name in file[fl].optimizer:
+                    print("Epoch is ",file[fl].epoch)
+                    epoch=file[fl].epoch
+                    for ind,input in enumerate(file[fl].inputs):
+                        for inp_ in self.data.annConfiguration.networks[n_name].input_layer:
+                            if input==inp_.name:
+                                print("Batch is ",file[fl].batches[ind])
+                                batch=file[fl].batches[ind]
+        IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name], "train")
+        primary_tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,optimizer[key].name,epoch,batch,"")
+        tr_session=handler_functions.handle_training_session(part_name+"_training_session",[],primary_tr_step)
         tr_strategy=handler_functions.handle_training_strategy(part_name+"_training_strategy",tr_session,tr_model)
         self.data.evaluationResult.train_strategy=tr_strategy
         self.data.annConfiguration.training_strategy[tr_strategy.name]=tr_strategy
         self.insert_to_evaluation_pipe(n_name)
         del self.data.annConfiguration.networks[self.current_network]
-    '''
-    def find_input_output(self):
-        layers=self.annConfiguration.networks[self.current_network].layer
-        for tmp in layers.keys():
-            for prev in layers[tmp].previous_layer:
-                if prev in self.layers().keys():
-                    break
-            self.annConfiguration.networks[self.current_network].input_layer=tmp
-        for tmp in layers.keys():
-            for next in layers[tmp].next_layer:
-                if next in self.layers().keys():
-                    break
-            self.annConfiguration.networks[self.current_network].input_layer=tmp
-    '''
     def check_multiple_networks(self):
         self.handle_possible_loss_functions()
         print("OBJECTIVES ARE :",self.data.annConfiguration.networks[self.current_network].objective.keys())
@@ -321,25 +296,7 @@ class handle_entities:
             print("LOGGING:Only one network presented,no more parsing,multiple functions were evaluation and metric.")
             return 0
         return 1
-        '''
-        net_cnt=0
-        network_outputs=[]
-        objectives=[]
-        for l in self.data.annConfiguration.networks[self.current_network].objective.keys():
-            objectives.append(l)
-        optimizer_per_layer = self.find_optimizer()
-        #self.find_combined_losses(objectives)
-        for obj in sorted(objectives):
-            print("Encountered objective ",self.data.annConfiguration.networks[self.current_network].objective[obj].name)
-            obj_func=self.data.annConfiguration.networks[self.current_network].objective[obj]
-            (output_layers,output,net_cnt,optimizer)=self.find_network(obj_func,network_outputs,self.current_network,net_cnt,optimizer_per_layer)
-            for name in output:
-                network_outputs.append(name)
 
-        self.insert_training(optimizer)
-        del self.data.annConfiguration.networks[self.current_network]
-        return 1
-    '''
     def handle_possible_loss_functions(self):
         for poss in self.possible_loss_function.keys():
             cnt=0
@@ -694,6 +651,8 @@ class handle_entities:
                 print("ERROR:Return,no optimizer handle it smh after,skip it for now")
             elif len(file.optimizer)>1:
                 print("LOGGING:Multiple co training of networks")
+                primary_in_loop_tr_step=""
+                looping_steps=[]
                 for network in self.data.annConfiguration.networks:
                     if network in optimizer_map.keys():
                         found = True
@@ -704,12 +663,12 @@ class handle_entities:
                         if found==True:
                             trStep=self.create_tr_step(file.optimizer,network,file)
                             if isLoop==True:
-                                trStep.isInLoop=True
                                 if "_co_train" in file.name:
-                                    trStep.isPrimaryInLoop=True
+                                    primary_in_loop_tr_step=trStep
                                 else:
-                                    trStep.isLoopingStep=True
-                            trSteps.append(trStep)
+                                    looping_steps.append(trStep)
+                            else:
+                                trSteps.append(trStep)
                         else:
                             print(network," OPTIMIZER ",optimizer_map[network]," not in ",file.optimizer)
                     else:
@@ -724,10 +683,12 @@ class handle_entities:
                                 trSteps.append(trStep)
                     else:
                         print("ERROR:Network ",network," with no optimizer.")
-        if trSteps==[]:
+        if trSteps==[] and looping_steps==[] and primary_in_loop_tr_step=="":
             print("ERROR:Unable to find any kind of training steps for ",trSessionName)
             return None
-        tr_session = handler_functions.handle_training_session(trSessionName + "_training_session", trSteps)
+        if primary_in_loop_tr_step!="":
+            primary_in_loop_tr_step=handler_functions.handle_loop(trSessionName+"_training_loop",primary_in_loop_tr_step,looping_steps,-1)
+        tr_session = handler_functions.handle_training_session(trSessionName + "_training_session", trSteps,primary_in_loop_tr_step)
         return tr_session
 
     def preprocess_files(self,files,opl):

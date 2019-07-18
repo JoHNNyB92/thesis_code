@@ -24,6 +24,7 @@ from Algorithm.WeightInitialization.random_initialization import random_initiali
 from TrainedModel.trained_model import trained_model
 from TrainedWeights.trained_weights import trained_weights
 from TrainingStep.NetworkSpecific.training_single import training_single
+from TrainingStep.TrainingLoop.training_loop import training_loop
 from TrainingSession.training_session import training_session
 from TrainingStrategy.training_strategy import training_strategy
 import nodes.handler
@@ -279,8 +280,11 @@ def handle_out_layer(layer):
 def handle_in_layer(layer):
     return input_layer(layer)
 
-def handle_training_session(name,trStep):
-    return training_session(name,trStep)
+def handle_training_session(name,trStep,primaryTrainingStep):
+    return training_session(name,trStep,primaryTrainingStep)
+
+def handle_loop(name, trSteps,looping_steps,cond):
+    return training_loop(name, trSteps,looping_steps,cond)
 
 def handle_mul_as_cross_entropy(node,c_name):
     children = node.get_inputs()

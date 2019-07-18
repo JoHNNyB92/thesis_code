@@ -203,3 +203,15 @@ def new_has_regularizer(cf,regularizer):
 
 def new_same_layer(layer,same_layer):
     nodes.handler.entitiesHandler.data.insert_same_layer(layer,same_layer)
+
+def new_has_stop_cond(loop,cond):
+    nodes.handler.entitiesHandler.data.insert_has_stop_cond(loop, cond)
+
+def new_has_primary_loop(loop,primaryLoop):
+    nodes.handler.entitiesHandler.data.insert_primary_loop(loop, primaryLoop)
+
+def new_has_primary_loop(loop,loopingStep):
+    nodes.handler.entitiesHandler.data.insert_looping_step(loop, loopingStep)
+
+def new_num_of_iterations(name,iterations):
+    nodes.handler.entitiesHandler.data.insert_stop_condition_number(name,iterations)

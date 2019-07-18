@@ -245,6 +245,9 @@ with open('github/github.csv') as csv_file:
                             if ind+2==len(timeList):
                                 break
                         for ind,elem in enumerate(timeList):
+                            print("FILE DISCOVERED:\n ")
+                            file_dict[ntpath.basename(elem).replace(".info","")].print()
+                        for ind,elem in enumerate(timeList):
                             print(elem.replace(".info",""),"->",file_dict[ntpath.basename(elem).replace(".info","")].next_file)
                         handler_entities.find_training(file_dict)
             sys.exit()

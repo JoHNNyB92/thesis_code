@@ -1,7 +1,7 @@
 import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 from  TrainingStep.TrainingLoop.training_loop import training_loop
-class training_session:
 
+class training_session:
     def insert_in_annetto(self):
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
@@ -20,29 +20,27 @@ class training_session:
             print("ERROR:PrimaryTrainingStep is empty")
 
 
-    def __init__(self,name,trStep):
+    def __init__(self,name,trSteps,primaryTrainingStep):
         self.type="TrainingSession"
         self.name=name
-        primaryInLoop=""
-        loopSteps=[]
-        print("LOGGING:Training:Training Session Info:",self.name)
-        for trainingStep in trStep:
-            if trainingStep.isPrimaryInLoop==True:
-                print("LOGGING:Training:Primary In Loop:",trainingStep.name)
-                print("LOGGING:Training:Epochs:",trainingStep.epochs)
-                primaryInLoop=trainingStep
-            elif trainingStep.isLoopingStep==True:
-                print("LOGGING:Training:Loop Step:", trainingStep.name)
-                print("LOGGING:Training:Epochs:", trainingStep.epochs)
-                loopSteps.append(trainingStep)
-            else:
-                print("LOGGING:Training:Simple training step:", trainingStep.name)
-                print("LOGGING:Training:Epochs:", trainingStep.epochs)
-                self.hasTrainingStep=trStep
-        if len(trStep)==1:
-            self.hasPrimaryTrainingStep=trStep[0]
-        if primaryInLoop!="":
-            tr_loop=training_loop(primaryInLoop.epochs,primaryInLoop,loopSteps)
-            self.hasPrimaryTrainingStep=tr_loop
-        print("LOGGING:Training:Primary Step is:", trainingStep.name)
-        print("LOGGING:Training:Epochs:", trainingStep.epochs)
+        self.hasTrainingStep=[]
+        self.hasPrimaryTrainingStep=primaryTrainingStep
+
+        if "training_single" in str(self.hasPrimaryTrainingStep.__class__):
+            print("LOGGING:Training:Primary training step:", self.hasPrimaryTrainingStep.name)
+            print("LOGGING:Training:Primary training step epochs:", self.hasPrimaryTrainingStep.epochs)
+            print("LOGGING:Primary training step batch:", self.hasPrimaryTrainingStep.batch)
+        else:
+            print("LOGGING:Training:TrainingLoop", self.hasPrimaryTrainingStep.name)
+            print("LOGGING:Primary TrainingLoop epochs:", self.hasPrimaryTrainingStep.primaryLoop.epochs)
+            print("LOGGING:Primary TrainingLoop batch:", self.hasPrimaryTrainingStep.primaryLoop.batch)
+            for trainingStep in self.hasPrimaryTrainingStep.loopSteps:
+                print("LOGGING:Training:Looping training step:", trainingStep.name)
+                print("LOGGING:Training:Looping Step epochs:", trainingStep.epochs)
+                print("LOGGING:Training:Looping Step batch:", trainingStep.batch)
+
+        for trainingStep in trSteps:
+            self.hasTrainingStep.append(trainingStep)
+            print("LOGGING:Training:Simple training step:", trainingStep.name)
+            print("LOGGING:Training:Step epochs:", trainingStep.epochs)
+            print("LOGGING:Training:Step batch:", trainingStep.batch)

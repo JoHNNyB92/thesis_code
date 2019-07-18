@@ -319,3 +319,26 @@ class annet_o_data_management:
         p = self.prefix_annet_o + same_layer
         self.crud.insert(s, o, p)
 
+    def insert_has_stop_cond(self,loop,cond):
+        s = self.prefix_annet_o + loop
+        o = self.prefix_annet_o + "hasStopCondition"
+        p = self.prefix_annet_o + cond
+        self.crud.insert(s, o, p)
+
+    def insert_stop_condition_number(self,cond,number):
+        s = self.prefix_annet_o + cond
+        o = self.prefix_annet_o + "iteratesFor"
+        p = self.prefix_annet_o + str(number)
+        self.crud.insert(s, o, p)
+
+    def insert_primary_loop(self,loop,prLoopStep):
+        s = self.prefix_annet_o + loop
+        o = self.prefix_annet_o + "hasPrimaryLoopStep"
+        p = self.prefix_annet_o + prLoopStep
+        self.crud.insert(s, o, p)
+
+    def insert_looping_step(self,loop,loopStep):
+        s = self.prefix_annet_o + loop
+        o = self.prefix_annet_o + "hasLoopTrainingStep"
+        p = self.prefix_annet_o + loopStep
+        self.crud.insert(s, o, p)
