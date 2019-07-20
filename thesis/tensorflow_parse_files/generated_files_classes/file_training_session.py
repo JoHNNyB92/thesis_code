@@ -3,11 +3,14 @@ class file_training_session:
         self.name=name
         self.session_epoch=epoch
         self.steps=steps
+        self.next_session=""
 
     def print(self):
         print("Session is ",self.name)
         print("With session epoch",self.session_epoch)
         print("With steps :")
+        if self.next_session!="":
+            print("Next session is ",self.next_session)
         for st in self.steps:
             print("Step:[",st.name,"]")
             st.print()

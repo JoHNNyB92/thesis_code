@@ -246,7 +246,15 @@ with open('github/github.csv') as csv_file:
                             print("\n\n----------------------------------------------")
                             print("About to see info for ",sess)
                             file_dict[sess].print()
-                            print("----------------------------------------------\n\n")
+                            print("----------------------------------------------\n\nimport")
+                        file_dict=handle_lines_and_info.find_next_session_and_step(file_dict,[x.replace(".info","") for x in timeList])
+
+                        for sess in file_dict.keys():
+                            print("\n\n----------------------------------------------")
+                            print("About to see info for ",sess)
+                            file_dict[sess].print()
+                            print("----------------------------------------------\n\nimport")
+
                         import sys
                         sys.exit()
                         for ind,elem in enumerate(timeList):

@@ -2,13 +2,14 @@ from generated_files_classes.file_tr_step import file_tr_step
 from generated_files_classes.file_training_session import file_training_session
 
 def get_output_networks(sess_run):
-    print("0=",sess_run)
-    print("1=",sess_run.split('sess.run('))
-    print("2=",sess_run.split('sess.run(')[1].split(","))
-    print("3=",sess_run.split('sess.run(')[1].split(",")[0].replace(" ",""))
-    networks=sess_run.split('sess.run(')[1].split(",")[0].replace(" ","")
+    #print("0=",sess_run)
+    #print("1=",sess_run.split('sess.run('))
+    #print("2=",sess_run.split('sess.run(')[1].split(","))
+    #print("3=",sess_run.split('sess.run(')[1].split(",")[0].replace(" ",""))
+    networks=sess_run.split('sess.run(')[1]
     network_list = []
     if "[" in networks:
+        networks=networks.split("]")[0].replace("[","")
         if "," in networks:
             print('1')
             for elem in networks.split(','):
@@ -18,7 +19,7 @@ def get_output_networks(sess_run):
             network_list.append(networks.replace(" ",""))
         #print("networks are ",network_list)
     else:
-        network_list.append(networks)
+        network_list.append(networks.split(",")[0])
     return network_list
 
 def get_feed_dict(sess_run):
@@ -49,11 +50,25 @@ def handle_batch(content):
     return batches_list
 
 def handle_network_var(value):
+    print("Value is ",value)
+    if value.startswith("["):
+        value=value.replace("[","").replace("]","").split(",")
+        elem_lst={}
+        elem_lst["L"] = []
+        elem_lst["O"] = []
+        for val in value:
+            print("Value is ", val)
+            if "Tensor" in val:
+                n_value = val.split("Tensor")[1].split("'")[0]
+                elem_lst["L"].append(n_value)
+            else:
+                n_value = val.replace(" ", "").split("tf.Operation")[1].split("'")[0]
+                elem_lst["O"].append(n_value)
+        return ("B",elem_lst)
     if "Tensor" in value:
         n_value=value.split("Tensor(\"")[1].split("\"")[0]
         return ("L", n_value)
     else:
-        print(value)
         n_value = value.replace(" ","").split("name:\"")[1].split("\"")[0]
         return ("O", n_value)
 
@@ -89,8 +104,16 @@ def handle_info(content,networks,feed_dict):
                 (case,n_value)=handle_network_var(value)
                 if case=="L":
                     loss.append(n_value)
-                if case=="O":
+                elif case=="O":
                     optimizer.append(n_value)
+                else:
+                    for key in n_value.keys():
+                        for elem in n_value[key]:
+                            if key == "L":
+                                loss.append(elem)
+                            else:
+                                optimizer.append(elem)
+
                 break
         if str(type(feed_dict))=="<class 'list'>":
             inputs=search_feed_dict(feed_dict,key,value,inputs)
@@ -112,47 +135,81 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
     new_file_training=""
     total_sessions_dict={}
     for session in pathlistSession:
-        session_name=str(session).split("]_")[0]
+        session_name=str(session).split("]_")[0]+"]"
         with open(str(session), 'r') as content_file:
             content = content_file.read()
             session_epochs=content.count("----")
+        print("LOGGING:Session name is : ",session_name," Epochs :",session_epochs)
         fts=file_training_session(session_name,session_epochs,[])
         for file in pathlistLine:
             print("begin searching for ",file)
-            found_file = False
-            print("Session=",session_name+"]")
-            if  session_name+"]" in str(file) :
-                print("\n\n\nFound line file=")
-                print('file=',file)
+            if  session_name in str(file) :
+                print("Found line-file : ",file)
                 with open(str(file), 'r') as content_file:
                     content = content_file.read()
                     (feed_dict,networks,epoch)=handle_lines(content)
                 new_file_training=file_tr_step()
                 step_name=str(file).replace(".lines","")
                 new_file_training.name=str(step_name)
+                print("LOGGING:New training step is ",str(step_name))
                 for file_ in pathlistInfo:
                     if str(file).replace(".lines","")==str(file_).replace(".info",""):
+                        print("Found info-file : ", file_)
                         with open(str(file_), 'r') as content_file:
                             content = content_file.read()
-                            print("NETWORKS=",networks)
                             (loss,optimizer,inputs)=handle_info(content,networks,feed_dict)
-                            new_file_training.loss=loss
-                            new_file_training.optimizer=optimizer
-                            new_file_training.epoch=epoch
-                            new_file_training.inputs = inputs
+                            print("Returned:Loss")
                 for file_ in pathlistBatch:
-                    print("file=",file," file_=",file_)
                     if str(file).replace(".lines", "") == str(file_).replace(".batch", ""):
+                        print("Found batch-file : ", file_)
                         with open(str(file_), 'r') as content_file:
                             content = content_file.read()
                             (batch_list)=handle_batch(content)
                             new_file_training.batches=batch_list
-                            new_file_training.print()
-                            found_file=True
+                            new_file_training.loss = loss
+                            new_file_training.optimizer = optimizer
+                            new_file_training.epoch = epoch
+                            new_file_training.inputs = inputs
                             fts.steps.append(new_file_training)
-                            print("\n\n\n\n added to ",session_name," \n",new_file_training.name,"\nsize ",len(fts.steps))
-                            break
-                    if found_file==True:
-                        break
+                            print("\n\n\n||||||||||||||||||||||||||||||||||||||||||||||||||")
+                            fts.print()
+                            print("||||||||||||||||||||||||||||||||||||||||||||||||||\n\n\n")
         total_sessions_dict[fts.name]=fts
     return total_sessions_dict
+
+
+def find_next_session_and_step(sessions,timeList):
+    new_sessions=sessions.copy()
+    ret_sessions={}
+    for sess in sessions.keys():
+        if len(sessions[sess].steps)>1:
+            new_step_list=[]
+            counter=0
+            list_index = []
+            for step in sessions[sess].steps:
+                list_index.append([step,timeList.index(step.name)])
+            list_index = sorted(list_index, key=lambda x: x[1])
+            while counter<len(list_index)-1:
+                list_index[counter][0].next =list_index[counter+1][0].name
+                new_step_list.append(list_index[counter][0])
+            new_step_list.append(list_index[-1])
+        new_sessions[sess].steps=new_step_list
+    list_sessions_index=[]
+    if sessions.keys()>1:
+        for sess in sessions.keys():
+            if len(sessions[sess].steps) > 0:
+                list_sessions_index.append([sessions[sess], timeList.index(step.name)])
+            else:
+                print("EXTREME ERROR FOR SESSION-NO STEP")
+                import sys
+                sys.exit()
+        list_sessions_index = sorted(list_sessions_index, key=lambda x: x[1])
+        counter=0
+        while counter < len(list_sessions_index) - 1:
+            list_sessions_index[counter][0].next_session = list_sessions_index[counter + 1][0].name
+            ret_sessions[list_sessions_index[counter][0].name]=list_sessions_index[counter][0]
+        return ret_session
+
+
+    import sys
+    sys.exit()

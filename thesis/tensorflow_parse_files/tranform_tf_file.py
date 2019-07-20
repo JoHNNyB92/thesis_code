@@ -216,7 +216,6 @@ def find_epoch_size(line_list,file_path):
                         print("NEW LINE IS FOUND TOTAL SESSION WITH REGEXP=", new_line_list[temp_ind])
                         before_sess_run += 3
                     files_added+=1
-                    #print("POUSTH3=", new_line_list[before_sess_run])
                     (write_file, write_file_line, write_file_batch,temp_list, name)=prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path)
                     #print("POUSTH4=", new_line_list[before_sess_run])
                     (prod_file,new_line_list)=append_file_lines(name,line_of_sess_run, \
