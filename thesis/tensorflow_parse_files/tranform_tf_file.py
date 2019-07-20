@@ -55,7 +55,7 @@ def parse_file(path,tf_run_app,proj):
     (no_execution,line_list,produced_files)=check_if_already_executed(path,proj)
     if no_execution==True:
         return ("no execution",list(set(produced_files)))
-    (pbtxt_file,model_var,new_line_list)=create_new_file(line_list,path,file,tf_run_app)
+    new_line_list=create_new_file(line_list,path,file,tf_run_app)
     dir_ = os.getcwd()
     os.chdir(os.path.dirname(str(path)))
     (new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
@@ -95,14 +95,6 @@ def check_if_already_executed(path,proj):
 
 def find_epoch_size(line_list,file_path):
     new_line_list = []
-    print("Start iterating")
-    for ind,elem in enumerate(line_list):
-        print("\n\n\n\n\nelem=",elem)
-        new_line_list.append(elem)
-        if elem.startswith("from") or elem.startswith("import"):
-            if "__future__" not in line_list:
-                break
-    print("End iterating")
     cnt=0
     found_model_line=0
     num_of_space=0
@@ -117,157 +109,164 @@ def find_epoch_size(line_list,file_path):
     before_sess_run=0
     files_added=0
     found_total_session=False
-    found_total_session_space=0
+    first_for_space=-1
     close_=""
+    last_line=False
     for ind_,line in enumerate(line_list):
-        if ind_>ind:
-            new_line_list.append(line)
-            line_space=len(line) - len(line.lstrip(' '))
-            if line.replace(" ","").startswith("for")==True and found_total_session_space==True and found_total_session_space<=line_space:
+        new_line_list.append(line)
+        if line.isspace() == True:
+            continue
+        if ind_ == len(line_list) - 1:
+            last_line = True
+        line_space=len(line) - len(line.lstrip(' '))
+        print("Gound total ses=",found_total_session,"-",line)
+        if found_total_session==True:
+            print("DEBUG=1")
+            print("first_for_space=",first_for_space)
+            print("line_space=", line_space)
+            print("Line=",line)
+            if first_for_space>=line_space or ind_==len(line_list)-1:
                 print("DEBUG:Epoch size:New for found  ", line)
                 found_total_session = False
-                found_total_session_space=0
-                #new_line_list=new_line_list[-2:]+[close_]+new_line_list[-2:]
-                #added_lines+=1
-                #new_line_list[(ind+(len(new_line_list)-len(line_list))):]+[close_]+new_line_list[:(ind+(len(new_line_list)-len(line_list)))]
-            #num_of_space = len(line) - len(line.lstrip(' '))
-            if ".run" in line:
-                num_of_space = len(line) - len(line.lstrip(' '))
-                print("Found run=",num_of_space)
-                line_of_sess_run=line
-                found_run=True
-                before_sess_run=ind_+added_lines
-                print("1BEFORE ADDING=", new_line_list[before_sess_run])
-            elif found_run==True:
-                print("Continuous line for sess run")
-                line_of_sess_run+=line
-            if "feed_dict" in line:
-                found_model_line = 1
-            if found_model_line == 1:
-                if line.replace("\n", "").endswith(')') == True:
-                    line_of_sess_run=line_of_sess_run.replace("\n", "").replace(" ", "")
-                    line_list_for_feed = handle_feed_dict(line_of_sess_run, num_of_space)
-                    if ind_+1 >=len(line_list) or line_list[ind_ + 1][0].replace(" ","") != ".":
-                        temp_ind=ind_+added_lines
-                        temp_ind_copy=temp_ind
-                        sess_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                        #temp_ind-=1
+                added_lines+=1
+                print("ARXIDOMOURIS=",line)
+                if last_line==True:
+                    print("ALEXI")
+                    new_line_list.append("\n"+close_)
+                else:
+                    print("ALEXI2")
+                    new_line_list=new_line_list[:-1]+[close_]+new_line_list[-1:]
+        #num_of_space = len(line) - len(line.lstrip(' '))
+        if ".run" in line:
+            num_of_space = len(line) - len(line.lstrip(' '))
+            print("Found run=",num_of_space)
+            line_of_sess_run=line
+            found_run=True
+            added_lines = len(new_line_list) - ind_ - 1
+            before_sess_run=ind_+added_lines
+            print("1BEFORE ADDING=", new_line_list[before_sess_run])
+        elif found_run==True:
+            print("Continuous line for sess run")
+            line_of_sess_run+=line
+        if "feed_dict" in line:
+            found_model_line = 1
+        if found_model_line == 1:
+            if line.replace("\n", "").endswith(')') == True:
+                line_of_sess_run=line_of_sess_run.replace("\n", "").replace(" ", "")
+                line_list_for_feed = handle_feed_dict(line_of_sess_run, num_of_space)
+                if ind_+1 >=len(line_list) or line_list[ind_ + 1][0].replace(" ","") != ".":
+                    added_lines = len(new_line_list) - ind_-1
+                    temp_ind = ind_ + added_lines
+                    prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                    is_co_train=False
+                    session_counter+=1
+                    for_counter=0
+                    write_ind=0
+                    write_space=0
+                    if found_total_session==False:
+                        print("OLD ARXIDOMOURIS2=",line," new line list=",new_line_list[temp_ind])
+                        (number_of_fors,session_for_ind,first_for_space)=find_number_of_fors(temp_ind,new_line_list)
+                    while end_loop(for_counter,new_line_list[temp_ind],number_of_fors,found_total_session) ==False:
+                        #print("POUSTH1=",new_line_list[before_sess_run])
+                        if "sess.run" in new_line_list[temp_ind] and num_of_space<prev_line_space:
+                            is_co_train=True
+                        if "_sEssIOn_" in new_line_list[temp_ind]:
+                            files_replace=new_line_list[temp_ind].split('\'')[1].split('.')[0]
+                            print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
+                            reg = r'\[[\s\S]*\]'
+                            if files_replace not in files_replace:
+                                produced_files.remove(files_replace)
+                                files_replace.append(files_replace)
+                                produced_files.append(new_line_list[temp_ind].split('\'')[1].split('.')[0])
+                            print("re file=", files_replace, " ", new_line_list[temp_ind])
+                            new_line_list[temp_ind]=re.sub(reg, '['+str(session_counter)+']', new_line_list[temp_ind])
+                        if new_line_list[temp_ind].replace(" ", "").startswith("for"):
+                            print("3ELENHLINE=",new_line_list[temp_ind]+"---",for_counter)
+                            for_counter += 1
+                            if num_of_space > prev_line_space and for_counter==1:
+                                write_ind = temp_ind
+                                print("POUTANES=",new_line_list[temp_ind])
+                                write_space = len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                                print("WRITE SPACE =", write_space)
+                        temp_ind-=1
                         prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                        is_co_train=False
-                        #print("LINE IS=",line_of_sess_run)
-                        #print("LINE2 IS=",new_line_list[temp_ind])
-                        #print("ALOHA=",sess_space,"-",prev_line_space,"-",new_line_list[temp_ind])
-                        session_counter+=1
-                        for_counter=0
-                        write_ind=0
-                        write_space=0
-                        previous_for=10000
-                        files_replace=[]
-                        if found_total_session==False:
-                            print("DEBUG")
-                            (number_of_fors,session_for_ind,first_for_space)=find_number_of_fors(temp_ind,new_line_list)
-                        while end_loop(for_counter,new_line_list[temp_ind],number_of_fors,found_total_session) ==False:
-                            if "sess.run" in new_line_list[temp_ind] and num_of_space<prev_line_space:
-                                is_co_train=True
-                            if "_sEssIOn_" in new_line_list[temp_ind]:
-                                #f = open('_temporary_path_[x].batch', 'w')
-                                files_replace.append(new_line_list[temp_ind].split('\'')[1].split('.')[0])
-                                print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
-                                reg = r'\[[\s\S]*\]'
-                                new_line_list[temp_ind]=re.sub(reg, '['+str(session_counter)+']', new_line_list[temp_ind])
-                                #print("FOUND SESSION WITH=", new_line_list[temp_ind])
-
-                            if num_of_space > prev_line_space:
-                                print("1ELENHLINE=", new_line_list[temp_ind])
-                                if prev_line_space<previous_for:
-                                    print("2ELENHLINE=", new_line_list[temp_ind])
-                                    if new_line_list[temp_ind].replace(" ", "").startswith("for"):
-                                        print("3ELENHLINE=",new_line_list[temp_ind])
-                                        for_counter += 1
-                                        if for_counter==1:
-                                            if found_total_session == False:
-                                                write_ind=temp_ind+1
-                                            else:
-                                                write_ind = temp_ind
-                                            print("POUTANES=",new_line_list[temp_ind])
-                                            write_space = len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                                            print("WRITE SPACE =", write_space)
-                                        previous_for=prev_line_space
-                            temp_ind-=1
-                            prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                        if found_total_session==False:
-                            found_total_session=True
-                            total_session = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
-                                session_counter) + "]_" + str(
-                                session_counter) + ".total_session"
-                            temp_space= len(line_list[session_for_ind+1]) - len(line_list[session_for_ind+1].lstrip(' '))
-                            open_=(first_for_space)* " " + "f = open('" + total_session + "', 'w')\n"
-                            write_=(temp_space)* " " + "f.write('" + total_session + "','ale')\n"
-                            close_=(temp_space)* " " + "f = close(" + total_session+")\n"
-                            new_line_list = new_line_list[:session_for_ind] + [open_] + new_line_list[session_for_ind:]
-                            new_line_list = new_line_list[:session_for_ind +2] + [write_] + new_line_list[
-                                                                                            session_for_ind +2:]
-                            before_sess_run+=2
-                            added_lines+=2
-
-
-                        temp_ind_copy=temp_ind
-                        while temp_ind_copy>0:
-                            for file_to_be_replaced in set(files_replace):
-                                if file_to_be_replaced in new_line_list[temp_ind_copy]:
-                                    print("re file=",file_to_be_replaced," ",new_line_list[temp_ind_copy])
-                                    print("FOUND OUTER SESSION WITH REGEXP=", new_line_list[temp_ind_copy])
-                                    produced_files.remove(file_to_be_replaced)
-                                    reg = r'\[[\s\S]*\]'
-                                    new_line_list[temp_ind_copy] = re.sub(reg, '[' + str(session_counter) + ']',new_line_list[temp_ind_copy])
-                                    produced_files.append(new_line_list[temp_ind_copy].split('\'')[1].split('.')[0])
-                            temp_ind_copy-=1
-                        files_added+=1
-                        (write_file, write_file_line, write_file_batch,temp_list, name)=prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path)
-                        (prod_file,new_line_list)=append_file_lines(name,line_of_sess_run, \
-                                          new_line_list,temp_list,line_list_for_feed, \
-                                          write_file,write_file_line,write_file_batch,write_ind,
-                                          before_sess_run,num_of_space,files_added)
-                        added_lines=added_lines+len(line_list_for_feed)+10
-                        produced_files.append(prod_file)
-                        print("2ARETH=",produced_files)
-                        found_sess=True
-                        found_model_line=0
+                    if found_total_session==False:
+                        found_total_session=True
+                        total_session = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
+                            session_counter) + "]_" + str(
+                            session_counter) + ".total_session"
+                        temp_space= len(new_line_list[session_for_ind+1]) - len(new_line_list[session_for_ind+1].lstrip(' '))
+                        open_=(first_for_space)* " " + "total_session_abc = open('" + total_session + "', 'w')\n"
+                        write_=(temp_space)* " " + "total_session_abc.write('" + total_session + "','----')\n"
+                        close_=(first_for_space)* " " + "total_session_abc.close('" + total_session+"')\n"
+                        new_line_list = new_line_list[:session_for_ind] + [open_] + new_line_list[session_for_ind:]
+                        new_line_list = new_line_list[:session_for_ind +2] + [write_] + new_line_list[
+                                                                                        session_for_ind +2:]
+                        if number_of_fors%2==1:
+                            write_ind+=1
+                        else:
+                            write_ind += 2
+                        before_sess_run+=5
+                        #print("POUSTH2=",new_line_list[before_sess_run])
+                    else:
+                        print("FOUND TOTAL SESSION WITH REGEXP=", new_line_list[temp_ind])
+                        reg = r'\[[\s\S]*\]'
+                        new_line_list[temp_ind] = re.sub(reg, '[' + str(session_counter) + ']',
+                                                         new_line_list[temp_ind])
+                        print("NEW LINE IS FOUND TOTAL SESSION WITH REGEXP=", new_line_list[temp_ind])
+                        before_sess_run += 3
+                    files_added+=1
+                    #print("POUSTH3=", new_line_list[before_sess_run])
+                    (write_file, write_file_line, write_file_batch,temp_list, name)=prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path)
+                    #print("POUSTH4=", new_line_list[before_sess_run])
+                    (prod_file,new_line_list)=append_file_lines(name,line_of_sess_run, \
+                                      new_line_list,temp_list,line_list_for_feed, \
+                                      write_file,write_file_line,write_file_batch,write_ind,
+                                      before_sess_run,num_of_space,files_added)
+                    print("POUSTH5=", new_line_list[before_sess_run])
+                    print("PRODUCED FILE ADDED ",prod_file)
+                    produced_files.append(prod_file)
+                    print("=",produced_files)
+                    found_sess=True
+                    found_model_line=0
+    '''        
             cnt+=1
     for i,v in enumerate(line_list):
         if i > cnt:
+            print("WHAT THE HELL IS THIS ?=",v)
             new_line_list.append(v)
-
+    '''
     return ( new_line_list,found_sess,produced_files)
 
 def find_number_of_fors(ind_,line_list):
     for_counter=0
     for_space=-1
     ret_for_space=-1
-    ret_for_ind=-1
+    ret_for_ind=None
     first_time=True
     for ind,line in enumerate(line_list):
         if ind<ind_:
-            print("DEBUG in forsssssssssssss=",line)
+            #print("DEBUG in forsssssssssssss=",line)
+            num_of_space = len(line) - len(line.lstrip(' '))
+            if num_of_space <= for_space and line.isspace()==False and first_time==False:
+                print("DEBUG:Find:Exited for = ", line,' __num_of_space= ',num_of_space," ____for_space= ",for_space)
+                first_time = True
+                for_counter = 0
+                ret_for_space = None
+                ret_for_ind = None
+                for_space=-1
             if line.replace(" ","").startswith("for")==True:
-                num_of_space = len(line) - len(line.lstrip(' '))
-                print("DEBUG FIRST TIME IS ",first_time)
+                print("DEBUG FIRST TIME IS ", first_time," num_of_space=",num_of_space," for_space=",for_space)
+                print("File=",line)
                 if first_time==True:
+
                     print("DEBUG:Find:Line with first time for is=",line)
                     first_time=False
                     ret_for_space=num_of_space
+                    for_space=ret_for_space
                     ret_for_ind=ind
-                if num_of_space>for_space:
-                    for_counter+=1
-                    print("DEBUG:Find:for counter= ", for_counter)
-                    print("DEBUG:Find:for counter line= ", for_counter)
-                else:
-                    print("DEBUG:Find:Found new for iteration=", line)
-                    first_time = False
-                    for_counter = 1
-                    ret_for_space = -1
-                    ret_for_ind = -1
-                for_space = num_of_space
+                    print("DEBUG:Find:Line with num_of_spaces=", ret_for_space)
+                for_counter+=1
         else:
             break
     print("DEBUG RETURNING=IND",ret_for_ind," For_counter=",for_counter," ret_for_space=",ret_for_space)
@@ -317,7 +316,7 @@ def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_pa
 def append_file_lines(name,line_of_sess_run,new_line_list,temp_list,line_list_for_feed,write_file,write_file_line,write_file_batch,write_ind,before_sess_run,num_of_space,files_written):
     new_line_list = new_line_list[:write_ind] + temp_list + new_line_list[write_ind:]
     line_list_for_feed = [x.replace("FILE", write_file_batch) for x in line_list_for_feed]
-    new_line_list = new_line_list[:before_sess_run + files_written*3] + line_list_for_feed + new_line_list[before_sess_run + files_written*3:]
+    new_line_list = new_line_list[:before_sess_run] + line_list_for_feed + new_line_list[before_sess_run:]
     file = write_file.replace(".info", "")
     new_line_list.append(num_of_space * " " + "abc = ''\n")
     new_line_list.append(num_of_space * " " + "tmp__ = locals().copy()\n")
@@ -334,11 +333,9 @@ def append_file_lines(name,line_of_sess_run,new_line_list,temp_list,line_list_fo
 
 def create_new_file(line_list,path,file,tf_run_app):
     new_line_list=[]
-    model_variable=""
     current_folder=os.getcwd()
-    first_time=0
     found_main=0
-    (return_list,pbtxt_file)=create_code_for_pbtxt_and_tensorboard(path, file)
+    return_list=create_code_for_pbtxt_and_tensorboard(path, file)
     if tf_run_app == True:
         found_def_main=False
         spaces=0
@@ -381,17 +378,10 @@ def create_new_file(line_list,path,file,tf_run_app):
             if found_main==0 and "tf." in line:
                 if  (len(line) - len(line.lstrip(' '))) < min_space:
                     min_space=(len(line) - len(line.lstrip(' ')))
-            if first_time == 0 and "import tensorflow" in line or "from tensorflow." in line or "from tensorflow import" in line:
-                first_time=1
-                spaces = len(line) - len(line.lstrip(' '))
-                new_line_list.append(spaces * " " + "global epoch_counter\n")
-                new_line_list.append(spaces * " " + "epoch_counter=0\n")
-                str_1 = spaces * " " + "batch_epoch_file_to_print = open(\"" + file + "_batch_epoch.txt\", \'w\')\n"
-                new_line_list.append(str_1)
         for elem in return_list:
             new_line_list.append(min_space*" "+elem)
     os.chdir(current_folder)
-    return (pbtxt_file,model_variable, new_line_list)
+    return new_line_list
 
 def get_model_name(line):
     model_var = line.split(".")[0]
@@ -436,8 +426,7 @@ def create_code_for_pbtxt_and_tensorboard(path,file):
     return_list.append(str_4)
     return_list.append(str_5)
     return_list.append(str_6)
-    pbtxt_file=backwards_dir+github.dirName+"\_tensorflow\pbtxt\\"+file+".pbtxt"
-    return (return_list,pbtxt_file)
+    return (return_list)
 
 
 def handle_evaluation_score(filePath):
@@ -449,18 +438,7 @@ def end_loop(cnt,line,number_of_fors,found_total_session):
     if found_total_session==False:
         if number_of_fors==cnt:
             return True
-    if ".total_session" in line:
+    if ".total_session" in line and "= open(" in line:
+        print("DONE DUE TO TOTAL SESSION=",line)
         return True
     return False
-    '''
-    if cnt==2:
-        return True
-    elif len(line) - len(line.lstrip(' '))==0 and line.startswith("for")==False:
-        return True
-    else:
-        tmp_line=line
-        tmp_line=tmp_line.replace(" ","").lower()
-        if tmp_line.startswith("def") or tmp_line.startswith("withtf.session"):
-            return True
-    return False
-    '''
