@@ -192,13 +192,13 @@ def find_epoch_size(line_list,file_path):
                         prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
                     if found_total_session==False:
                         found_total_session=True
-                        total_session = "_temporary_" + file + "_" + "_sEssIOn_[" + str(
+                        total_session = "_temporary_" + file.replace(".py","") + "_" + "_sEssIOn_[" + str(
                             session_counter) + "]_" + str(
                             session_counter) + ".total_session"
                         temp_space= len(new_line_list[session_for_ind+1]) - len(new_line_list[session_for_ind+1].lstrip(' '))
                         open_=(first_for_space)* " " + "total_session_abc = open('" + total_session + "', 'w')\n"
-                        write_=(temp_space)* " " + "total_session_abc.write('" + total_session + "','----')\n"
-                        close_=(first_for_space)* " " + "total_session_abc.close('" + total_session+"')\n"
+                        write_=(temp_space)* " " + "total_session_abc.write('----')\n"
+                        close_=(first_for_space)* " " + "total_session_abc.close()\n"
                         new_line_list = new_line_list[:session_for_ind] + [open_] + new_line_list[session_for_ind:]
                         new_line_list = new_line_list[:session_for_ind +2] + [write_] + new_line_list[
                                                                                         session_for_ind +2:]

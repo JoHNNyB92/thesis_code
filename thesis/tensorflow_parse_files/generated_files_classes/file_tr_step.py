@@ -1,4 +1,4 @@
-class file_training:
+class file_tr_step:
     def __init__(self):
         self.name=""
         self.loss=[]
@@ -22,7 +22,7 @@ class file_training:
         if self.objective!="":
             print("Objective=",self.objective.cost_function.loss)
         if self.next!="":
-            print("Next Session is =",self.next)
+            print("Next Step is =",self.next)
         if self.next_file!="":
-            print("Next Session is =",self.next_file)
+            print("Next File step is =",self.next_file)
         print("Network=",self.network)

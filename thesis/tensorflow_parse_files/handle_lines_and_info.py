@@ -1,4 +1,5 @@
-from file_training import file_training
+from generated_files_classes.file_tr_step import file_tr_step
+from generated_files_classes.file_training_session import file_training_session
 
 def get_output_networks(sess_run):
     print("0=",sess_run)
@@ -102,27 +103,35 @@ def handle_info(content,networks,feed_dict):
     print("Returning inputs=",inputs)
     return(loss,optimizer,inputs)
 
-def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch):
+
+def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlistSession):
     pathlistInfo=list(pathlistInfo)
     pathlistLine = list(pathlistLine)
     pathlistBatch=list(pathlistBatch)
-    file_training_information={}
-    for file in pathlistLine:
-        print("begin searching for ",file)
-        found_file = False
-        for prFile in files:
-            print("File=",prFile)
-            if str(prFile)+".lines" in str(file):
-                print("\n\n\n\n\n\n\n\nFound str(prFile)=",str(prFile))
+    pathlistSession=list(pathlistSession)
+    new_file_training=""
+    total_sessions_dict={}
+    for session in pathlistSession:
+        session_name=str(session).split("]_")[0]
+        with open(str(session), 'r') as content_file:
+            content = content_file.read()
+            session_epochs=content.count("----")
+        fts=file_training_session(session_name,session_epochs,[])
+        for file in pathlistLine:
+            print("begin searching for ",file)
+            found_file = False
+            print("Session=",session_name+"]")
+            if  session_name+"]" in str(file) :
+                print("\n\n\nFound line file=")
                 print('file=',file)
                 with open(str(file), 'r') as content_file:
                     content = content_file.read()
                     (feed_dict,networks,epoch)=handle_lines(content)
-                #print("Networks=",networks)
-                new_file_training=file_training()
-                new_file_training.name=str(prFile)
+                new_file_training=file_tr_step()
+                step_name=str(file).replace(".lines","")
+                new_file_training.name=str(step_name)
                 for file_ in pathlistInfo:
-                    if (str(prFile)+".info") in str(file_):
+                    if str(file).replace(".lines","")==str(file_).replace(".info",""):
                         with open(str(file_), 'r') as content_file:
                             content = content_file.read()
                             print("NETWORKS=",networks)
@@ -132,18 +141,18 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch):
                             new_file_training.epoch=epoch
                             new_file_training.inputs = inputs
                 for file_ in pathlistBatch:
-                    if (str(prFile) + ".batch") in str(file_):
+                    print("file=",file," file_=",file_)
+                    if str(file).replace(".lines", "") == str(file_).replace(".batch", ""):
                         with open(str(file_), 'r') as content_file:
                             content = content_file.read()
                             (batch_list)=handle_batch(content)
                             new_file_training.batches=batch_list
-                            file_training_information[new_file_training.name] = new_file_training
                             new_file_training.print()
                             found_file=True
+                            fts.steps.append(new_file_training)
+                            print("\n\n\n\n added to ",session_name," \n",new_file_training.name,"\nsize ",len(fts.steps))
                             break
-                        if found_file==True:
-                            break
-                if found_file==True:
-                    break
-
-    return file_training_information
+                    if found_file==True:
+                        break
+        total_sessions_dict[fts.name]=fts
+    return total_sessions_dict

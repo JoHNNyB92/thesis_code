@@ -227,19 +227,28 @@ with open('github/github.csv') as csv_file:
 
                     print("Files include in main file ",path," are ",project_structure)
                     (result,found_network,handler_entities,produced_files)=code_in_one_file(str(path),subdir)
+                    produced_files=[m for m in produced_files if "sEssIOn" in m]
                     print("Produced files are =",produced_files)
                     if found_network == True:
                         pathlistInfo = Path(code_repository).glob("**/*.info")
                         pathlistLine = Path(code_repository).glob("**/*.lines")
                         pathlistBatch = Path(code_repository).glob("**/*.batch")
+                        pathListSession=Path(code_repository).glob("**/*.total_session")
                         timeList=[]
                         for file in pathlistInfo:
                             timeList.append([os.path.getmtime(str(file)),str(file)])
                         timeList=sorted(timeList,key=lambda x:float(x[0]))
                         timeList=[x[1] for x in timeList]
                         pathlistInfo = Path(code_repository).glob("**/*.info")
-                        file_dict=handle_lines_and_info.handle_lines_and_info(produced_files,pathlistInfo,pathlistLine,pathlistBatch)
+                        file_dict=handle_lines_and_info.handle_lines_and_info(produced_files,pathlistInfo,pathlistLine,pathlistBatch,pathListSession)
                         import ntpath
+                        for sess in file_dict.keys():
+                            print("\n\n----------------------------------------------")
+                            print("About to see info for ",sess)
+                            file_dict[sess].print()
+                            print("----------------------------------------------\n\n")
+                        import sys
+                        sys.exit()
                         for ind,elem in enumerate(timeList):
                             file_dict[ntpath.basename(elem).replace(".info","")].next_file=ntpath.basename(timeList[ind+1]).replace(".info","")
                             if ind+2==len(timeList):
