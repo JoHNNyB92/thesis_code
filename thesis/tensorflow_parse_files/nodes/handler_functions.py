@@ -80,22 +80,20 @@ def handle_dataset_pipe_1(network,type):
     dp_list=[]
     if type=="test":
         for ind,elem in enumerate(network.output_layer):
-            print("network=",elem.name)
             labelSet=""
             node=""
             dataset_name=""
             if elem.name in network.datasets.keys():
                 dataset_name=network.datasets[elem.name].get_name()
                 node=network.datasets[elem.name]
-            print("Found dataset name ",dataset_name)
+            print("LOGGING:Found test dataset name ",dataset_name)
             if node!="":
                 labelSet=label_set(node)
             dp_list.append(dataset_pipe(elem.node, elem, type, str(ind),labelSet))
     if type=="train":
         for ind,elem in enumerate(network.input_layer):
-            print("network=",elem.name)
             dataset_name=elem.name
-            print("Found dataset name ",dataset_name)
+            print("LOGGING:Found train dataset name ",dataset_name)
             labelSet=label_set(elem.node)
             dp_list.append(dataset_pipe(elem.node, elem, type, str(ind),labelSet))
     return dp_list

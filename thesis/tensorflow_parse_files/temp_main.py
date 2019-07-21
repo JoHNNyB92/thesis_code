@@ -144,13 +144,10 @@ def handle_file_with_imports(imports,files):
 def check_if_file_in_files(elem,files):
     for tmp in files:
         if len(elem)==1:
-            print("hooray1=",elem," tmp1=",tmp[-1])
             if elem[0]==tmp[-1]:
-                print("Found file ",elem)
                 return True
         else:
             if elem in files:
-                print("Found file ", elem)
                 return True
     print("Did not found file=",elem," in ",files)
     return False
@@ -240,31 +237,19 @@ with open('github/github.csv') as csv_file:
                         timeList=sorted(timeList,key=lambda x:float(x[0]))
                         timeList=[x[1] for x in timeList]
                         pathlistInfo = Path(code_repository).glob("**/*.info")
-                        file_dict=handle_lines_and_info.handle_lines_and_info(produced_files,pathlistInfo,pathlistLine,pathlistBatch,pathListSession)
+                        session_dict=handle_lines_and_info.handle_lines_and_info(produced_files,pathlistInfo,pathlistLine,pathlistBatch,pathListSession)
                         import ntpath
-                        for sess in file_dict.keys():
+                        for sess in session_dict.keys():
                             print("\n\n----------------------------------------------")
                             print("About to see info for ",sess)
-                            file_dict[sess].print()
+                            session_dict[sess].print()
                             print("----------------------------------------------\n\n")
-                        file_dict=handle_lines_and_info.find_next_session_and_step(file_dict,[x.replace(".info","") for x in timeList])
-                        for sess in file_dict.keys():
+                        session_dict=handle_lines_and_info.find_next_session_and_step(session_dict,[x.replace(".info","") for x in timeList])
+                        session_dict=handle_lines_and_info.update_inner_epochs(session_dict)
+                        for sess in session_dict.keys():
                             print("\n\n----------------------------------------------")
                             print("About to see info for ",sess)
-                            file_dict[sess].print()
+                            session_dict[sess].print()
                             print("----------------------------------------------\n\n")
-                        '''
-                        for ind,elem in enumerate(timeList):
-                            file_dict[ntpath.basename(elem).replace(".info","")].next_file=ntpath.basename(timeList[ind+1]).replace(".info","")
-                            if ind+2==len(timeList):
-                                break
-                        for ind,elem in enumerate(timeList):
-                            print("FILE DISCOVERED:\n ")
-                            file_dict[ntpath.basename(elem).replace(".info","")].print()
-                        for ind,elem in enumerate(timeList):
-                            print(elem.replace(".info",""),"->",file_dict[ntpath.basename(elem).replace(".info","")].next_file)
-                        '''
-                        handler_entities.find_training(file_dict)
-
-
-
+                        handler_entities.find_training(session_dict)
+                        tensorflow_parser.insert_in_annetto()

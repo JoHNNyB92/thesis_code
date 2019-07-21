@@ -213,3 +213,27 @@ def find_next_session_and_step(sessions,timeList):
             new_sessions[list_sessions_index[counter][0].name]=list_sessions_index[counter][0]
             counter+=1
     return new_sessions
+
+
+def update_inner_epochs(sessions):
+    ret_sessions=sessions.copy()
+    for sess in sessions.keys():
+        co_train=""
+        found_co_train = False
+        for step in sessions[sess].steps:
+            if co_train in step.name:
+                found_co_train=True
+                break
+        if found_co_train==True:
+            new_steps=divide_epochs(sessions[sess].steps,sessions[sess].session_epoch)
+            ret_sessions[sess].steps=new_steps
+    return ret_sessions
+
+
+def divide_epochs(steps,sess_epochs):
+    new_steps=[]
+    for step in steps:
+        new_step=step
+        new_step.epoch=int(new_step.epoch/sess_epochs)
+        new_steps.append(new_step)
+    return new_steps

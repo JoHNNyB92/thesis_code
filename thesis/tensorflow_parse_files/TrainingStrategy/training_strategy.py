@@ -3,12 +3,14 @@ class training_strategy:
 
     def insert_in_annetto(self):
         #print("Annetto::TrainingStrategy-",self.name)
-        self.primary_training_session.insert_in_annetto()
         self.training_model.insert_in_annetto()
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         rdfWrapper.new_training_strategy(self.name)
-        rdfWrapper.new_has_prim_tr_session(self.name,self.primary_training_session.name)
+        for session in self.primary_training_session:
+            session.insert_in_annetto()
+            #TODO:FIND WHICH ONE IS FIRST
+            rdfWrapper.new_has_prim_tr_session(self.name,session.name)
         rdfWrapper.new_trained_model(self.name,self.training_model.name)
 
 

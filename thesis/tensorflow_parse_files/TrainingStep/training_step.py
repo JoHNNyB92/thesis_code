@@ -8,8 +8,9 @@ class training_step:
         for i,_ in enumerate(self.IOPipe):
             self.IOPipe[i].insert_in_annetto()
             rdfWrapper.new_io_pipe(self.name,self.IOPipe[i].name)
-        self.trainingOptimizer.insert_in_annetto()
-        rdfWrapper.new_has_optimizer(self.name,self.trainingOptimizer.name)
+        for optimizer in self.trainingOptimizer:
+            print("OPTIMIZER= ",optimizer)
+            rdfWrapper.new_has_optimizer(self.name,optimizer)
 
 
     def __init__(self,name):

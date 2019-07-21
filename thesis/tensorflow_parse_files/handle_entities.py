@@ -421,16 +421,12 @@ class handle_entities:
             input_layer.placeholder=layers[input].placeholder
             print("LOGGING:["+name+"]Input is =", input," Dataset is = ",input_layer.placeholder)
             self.data.annConfiguration.networks[name].input_layer.append(input_layer)
-            #del self.data.annConfiguration.networks[self.current_network].layer[input]
             del t_layers[input]
             print(layers[input])
         for output in outputs:
-            #node = output.node
             print("LOGGING:["+name+"]Output is = ",output.name)
             output_layer = handler_functions.handle_out_layer(output)
             self.data.annConfiguration.networks[name].output_layer.append(output_layer)
-            #del self.data.annConfiguration.networks[self.current_network].layer[output.name]
-            #del t_layers[output.name]
         for layer in t_layers.keys():
             print("LOGGING:["+name+"]Layer is ",layer)
             self.data.annConfiguration.networks[name].layer[layer]=copy.deepcopy(layers[layer])
@@ -548,12 +544,10 @@ class handle_entities:
                             optimizer_per_layer[optimizer].append(elem_)
                             #print("FOUND:\nOptimizer=",optimizer,"\nLname=",elem_,"\ngradient=",gradient)
                             print(optimizer_per_layer)
-        #print("LOCO=",optimizer_per_layer)
         for key in optimizer_per_layer.keys():
             str=""
             for x in optimizer_per_layer[key]:
                 str=str+x+"\n"
-            #print("Key:",key,"List:",str)
         return (optimizer_per_layer)
 
     def insert_strategy(self,trSessions):
@@ -644,6 +638,7 @@ class handle_entities:
         primary_in_loop_tr_step = ""
         looping_steps = []
         stop_cond=-1
+        primary_tr_step=""
         for step in trSession.steps:
             if len(step.optimizer)==0:
                 print("ERROR:Return,no optimizer handle for ",trSessionName," it smh after,skip it for now")
@@ -657,6 +652,7 @@ class handle_entities:
                                 found=False
                                 break
                         if found==True:
+                            print("STAVRIOS PANERAS IS =",network," for ",step.name)
                             trStep=self.create_tr_step(step.optimizer,network,step)
                             if isLoop==True:
                                 if "_co_train" in step.name:
@@ -677,15 +673,15 @@ class handle_entities:
                         for optimizer in optimizer_map[network]:
                             if optimizer ==step.optimizer[0]:
                                 trStep = self.create_tr_step([optimizer], network, step)
-                                trSteps.append(trStep)
+                                primary_tr_step=trStep
                     else:
                         print("ERROR:Network ",network," with no optimizer.")
-        if trSteps==[] and looping_steps==[] and primary_in_loop_tr_step=="":
+        if trSteps==[] and looping_steps==[] and primary_in_loop_tr_step=="" and primary_tr_step=="":
             print("ERROR:Unable to find any kind of training steps for ",trSessionName)
             return None
         if primary_in_loop_tr_step!="":
-            primary_in_loop_tr_step=handler_functions.handle_loop(trSessionName+"_training_loop",primary_in_loop_tr_step,looping_steps,stop_cond)
-        tr_session = handler_functions.handle_training_session(trSessionName + "_training_session", trSteps,primary_in_loop_tr_step)
+            primary_tr_step=handler_functions.handle_loop(trSessionName+"_training_loop",primary_in_loop_tr_step,looping_steps,stop_cond)
+        tr_session = handler_functions.handle_training_session(trSessionName + "_training_session", trSteps,primary_tr_step)
         return tr_session
 
     def remove_unused_optimizers(self,sessions,opl):
@@ -695,10 +691,13 @@ class handle_entities:
                 for optimizer in trStep.optimizer:
                     if optimizer in tmp_opl.keys():
                         print("DELETING ",optimizer)
+
                         del tmp_opl[optimizer]
         for key in tmp_opl.keys():
             del opl[key]
             print("ERROR:DELETED OPTIMIZER NOT FOUND IN FILE TRAINING ",key)
+        for optimizer in opl.keys():
+            self.data.annConfiguration.networks[self.current_network].optimizer[optimizer].insert_in_annetto()
         return opl
 
     def find_network(self,obj_func,network,counter,opl):
