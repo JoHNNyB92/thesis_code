@@ -246,17 +246,14 @@ with open('github/github.csv') as csv_file:
                             print("\n\n----------------------------------------------")
                             print("About to see info for ",sess)
                             file_dict[sess].print()
-                            print("----------------------------------------------\n\nimport")
+                            print("----------------------------------------------\n\n")
                         file_dict=handle_lines_and_info.find_next_session_and_step(file_dict,[x.replace(".info","") for x in timeList])
-
                         for sess in file_dict.keys():
                             print("\n\n----------------------------------------------")
                             print("About to see info for ",sess)
                             file_dict[sess].print()
-                            print("----------------------------------------------\n\nimport")
-
-                        import sys
-                        sys.exit()
+                            print("----------------------------------------------\n\n")
+                        '''
                         for ind,elem in enumerate(timeList):
                             file_dict[ntpath.basename(elem).replace(".info","")].next_file=ntpath.basename(timeList[ind+1]).replace(".info","")
                             if ind+2==len(timeList):
@@ -266,8 +263,8 @@ with open('github/github.csv') as csv_file:
                             file_dict[ntpath.basename(elem).replace(".info","")].print()
                         for ind,elem in enumerate(timeList):
                             print(elem.replace(".info",""),"->",file_dict[ntpath.basename(elem).replace(".info","")].next_file)
+                        '''
                         handler_entities.find_training(file_dict)
-            sys.exit()
 
 
 

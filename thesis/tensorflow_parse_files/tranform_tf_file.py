@@ -165,10 +165,9 @@ def find_epoch_size(line_list,file_path):
                     write_space=0
                     if found_total_session==False:
                         print("OLD ARXIDOMOURIS2=",line," new line list=",new_line_list[temp_ind])
-                        (number_of_fors,session_for_ind,first_for_space)=find_number_of_fors(temp_ind,new_line_list)
+                        (number_of_fors,session_for_ind,first_for_space,session_fors)=find_number_of_fors(temp_ind,new_line_list)
                     while end_loop(for_counter,new_line_list[temp_ind],number_of_fors,found_total_session) ==False:
-                        #print("POUSTH1=",new_line_list[before_sess_run])
-                        if "sess.run" in new_line_list[temp_ind] and num_of_space<prev_line_space:
+                        if "sess.run" in new_line_list[temp_ind] and num_of_space!=prev_line_space:
                             is_co_train=True
                         if "_sEssIOn_" in new_line_list[temp_ind]:
                             files_replace=new_line_list[temp_ind].split('\'')[1].split('.')[0]
@@ -202,7 +201,7 @@ def find_epoch_size(line_list,file_path):
                         new_line_list = new_line_list[:session_for_ind] + [open_] + new_line_list[session_for_ind:]
                         new_line_list = new_line_list[:session_for_ind +2] + [write_] + new_line_list[
                                                                                         session_for_ind +2:]
-                        if number_of_fors%2==1:
+                        if session_fors%2==1:
                             write_ind+=1
                         else:
                             write_ind += 2
@@ -243,6 +242,8 @@ def find_number_of_fors(ind_,line_list):
     ret_for_space=-1
     ret_for_ind=None
     first_time=True
+    session_for=0
+    previous_for=0
     for ind,line in enumerate(line_list):
         if ind<ind_:
             #print("DEBUG in forsssssssssssss=",line)
@@ -254,22 +255,30 @@ def find_number_of_fors(ind_,line_list):
                 ret_for_space = None
                 ret_for_ind = None
                 for_space=-1
+                session_for = 0
             if line.replace(" ","").startswith("for")==True:
-                print("DEBUG FIRST TIME IS ", first_time," num_of_space=",num_of_space," for_space=",for_space)
+                print("DEBUG FIRST TIME IS ", first_time," num_of_space=",num_of_space," for_space=",for_space," matters=",session_for)
                 print("File=",line)
                 if first_time==True:
-
                     print("DEBUG:Find:Line with first time for is=",line)
                     first_time=False
                     ret_for_space=num_of_space
                     for_space=ret_for_space
                     ret_for_ind=ind
+                    session_for=0
+                    previous_for=-1
                     print("DEBUG:Find:Line with num_of_spaces=", ret_for_space)
+                if num_of_space>previous_for:
+                    previous_for=num_of_space
+                    session_for+=1
+                elif num_of_space<previous_for:
+                    session_for -= 1
+                    previous_for=num_of_space
                 for_counter+=1
         else:
             break
-    print("DEBUG RETURNING=IND",ret_for_ind," For_counter=",for_counter," ret_for_space=",ret_for_space)
-    return (for_counter,ret_for_ind,ret_for_space)
+    print("DEBUG RETURNING=IND",ret_for_ind," For_counter=",for_counter," ret_for_space=",ret_for_space," session that matters ",session_for)
+    return (for_counter,ret_for_ind,ret_for_space,session_for)
 
 
 

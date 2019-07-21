@@ -17,6 +17,6 @@ class training_loop:
     def __init__(self,name,primaryLoop,loopSteps,stopCond):
         self.type="TrainingLoop"
         self.name=name
-        self.hasStopCondition=iterates_for(self.name_+"_iterates_for",stopCond)
+        self.hasStopCondition=iterates_for(self.name+"_iterates_for",stopCond)
         self.primaryLoop=primaryLoop
         self.loopSteps=loopSteps

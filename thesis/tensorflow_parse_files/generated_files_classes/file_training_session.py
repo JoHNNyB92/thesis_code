@@ -11,6 +11,7 @@ class file_training_session:
         print("With steps :")
         if self.next_session!="":
             print("Next session is ",self.next_session)
+        print("LOCO=",self.steps)
         for st in self.steps:
             print("Step:[",st.name,"]")
             st.print()

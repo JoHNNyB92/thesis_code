@@ -442,14 +442,15 @@ class handle_entities:
             self.data.annConfiguration.networks[name].datasets=datasets
         print("\n---------------END NEW NETWORK-----------------\n")
 
-    def create_tr_step(self,optimizer,network,file_info):
+    def create_tr_step(self,optimizer,network,step):
         for opt in optimizer:
             optimizer_=self.data.annConfiguration.networks[self.current_network].optimizer[opt]
             self.data.annConfiguration.networks[network].optimizer[opt]=optimizer_
         input_layer=self.data.annConfiguration.networks[network].input_layer
         print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer)
         IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network],"train")
-        tr_step = handler_functions.handle_training_single(network + "_training_step", network, IOPipe,optimizer, file_info.epoch, file_info.next,file_info.next)
+        #TODO:Maybe needs check with input for batches,for the moment consider it to be the first one
+        tr_step = handler_functions.handle_training_single(step.name, network, IOPipe,optimizer, step.epoch,step.batches[0], step.next)
         return tr_step
 
     def check_metric(self,IOPipe,network):
@@ -593,13 +594,11 @@ class handle_entities:
                 layer_names.remove(layer_names[0])
                 print(len(layer_names))
 
-    def find_training(self,file_dict):
-        for d in file_dict:
-            print('LOGGING:FILE INFORMATION ', file_dict[d].print())
+    def find_training(self,sessions):
         res = self.check_multiple_networks()
         if res == 0:
             print("LOGGING:Only one network presented.")
-            self.one_network_training(file_dict, self.current_network)
+            self.one_network_training(sessions, self.current_network)
             return res
         elif res == -1:
             print("ERROR:Program not a network finally")
@@ -609,8 +608,7 @@ class handle_entities:
             objectives.append(l)
         optimizer_per_layer = self.find_optimizer()
         optimizer_map={}
-        (trSessions,optimizer_per_layer)=self.preprocess_files(file_dict,optimizer_per_layer)
-        print("LOGGING:Found the following sessions ",trSessions.keys())
+        optimizer_per_layer=self.remove_unused_optimizers(sessions,optimizer_per_layer)
         net_cnt=0
         allSessions=[]
         for obj in sorted(objectives):
@@ -620,12 +618,12 @@ class handle_entities:
             (n_name, output, net_cnt, optimizer) = self.find_network(obj_func,self.current_network, net_cnt,optimizer_per_layer)
             print("ASSOCIATE ",n_name," optimizer ",optimizer)
             optimizer_map[n_name]=optimizer
-        for trSession in trSessions.keys():
+        for trSession in sessions.keys():
             print("LOGGING:Begin searching for session",trSession)
-            trSessionElem=trSessions[trSession]
+            trSessionElem=sessions[trSession]
             isLoop = False
-            for file in trSessionElem:
-                if "co_train" in file.name:
+            for step in trSessionElem.steps:
+                if "co_train" in step.name:
                     isLoop=True
             if isLoop==True:
                 print("LOGGING:Begin handling session ",trSession," that is a loop session.")
@@ -642,33 +640,34 @@ class handle_entities:
         return 1
 
     def handle_training_step(self,trSession,trSessionName,optimizer_map,isLoop):
-        print("ISLOOP=",isLoop)
         trSteps=[]
         primary_in_loop_tr_step = ""
         looping_steps = []
-        for file in trSession:
-            if len(file.optimizer)==0:
-                print("ERROR:Return,no optimizer handle it smh after,skip it for now")
-            elif len(file.optimizer)>1:
+        stop_cond=-1
+        for step in trSession.steps:
+            if len(step.optimizer)==0:
+                print("ERROR:Return,no optimizer handle for ",trSessionName," it smh after,skip it for now")
+            elif len(step.optimizer)>1:
                 print("LOGGING:Multiple co training of networks")
                 for network in self.data.annConfiguration.networks:
                     if network in optimizer_map.keys():
                         found = True
                         for optimizer in optimizer_map[network]:
-                            if optimizer not in file.optimizer:
+                            if optimizer not in step.optimizer:
                                 found=False
                                 break
                         if found==True:
-                            trStep=self.create_tr_step(file.optimizer,network,file)
+                            trStep=self.create_tr_step(step.optimizer,network,step)
                             if isLoop==True:
-                                if "_co_train" in file.name:
+                                if "_co_train" in step.name:
                                     primary_in_loop_tr_step=trStep
+                                    stop_cond=step.epoch
                                 else:
                                     looping_steps.append(trStep)
                             else:
                                 trSteps.append(trStep)
                         else:
-                            print(network," OPTIMIZER ",optimizer_map[network]," not in ",file.optimizer)
+                            print(network," OPTIMIZER ",optimizer_map[network]," not in ",step.optimizer)
                     else:
                         print("ERROR:Network ",network," with no optimizer.")
             else:
@@ -676,8 +675,8 @@ class handle_entities:
                 for network in self.data.annConfiguration.networks:
                     if network in optimizer_map.keys():
                         for optimizer in optimizer_map[network]:
-                            if optimizer ==file.optimizer[0]:
-                                trStep = self.create_tr_step([optimizer], network, file)
+                            if optimizer ==step.optimizer[0]:
+                                trStep = self.create_tr_step([optimizer], network, step)
                                 trSteps.append(trStep)
                     else:
                         print("ERROR:Network ",network," with no optimizer.")
@@ -685,27 +684,22 @@ class handle_entities:
             print("ERROR:Unable to find any kind of training steps for ",trSessionName)
             return None
         if primary_in_loop_tr_step!="":
-            primary_in_loop_tr_step=handler_functions.handle_loop(trSessionName+"_training_loop",primary_in_loop_tr_step,looping_steps,-1)
+            primary_in_loop_tr_step=handler_functions.handle_loop(trSessionName+"_training_loop",primary_in_loop_tr_step,looping_steps,stop_cond)
         tr_session = handler_functions.handle_training_session(trSessionName + "_training_session", trSteps,primary_in_loop_tr_step)
         return tr_session
 
-    def preprocess_files(self,files,opl):
-        trSessions={}
+    def remove_unused_optimizers(self,sessions,opl):
         tmp_opl=opl.copy()
-        for ind,name in enumerate(files):
-            if files[name].name.split("]")[0] not in trSessions.keys():
-                trSessions[files[name].name.split("]")[0]]=[]
-            trSessions[files[name].name.split("]")[0]].append(files[name])
-            for optimizer in files[name].optimizer:
-                if optimizer in tmp_opl.keys():
-                    print("DELETING ",optimizer)
-                    del tmp_opl[optimizer]
+        for sess in sessions.keys():
+            for trStep in sessions[sess].steps:
+                for optimizer in trStep.optimizer:
+                    if optimizer in tmp_opl.keys():
+                        print("DELETING ",optimizer)
+                        del tmp_opl[optimizer]
         for key in tmp_opl.keys():
             del opl[key]
             print("ERROR:DELETED OPTIMIZER NOT FOUND IN FILE TRAINING ",key)
-
-        print("\n\n\n\n\n\n\n\n\n\n\n TrSessions=",trSessions)
-        return (trSessions,opl)
+        return opl
 
     def find_network(self,obj_func,network,counter,opl):
         loss=obj_func.cost_function.loss

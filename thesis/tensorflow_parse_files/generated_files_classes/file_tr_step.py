@@ -13,6 +13,7 @@ class file_tr_step:
 
 
     def print(self):
+        print("--------------------------------------------------")
         print("Name=",self.name)
         print("Inputs=", self.inputs)
         print("Batches=",self.batches)
@@ -26,3 +27,4 @@ class file_tr_step:
         if self.next_file!="":
             print("Next File step is =",self.next_file)
         print("Network=",self.network)
+        print("--------------------------------------------------")

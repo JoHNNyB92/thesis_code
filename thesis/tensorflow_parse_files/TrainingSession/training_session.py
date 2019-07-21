@@ -31,6 +31,7 @@ class training_session:
             print("LOGGING:Training:Primary training step epochs:", self.hasPrimaryTrainingStep.epochs)
             print("LOGGING:Primary training step batch:", self.hasPrimaryTrainingStep.batch)
         else:
+            print("LOGGING:Name=", self.hasPrimaryTrainingStep)
             print("LOGGING:Training:TrainingLoop", self.hasPrimaryTrainingStep.name)
             print("LOGGING:Primary TrainingLoop epochs:", self.hasPrimaryTrainingStep.primaryLoop.epochs)
             print("LOGGING:Primary TrainingLoop batch:", self.hasPrimaryTrainingStep.primaryLoop.batch)

@@ -59,10 +59,10 @@ def handle_network_var(value):
         for val in value:
             print("Value is ", val)
             if "Tensor" in val:
-                n_value = val.split("Tensor")[1].split("'")[0]
+                n_value = val.split("Tensor")[1].split("'")[1]
                 elem_lst["L"].append(n_value)
             else:
-                n_value = val.replace(" ", "").split("tf.Operation")[1].split("'")[0]
+                n_value = val.replace(" ", "").split("tf.Operation")[1].split("'")[1]
                 elem_lst["O"].append(n_value)
         return ("B",elem_lst)
     if "Tensor" in value:
@@ -180,22 +180,25 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
 
 def find_next_session_and_step(sessions,timeList):
     new_sessions=sessions.copy()
-    ret_sessions={}
     for sess in sessions.keys():
+        new_step_list = []
         if len(sessions[sess].steps)>1:
-            new_step_list=[]
             counter=0
             list_index = []
             for step in sessions[sess].steps:
                 list_index.append([step,timeList.index(step.name)])
             list_index = sorted(list_index, key=lambda x: x[1])
             while counter<len(list_index)-1:
+                print("JUICE:Step ",list_index[counter][0].name," next ",list_index[counter+1][0].name)
                 list_index[counter][0].next =list_index[counter+1][0].name
                 new_step_list.append(list_index[counter][0])
-            new_step_list.append(list_index[-1])
+                counter+=1
+            new_step_list.append(list_index[-1][0])
+        else:
+            new_step_list=sessions[sess].steps
         new_sessions[sess].steps=new_step_list
     list_sessions_index=[]
-    if sessions.keys()>1:
+    if len(sessions.keys())>1:
         for sess in sessions.keys():
             if len(sessions[sess].steps) > 0:
                 list_sessions_index.append([sessions[sess], timeList.index(step.name)])
@@ -207,9 +210,6 @@ def find_next_session_and_step(sessions,timeList):
         counter=0
         while counter < len(list_sessions_index) - 1:
             list_sessions_index[counter][0].next_session = list_sessions_index[counter + 1][0].name
-            ret_sessions[list_sessions_index[counter][0].name]=list_sessions_index[counter][0]
-        return ret_session
-
-
-    import sys
-    sys.exit()
+            new_sessions[list_sessions_index[counter][0].name]=list_sessions_index[counter][0]
+            counter+=1
+    return new_sessions
