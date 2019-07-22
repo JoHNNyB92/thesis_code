@@ -2,10 +2,19 @@ import nodes.handler
 log_msg1="VirtuosoWrapper:Function to insert new "
 log_msg2=" with name "
 log_file=""
-random_names=0
 map_to_entry_name={}
+not_added_yet={}
 counter=0
 file_counter=0
+def reset_vars():
+    global counter
+    global map_to_entry_name
+    global not_added_yet
+    map_to_entry_name = {}
+    not_added_yet = {}
+    counter = 0
+
+
 def log(str):
     global counter
     if counter==0:
@@ -84,10 +93,14 @@ def new_previous_layer(name ,previous_layer):
 def new_named_individual(name):
     global file_counter
     #log(log_msg1 + "named individual" + log_msg2 + name)
+    isSameLayer=""
+    if name in map_to_entry_name.keys():
+        sameLayer=map_to_entry_name[name]
     if name not in map_to_entry_name.keys():
         map_to_entry_name[name]=name+str(file_counter)
         file_counter+=1
     nodes.handler.entitiesHandler.data.insert_named_indiv(map_to_entry_name[name])
+
 
 def new_has_activation(name ,activation):
     #log(log_msg1 + "has activation" + log_msg2 + name+"->"+activation)
@@ -131,6 +144,7 @@ def new_network_has_objective(network,objective):
 
 def new_trains_network(training,network):
     #log(log_msg1 + "trains network" + log_msg2 + training + "->" + network)
+    '''
     global file_counter
     # log(log_msg1 + "named individual" + log_msg2 + name)
     if training not in map_to_entry_name.keys():
@@ -139,6 +153,7 @@ def new_trains_network(training,network):
     if network not in map_to_entry_name.keys():
         map_to_entry_name[network] = network + str(file_counter)
         file_counter += 1
+    '''
     nodes.handler.entitiesHandler.data.insert_trains_network(map_to_entry_name[training], map_to_entry_name[network])
 
 

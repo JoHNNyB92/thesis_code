@@ -53,7 +53,7 @@ def parse_pbtxt(path,part_name):
         print("LOGGING:Parsing failed.")
     return result
 
-def begin_parsing(name,pbtxt_file,log_file):
+def begin_parsing(name,pbtxt_file,log_file,counter):
     nodes.handler.entitiesHandler=handle_entities()
     part_name=name.replace(".py","")
     rdfWrapper.log_file=log_file
@@ -66,6 +66,7 @@ def begin_parsing(name,pbtxt_file,log_file):
 def insert_in_annetto():
     rdfWrapper.insert_ann_graph()
     nodes.handler.entitiesHandler=""
+    return
 
 
 

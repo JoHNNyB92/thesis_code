@@ -151,7 +151,7 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
                 new_file_training=file_tr_step()
                 step_name=str(file).replace(".lines","")
                 new_file_training.name=str(step_name)
-                print("LOGGING:New training step is ",str(step_name))
+                print("LOGGING:New ante gia step is ",str(step_name))
                 for file_ in pathlistInfo:
                     if str(file).replace(".lines","")==str(file_).replace(".info",""):
                         print("Found info-file : ", file_)

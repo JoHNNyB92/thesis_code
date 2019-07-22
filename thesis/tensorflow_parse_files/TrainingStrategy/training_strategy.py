@@ -3,8 +3,8 @@ class training_strategy:
 
     def insert_in_annetto(self):
         #print("Annetto::TrainingStrategy-",self.name)
-        self.training_model.insert_in_annetto()
         rdfWrapper.new_named_individual(self.name)
+        self.training_model.insert_in_annetto()
         rdfWrapper.new_type(self.name, self.type)
         rdfWrapper.new_training_strategy(self.name)
         for session in self.primary_training_session:
