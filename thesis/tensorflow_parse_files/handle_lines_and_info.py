@@ -23,6 +23,8 @@ def get_output_networks(sess_run):
     return network_list
 
 def get_feed_dict(sess_run):
+    if "feed_dict=" not in sess_run.replace(" ",""):
+        return sess_run.replace(" ", "").split(",")[-1].replace(")","")
     feed_dict = sess_run.replace(" ","").split("feed_dict=")[1]
     feed=[]
     if "{" in feed_dict:
@@ -132,7 +134,6 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
     pathlistLine = list(pathlistLine)
     pathlistBatch=list(pathlistBatch)
     pathlistSession=list(pathlistSession)
-    new_file_training=""
     total_sessions_dict={}
     for session in pathlistSession:
         session_name=str(session).split("]_")[0]+"]"
