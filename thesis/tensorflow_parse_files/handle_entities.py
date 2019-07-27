@@ -236,16 +236,15 @@ class handle_entities:
             if nodeReturn!="":
                 self.objectives(nodeReturn, e)
 
-    def one_network_training(self,file,part_name):
+    def one_network_training(self,session,part_name,opl):
         #There is a case where a second optimizer is used as an initialization optimizer for some variables of the network.
         #This function is used for the case of only one neural network.
         #Thus after the call to find which optimizer belong to the networ,we break the iteration.
         for obj in self.data.annConfiguration.networks[self.current_network].objective.keys():
-            opl=self.find_optimizer()
+            #opl=self.find_optimizer()
             (n_name,_,_,_)=\
                 self.find_network(self.data.annConfiguration.networks[self.current_network].objective[obj],self.current_network,0,opl)
             break
-                #self.find_network(obj_func, network_outputs, self.current_network, net_cnt, optimizer_per_layer)
         tr_model=handler_functions.handle_trained_model(self.data.AnnConfig+"_trained_model")
         layers=self.data.annConfiguration.networks[n_name].layer
         counter=0
@@ -260,21 +259,32 @@ class handle_entities:
 
         epoch=0
         batch=0
+        optKey=""
         for key in optimizer.keys():
-            for fl in file:
-                print("Optimizer node name =",optimizer[key].name," file ",file[fl].optimizer)
-                if optimizer[key].name in file[fl].optimizer:
-                    print("Epoch is ",file[fl].epoch)
-                    epoch=file[fl].epoch
-                    for ind,input in enumerate(file[fl].inputs):
-                        for inp_ in self.data.annConfiguration.networks[n_name].input_layer:
-                            if input==inp_.name:
-                                print("Batch is ",file[fl].batches[ind])
-                                batch=file[fl].batches[ind]
+            print("OUTER KEY OPTIMIZER=",key)
+            for sess in session.keys():
+                print("1992INNER KEY OPTIMIZER=", sess)
+                print("session=",sess)
+                trSession=session[sess]
+                for step in trSession.steps:
+                    for opt in step.optimizer:
+                        print("Optimizer node name =", optimizer[key].name, " file ", opt)
+                        if optimizer[key].name==opt:
+                            print("Epoch is ",step.epoch)
+                            epoch=step.epoch
+                            for ind,input in enumerate(step.inputs):
+
+                                print("INPUT LAYERS="," ----- ", self.data.annConfiguration.networks[n_name].input_layer)
+                                for inp_ in self.data.annConfiguration.networks[n_name].input_layer:
+                                    if input==inp_.name:
+                                        print("Batch is ",step.batches[ind])
+                                        batch=step.batches[ind]
+                                        optKey=key
         IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name], "train")
-        primary_tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,optimizer[key].name,epoch,batch,"")
+        #print("LOCO=",optimizer[key].name)
+        primary_tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,[optimizer[optKey].name],epoch,batch,"")
         tr_session=handler_functions.handle_training_session(part_name+"_training_session",[],primary_tr_step)
-        tr_strategy=handler_functions.handle_training_strategy(part_name+"_training_strategy",tr_session,tr_model)
+        tr_strategy=handler_functions.handle_training_strategy(part_name+"_training_strategy",[tr_session],tr_model)
         self.data.evaluationResult.train_strategy=tr_strategy
         self.data.annConfiguration.training_strategy[tr_strategy.name]=tr_strategy
         self.insert_to_evaluation_pipe(n_name)
@@ -354,27 +364,31 @@ class handle_entities:
         net_layers[prev] = output
         print("Start searching from output ",output.name)
         if prev not in layers.keys():
-            #print("Previous layer not in keys ",prev)
             prev=self.nodes_to_layers[prev]
             #print("Previous translated to ",prev)
         prev=layers[prev].previous_layer
         ret_layer = []
-        while prev!=[]:
-            temp=[]
-            for prev_layer in prev:
-                if layers[prev_layer].is_input==True:
-                    print("LOGGING:Discovered input layer = ",prev_layer)
-                    ret_layer.append(layers[prev_layer].placeholder)
-                    net_layers[layers[prev_layer].placeholder]=layers[layers[prev_layer].placeholder]
-                    net_layers[prev_layer] = layers[prev_layer]
-                    for elem in layers[prev_layer].previous_layer:
-                        temp.append(elem)
-                else:
-                    print("LOGGING:Discovered intermediate layer = ",prev_layer)
-                    net_layers[prev_layer]=layers[prev_layer]
-                    for elem in layers[prev_layer].previous_layer:
-                        temp.append(elem)
-            prev=list(set(temp))
+        if layers[output.name].is_input==True:
+            ret_layer.append(layers[output.name].placeholder)
+            net_layers[layers[output.name].placeholder] = layers[layers[output.name].placeholder]
+            net_layers[output.name] = layers[output.name]
+        else:
+            while prev!=[]:
+                temp=[]
+                for prev_layer in prev:
+                    if layers[prev_layer].is_input==True:
+                        print("LOGGING:Discovered input layer = ",prev_layer)
+                        ret_layer.append(layers[prev_layer].placeholder)
+                        net_layers[layers[prev_layer].placeholder]=layers[layers[prev_layer].placeholder]
+                        net_layers[prev_layer] = layers[prev_layer]
+                        for elem in layers[prev_layer].previous_layer:
+                            temp.append(elem)
+                    else:
+                        print("LOGGING:Discovered intermediate layer = ",prev_layer)
+                        net_layers[prev_layer]=layers[prev_layer]
+                        for elem in layers[prev_layer].previous_layer:
+                            temp.append(elem)
+                prev=list(set(temp))
         return (ret_layer, net_layers)
 
     def find_network_output_layer(self,children):
@@ -590,9 +604,12 @@ class handle_entities:
 
     def find_training(self,sessions):
         res = self.check_multiple_networks()
+        optimizer_per_layer = self.find_optimizer()
+        optimizer_map = {}
+        optimizer_per_layer= self.remove_unused_optimizers(sessions, optimizer_per_layer)
         if res == 0:
             print("LOGGING:Only one network presented.")
-            self.one_network_training(sessions, self.current_network)
+            self.one_network_training(sessions, self.current_network,optimizer_per_layer)
             return res
         elif res == -1:
             print("ERROR:Program not a network finally")
@@ -600,9 +617,6 @@ class handle_entities:
         objectives = []
         for l in self.data.annConfiguration.networks[self.current_network].objective.keys():
             objectives.append(l)
-        optimizer_per_layer = self.find_optimizer()
-        optimizer_map={}
-        optimizer_per_layer=self.remove_unused_optimizers(sessions,optimizer_per_layer)
         net_cnt=0
         allSessions=[]
         for obj in sorted(objectives):
@@ -686,12 +700,12 @@ class handle_entities:
 
     def remove_unused_optimizers(self,sessions,opl):
         tmp_opl=opl.copy()
+        ret_session=sessions.copy()
         for sess in sessions.keys():
             for trStep in sessions[sess].steps:
                 for optimizer in trStep.optimizer:
                     if optimizer in tmp_opl.keys():
                         print("DELETING ",optimizer)
-
                         del tmp_opl[optimizer]
         for key in tmp_opl.keys():
             del opl[key]
@@ -719,9 +733,11 @@ class handle_entities:
                     inputs.append(inp)
             for k,v in tlayers.items():
                 layers[k]=v
-        l_outputs=[]
         n_name = network + "_" + str(counter)
-        self.insert_network(layers,n_name, inputs, l_outputs, obj_func,datasets)
+        l_output=[]
+        for output in outputs:
+            l_output.append(self.data.annConfiguration.networks[self.current_network].layer[output.get_name()])
+        self.insert_network(layers,n_name, inputs, layer_outputs, obj_func,datasets)
         counter += 1
         st=""
         for x in layers.keys():
@@ -735,194 +751,3 @@ class handle_entities:
                     network_optimizers.append(optimizer)
                     break
         return (n_name,outputs,counter,set(network_optimizers))
-
-
-'''
-    def handle_optimizer_per_layer(self,layers, opl,inputs,network_,counter):
-        sum={}
-        all_opt_layers=[]
-        new_names={}
-        #Identify and put into a list all discovered layers whose train belongs to an optimizer.
-        for key in opl.keys():
-            for l in opl[key]:
-                all_opt_layers.append(l)
-        #Identify which layers do not have an optimizer attached(e.g. concatLayer)
-        no_opt_layers=self.data.annConfiguration.networks[self.current_network].layer.keys()-all_opt_layers
-
-        #Copy the layers into a temporary object and remove from it the layers not belonging to an optimizer.
-        t_layers=copy.deepcopy(layers)
-        for layer in layers:
-            if layer in no_opt_layers:
-                del t_layers[layer]
-
-        #Dictionary to hold layer-optimizer pair.
-        temp_layer_optimizer = {}
-        for key in opl.keys():
-            #Sum contains 1 on whether a layer of the network belongs to this optimizer or 0 if it is part of another one.
-            sum[key]=[]
-            non_optimizer={}
-            #Filling sum with 1/0 if it belongs or not to optimizer 'key',also add layer optimizer to temp_layer_optimizer
-            for layer in t_layers:
-                if layer in opl[key]:
-                    sum[key].append(1)
-                    if layer in temp_layer_optimizer.keys():
-                        temp_layer_optimizer[layer].append(key)
-                    else:
-                        temp_layer_optimizer[layer]=key
-                else:
-                    non_optimizer[layer]=key
-                    sum[key].append(0)
-            #If the sum of the 1 is the same as the networks layers length that means that all the
-            #layers belong to one optimizer,thus to the same network.
-            if sum[key].count(1)==len(t_layers.keys()):
-                print("LOGGING:All layers have the same network=",layers)
-                return (key,layers,inputs,counter)
-            #We assume here that a network is considered to have a specific optimizer,if two are present,into
-            #the one having the most layers.The other one,is considered a new network.
-            if sum[key].count(1)>=(len(t_layers)/2):
-                new_networks={}
-                inputs_list=[]
-                tt_layers=copy.deepcopy(t_layers)
-                for layer in t_layers:
-                    #If layer does not belong to this optimizer
-                    if layer in non_optimizer.keys():
-                        #Insert it into a new list,with layers probable to be input to the bigger network,
-                        #later there will be checks on whether this is input or part of another network.
-                        inputs_list.append(layer)
-                        for pl in layers[layer].previous_layer:
-                            if pl in inputs:
-                                #New network presented,we are goind to remove the input of the current networ
-                                #and insert it as input to the new network.
-                                if non_optimizer[layer] not in new_networks.keys():
-                                    name=non_optimizer[layer]
-                                    new_networks[non_optimizer[layer]]=network(name)
-                                new_networks[non_optimizer[layer]].layer[pl+"--"+str(self.sameLayerCounter)]=copy.deepcopy(layers[pl])
-                                new_names[pl]=pl+"--"+str(self.sameLayerCounter)
-                                new_networks[non_optimizer[layer]].layer[pl +"--" + str(self.sameLayerCounter)].name=pl + "--" + str(self.sameLayerCounter)
-                                new_networks[non_optimizer[layer]].layer[pl + "--" + str(self.sameLayerCounter)].sameLayer = pl
-                                new_networks[non_optimizer[layer]].input_layer.append(pl+"--"+str(self.sameLayerCounter))
-                                self.sameLayerCounter+=1
-                                inputs.remove(pl)
-                        del tt_layers[layer]
-                new_inputs = []
-                for input in inputs_list:
-                    next_layer=layers[input].next_layer
-                    found=False
-                    print("Input=",input)
-                    for nl in next_layer:
-                        #From the layers belonging to another network we check whether the next layer is part of the current network
-                        #If it is,then this layer is output of the new network and input of new one
-                        if nl in tt_layers:
-                            print("1YEAH FINAL INPUT=",input)
-                            new_inputs.append(input)
-                            new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)] = copy.deepcopy(layers[input])
-                            new_names[input] = input+"--"+str(self.sameLayerCounter)
-                            new_networks[non_optimizer[input]].layer[
-                                input + "--" + str(self.sameLayerCounter)].name = input + "--" + str(self.sameLayerCounter)
-
-                            new_networks[non_optimizer[input]].layer[input +"--"+str(self.sameLayerCounter)].sameLayer=input
-                            new_networks[non_optimizer[input]].output_layer.append(new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)])
-                            self.sameLayerCounter+=1
-                            found=True
-                            break
-                        elif nl in no_opt_layers:
-                            #There is a change next layer to does not have an optimizer,thus we move on to check the next of it,
-                            #until we find a layer belonging to current network
-                            done = False
-                            next_l=[]
-                            next_l.append(nl)
-                            while done==False:
-                                tmp=[]
-                                for l in next_l:
-                                    next_layer = layers[l]
-                                    for elem in next_layer:
-                                        if elem in layers:
-                                            if elem in tt_layers.keys():
-                                                print("2YEAH FINAL INPUT=", input)
-                                                new_inputs.append(input)
-                                                new_networks[non_optimizer[input]].layer[
-                                                    input + "--" + str(self.sameLayerCounter)] = copy.deepcopy(layers[input])
-                                                new_networks[non_optimizer[input]].layer[
-                                                    input + +"--" + str(self.sameLayerCounter)].sameLayer = input
-                                                new_networks[non_optimizer[input]].output_layer.append(
-                                                    new_networks[non_optimizer[input]].layer[
-                                                        input + "--" + str(self.sameLayerCounter)])
-                                                new_names[input] = input + "--" + str(self.sameLayerCounter)
-                                                new_networks[non_optimizer[input]].layer[
-                                                    input + "--" + str(self.sameLayerCounter)].name = input + "--" + str(
-                                                    self.sameLayerCounter)
-                                                self.sameLayerCounter+=1
-                                                done=True
-                                                found=True
-                                                break
-                                        else:
-                                            if elem in no_opt_layers:
-                                                tmp.append(elem)
-                    if found==False:
-                        #If nothing was found( a layer to be input to the current network)
-                        #we add this layer to the new network as simple intermediate layer.
-                        new_networks[non_optimizer[input]].layer[input+"--"+str(self.sameLayerCounter)]=copy.deepcopy(layers[input])
-                        new_names[input] = input + "--" + str(self.sameLayerCounter)
-                        new_networks[non_optimizer[input]].layer[input + "--" + str(self.sameLayerCounter)].sameLayer=input
-                        new_names[input] = input + "--" + str(self.sameLayerCounter)
-                        new_networks[non_optimizer[input]].layer[
-                            input + "--" + str(self.sameLayerCounter)].name = input + "--" + str(self.sameLayerCounter)
-                        self.sameLayerCounter+=1
-                        del layers[input]
-                for x in inputs:
-                    new_inputs.append(x)
-                for key in opl.keys():
-                    if key in new_networks.keys():
-                        name=network_ + "_" + str(counter)
-                        counter+=1
-                        for layer in new_networks[key].layer.keys():
-                            for nl in new_networks[key].layer[layer].next_layer:
-                                if nl in new_names.keys():
-                                    new_networks[key].layer[layer].next_layer.remove(nl)
-                                    new_networks[key].layer[layer].next_layer.append(new_names[nl])
-                            for pl in new_networks[key].layer[layer].previous_layer:
-                                if pl in new_names.keys():
-                                    new_networks[key].layer[layer].previous_layer.remove(pl)
-                                    new_networks[key].layer[layer].previous_layer.append(new_names[pl])
-
-                        self.insert_network(new_networks[key].layer,name,
-                                            new_networks[key].input_layer,
-                                            new_networks[key].output_layer,self.data.annConfiguration.networks[name].objective[key],{})
-                print("LOGGING:Network changed-Layers:", layers)
-                print("LOGGING:Network changed-Key:", key)
-                print("LOGGING:Network changed-New Inputs:", new_inputs)
-                return (key,layers,new_inputs,counter)
-'''
-
-'''
-    def find_in_out_layer(self):
-        layers=self.data.annConfiguration.networks[self.current_network].layer.copy()
-        layers_del=[]
-        for layer in layers.keys():
-            if self.data.annConfiguration.networks[self.current_network].layer[layer].previous_layer == [] or \
-                    self.data.annConfiguration.networks[self.current_network].layer[layer].previous_layer == "":
-                if self.data.annConfiguration.networks[self.current_network].layer[layer].next_layer == [] or \
-                        self.data.annConfiguration.networks[self.current_network].layer[layer].next_layer == "":
-                    output_node=handler_functions.handle_out_layer(self.data.annConfiguration.networks[self.current_network].layer[layer].node)
-                    self.output_layer.append(output_node)
-                    print("LOGGING:Found output layer ",output_node.name)
-                    layers_del.append(layer)
-                    self.data.annConfiguration.networks[self.current_network].output_layer.append(output_node)
-                else:
-                    for layer_in in self.data.annConfiguration.networks[self.current_network].layer.keys():
-                        for i,input in enumerate(self.data.annConfiguration.networks[self.current_network].layer[layer_in].previous_layer):
-                            #print(self.data.annConfiguration.networks[self.current_network].layer[layer_in].previous_layer)
-                            if layer==input:
-                                input_node = handler_functions.handle_in_layer(self.data.annConfiguration.networks[self.current_network].layer[layer].node)
-                                self.input_layer.append(input_node)
-                                print("LOGGING:Found input layer ", input_node.name)
-                                del self.data.annConfiguration.networks[self.current_network].layer[layer_in].previous_layer[i]
-                                self.input_layers.append(self.data.annConfiguration.networks[self.current_network].layer[layer_in])
-                                layers_del.append(layer)
-                                self.data.annConfiguration.networks[self.current_network].input_layer.append(input_node)
-                                self.data.annConfiguration.networks[self.current_network].layer[
-                                    layer_in].previous_layer.append(input_node.name)
-                                break
-        for elem in set(layers_del):
-            del self.data.annConfiguration.networks[self.current_network].layer[elem]
-    '''

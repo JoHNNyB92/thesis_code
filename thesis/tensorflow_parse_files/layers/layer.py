@@ -114,6 +114,8 @@ class layer:
                     self.previous_layer.append(input_node.get_name())
                     if input_node.get_op()=='Placeholder':
                         self.is_input=True
+                        #CAUTION-WARNING
+                        #layers[input_node.get_name()].is_input=True
                     nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[input_node.get_name()].next_layer.append(self.node.get_name())
         for layer in layers.keys():
             layer_obj = layers[layer]

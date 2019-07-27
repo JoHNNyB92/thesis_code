@@ -152,6 +152,19 @@ def check_if_file_in_files(elem,files):
     print("Did not found file=",elem," in ",files)
     return False
 
+def check_lists(pathList,suffix,produced_files,log=0):
+    retPathList=[]
+    pathList=list(pathList)
+    for prFile in produced_files:
+        for file in pathList:
+            if log ==1:
+                print("check_lists:::::prFile=",prFile,"  file=",file)
+            if (prFile+suffix) in str(file):
+                retPathList.append(file)
+                break
+    return retPathList
+
+
 with open('github/github.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
@@ -164,7 +177,7 @@ with open('github/github.csv') as csv_file:
         main_files=[]
         function_files=[]
         file_import_dict={}
-        if "..\git_repositories_temp/test_repository_splitted_2" in code_repository:
+        if "..\git_repositories_temp/test_repository_splitted_3" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -178,7 +191,7 @@ with open('github/github.csv') as csv_file:
                 #file_import_dict[str(path)].append([str(path).split(windows)[1].split("\\")])
             print(files)
             pathlist = Path(code_repository).glob('**/*.py')
-
+            skip=False
             for path in pathlist:
                 # because path is object not string
                 path_in_str = str(path)
@@ -202,10 +215,9 @@ with open('github/github.csv') as csv_file:
                 print("Path is = ",import_paths)
                 file_import_dict[str(path)] = import_paths
                 print("file_import_dict[",str(path),"]=",file_import_dict[str(path)])
-
             pathlist = Path(code_repository).glob('**/*.py')
             for path in pathlist:
-                if str(path) not in function_files and "__init__" not in str(path):
+                if str(path) not in function_files and "__init__" not in str(path) and "linear_regression" in str(path):
                     used_files=file_import_dict[str(path)]
                     print(used_files)
                     project_structure=[]
@@ -232,6 +244,12 @@ with open('github/github.csv') as csv_file:
                         pathlistBatch = Path(code_repository).glob("**/*.batch")
                         pathListSession=Path(code_repository).glob("**/*.total_session")
                         timeList=[]
+                        pathlistInfo=check_lists(pathlistInfo,'.info',produced_files,1)
+                        pathlistLine = check_lists(pathlistLine, '.lines', produced_files)
+                        pathListSession = check_lists(pathListSession, '.total_session', produced_files)
+                        pathlistBatch = check_lists(pathlistBatch, '.batch', produced_files)
+                        print("KALEMIA=",pathlistBatch)
+                        print("KALEMIA2=", pathListSession)
                         for file in pathlistInfo:
                             timeList.append([os.path.getmtime(str(file)),str(file)])
                         timeList=sorted(timeList,key=lambda x:float(x[0]))
@@ -253,3 +271,4 @@ with open('github/github.csv') as csv_file:
                             print("----------------------------------------------\n\n")
                         handler_entities.find_training(session_dict)
                         tensorflow_parser.insert_in_annetto()
+

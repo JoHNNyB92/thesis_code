@@ -2,10 +2,10 @@ from generated_files_classes.file_tr_step import file_tr_step
 from generated_files_classes.file_training_session import file_training_session
 
 def get_output_networks(sess_run):
-    #print("0=",sess_run)
-    #print("1=",sess_run.split('sess.run('))
-    #print("2=",sess_run.split('sess.run(')[1].split(","))
-    #print("3=",sess_run.split('sess.run(')[1].split(",")[0].replace(" ",""))
+    print("0=",sess_run)
+    print("1=",sess_run.split('sess.run('))
+    print("2=",sess_run.split('sess.run(')[1].split(","))
+    print("3=",sess_run.split('sess.run(')[1].split(",")[0].replace(" ",""))
     networks=sess_run.split('sess.run(')[1]
     network_list = []
     if "[" in networks:
@@ -71,7 +71,10 @@ def handle_network_var(value):
         n_value=value.split("Tensor(\"")[1].split("\"")[0]
         return ("L", n_value)
     else:
-        n_value = value.replace(" ","").split("name:\"")[1].split("\"")[0]
+        if "name:" in value:
+            n_value = value.replace(" ","").split("name:\"")[1].split("\"")[0]
+        elif "tf.Operation" in value:
+            n_value = value.replace(" ", "").split("tf.Operation")[1].split("'")[1]
         return ("O", n_value)
 
 def handle_input_var(value):
@@ -102,7 +105,8 @@ def handle_info(content,networks,feed_dict):
         key = element.split("VALUE:")[0].split("KEY:")[1]
         for network in networks:
 
-            if network in key:
+            if network==key:
+                print("KEY=",key,"-",network)
                 (case,n_value)=handle_network_var(value)
                 if case=="L":
                     loss.append(n_value)
@@ -202,9 +206,9 @@ def find_next_session_and_step(sessions,timeList):
     if len(sessions.keys())>1:
         for sess in sessions.keys():
             if len(sessions[sess].steps) > 0:
-                list_sessions_index.append([sessions[sess], timeList.index(step.name)])
+                list_sessions_index.append([sessions[sess], timeList.index(sessions[sess].steps[0].name)])
             else:
-                print("EXTREME ERROR FOR SESSION-NO STEP")
+                print("EXTREME ERROR FOR SESSION-NO STEP=",sessions[sess].name)
                 import sys
                 sys.exit()
         list_sessions_index = sorted(list_sessions_index, key=lambda x: x[1])

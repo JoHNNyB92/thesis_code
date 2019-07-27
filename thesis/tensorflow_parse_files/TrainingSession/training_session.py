@@ -6,7 +6,7 @@ class training_session:
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         print("ALOKOTA PRAMATA")
-        if self.hasTrainingStep!="":
+        if self.hasTrainingStep!=[]:
             for ind,tr_step in enumerate(self.hasTrainingStep):
                 tr_step.insert_in_annetto()
                 rdfWrapper.new_has_training_step(self.name,tr_step.name)
