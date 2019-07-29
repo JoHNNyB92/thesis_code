@@ -5,20 +5,24 @@ def get_output_networks(sess_run):
     print("0=",sess_run)
     print("1=",sess_run.split('sess.run('))
     print("2=",sess_run.split('sess.run(')[1].split(","))
-    print("3=",sess_run.split('sess.run(')[1].split(",")[0].replace(" ",""))
-    networks=sess_run.split('sess.run(')[1]
+    comma_separated=sess_run.replace(" ","").split('sess.run(')[1].split(",")
+    complex=False
+    complex_start=False
+    complex_end=False
     network_list = []
-    if "[" in networks:
-        networks=networks.split("]")[0].replace("[","")
-        if "," in networks:
-            print('1')
-            for elem in networks.split(','):
-                network_list.append(elem.replace(" ",""))
-        else:
-            print("2")
-            network_list.append(networks.replace(" ",""))
-        #print("networks are ",network_list)
+    for elem in comma_separated:
+        if elem.count("[")!=elem.count("]"):
+            complex=True
+            if elem.count("[") > elem.count("]"):
+                complex_start=True
+                network_list.append(elem[1:])
+            if elem.count("[") < elem.count("]"):
+                complex_end=True
+                network_list.append(elem[:-1])
+    if complex==True:
+        print("ZOGRAFAKI:Networks List=",network_list)
     else:
+        networks = sess_run.split('sess.run(')[1].split(",")[0].replace(" ", "")
         network_list.append(networks.split(",")[0])
     return network_list
 
@@ -77,8 +81,21 @@ def handle_network_var(value):
             n_value = value.replace(" ", "").split("tf.Operation")[1].split("'")[1]
         return ("O", n_value)
 
-def handle_input_var(value):
-    if "tf.Tensor" in value:
+def handle_input_var(value,isDict=False,nVal=""):
+    if isDict==True:
+        value=value.replace(" ","")[1:-1]
+        print('list_val=',value)
+        list_val=value.split(",")
+        for elem in list_val:
+            print("YEAP=",elem.split(":")[0],"-",nVal)
+            if elem.split(":")[0]==nVal:
+                value=elem.split(":")[1]
+                if "tf.Tensor" in value:
+                    n_value = value.split("tf.Tensor")[1].replace(" ", "").split("'")[1].split(":")[0]
+                else:
+                    n_value = value.split("Tensor(\"")[1].split("\"")[0].split(":")[0]
+                return n_value
+    elif "tf.Tensor" in value:
         n_value=value.split("tf.Tensor")[1].replace(" ","").split("'")[1].split(":")[0]
     else:
         n_value = value.split("Tensor(\"")[1].split("\"")[0].split(":")[0]
@@ -86,7 +103,19 @@ def handle_input_var(value):
 
 def search_feed_dict(feed_dict,key,value,inputs):
     for input in feed_dict:
-        if input==key:
+        outer_var=""
+        if "[" in input and "]" in input:
+            n_input=input.split("[")[1].split("]")[0]
+            outer_var=input.split("[")[0]
+        else:
+            n_input=input
+        #print("EVAZOGR=",n_input)
+        #print("KEY=",key)
+        if outer_var!="":
+            if outer_var==key:
+                in_ = handle_input_var(value,True,n_input)
+                inputs.append(in_)
+        elif n_input==key:
             in_ = handle_input_var(value)
             inputs.append(in_)
     return inputs
@@ -104,7 +133,7 @@ def handle_info(content,networks,feed_dict):
             continue
         key = element.split("VALUE:")[0].split("KEY:")[1]
         for network in networks:
-
+            print("ZOGRAFAKI:Network=",network)
             if network==key:
                 print("KEY=",key,"-",network)
                 (case,n_value)=handle_network_var(value)

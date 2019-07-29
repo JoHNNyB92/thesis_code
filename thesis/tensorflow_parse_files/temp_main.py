@@ -160,6 +160,7 @@ def check_lists(pathList,suffix,produced_files,log=0):
             if log ==1:
                 print("check_lists:::::prFile=",prFile,"  file=",file)
             if (prFile+suffix) in str(file):
+                print("\nBREAK\n")
                 retPathList.append(file)
                 break
     return retPathList
@@ -177,7 +178,7 @@ with open('github/github.csv') as csv_file:
         main_files=[]
         function_files=[]
         file_import_dict={}
-        if "..\git_repositories_temp/test_repository_splitted_3" in code_repository:
+        if "..\git_repositories_temp/test_repository_splitted_4" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -217,7 +218,7 @@ with open('github/github.csv') as csv_file:
                 print("file_import_dict[",str(path),"]=",file_import_dict[str(path)])
             pathlist = Path(code_repository).glob('**/*.py')
             for path in pathlist:
-                if str(path) not in function_files and "__init__" not in str(path) and "linear_regression" in str(path):
+                if str(path) not in function_files and "__init__" not in str(path) and "11_" in str(path) and "10_" not in str(path):
                     used_files=file_import_dict[str(path)]
                     print(used_files)
                     project_structure=[]

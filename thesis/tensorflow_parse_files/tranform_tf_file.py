@@ -118,6 +118,7 @@ def find_epoch_size(line_list,file_path):
     multiple_line_sentence_counter=0
     multiple_line_sentence_space=0
     files_replace=[]
+    done_with_continuous=True
     for ind_,line in enumerate(line_list):
         new_line_list.append(line)
         line_space=len(line) - len(line.lstrip(' '))
@@ -127,9 +128,11 @@ def find_epoch_size(line_list,file_path):
             multiple_line_comm=True
             multiple_line_sentence_counter=len(new_line_list)-1
             multiple_line_sentence_space=line_space
+            done_with_continuous=False
         elif multiple_line_comm==True and multiple_line_sentence_space>=line_space:
-            print("BACKTONORMA:=")
+            print("BACKTONORMA:=",line)
             new_line_list[-1]=new_line_list[-1]+"\n"
+            done_with_continuous=True
             multiple_line_comm=False
         if ind_ == len(line_list) - 1:
             last_line = True
@@ -165,13 +168,13 @@ def find_epoch_size(line_list,file_path):
                 found_run = True
                 before_sess_run = multiple_line_sentence_counter
                 print("2222222222BEFORE ADDING=", new_line_list[before_sess_run])
-        elif found_run==True:
+        elif found_run==True and done_with_continuous==False:
             print("Continuous line for sess run")
             line_of_sess_run+=line
         if "feed_dict" in line:
             found_model_line = 1
         if found_model_line == 1:
-            if line.replace("\n", "").endswith(')') == True:
+            if (line.replace("\n", "").endswith(')')== True or "}" in line):
                 line_of_sess_run=line_of_sess_run.replace("\n", "").replace(" ", "")
                 line_list_for_feed = handle_feed_dict(line_of_sess_run, num_of_space)
                 if ind_+1 >=len(line_list) or line_list[ind_ + 1][0].replace(" ","") != ".":
@@ -188,6 +191,7 @@ def find_epoch_size(line_list,file_path):
                         print("OLD ARXIDOMOURIS2=",line," new line list=",new_line_list[temp_ind])
                         (number_of_fors,session_for_ind,first_for_space,session_fors)=find_number_of_fors(temp_ind,new_line_list)
                     no_rep=False
+                    print("thelw na skasw =",line_of_sess_run ,"-",session_fors)
                     while end_loop(for_counter,new_line_list[temp_ind],number_of_fors,found_total_session) ==False and no_rep==False:
                         if "feed_dict" in new_line_list[temp_ind] and num_of_space!=prev_line_space:
                             is_co_train=True
@@ -203,17 +207,17 @@ def find_epoch_size(line_list,file_path):
                                 files_replace.append(file_replace)
                                 produced_files.append(new_file)
                             print("re file=", files_replace, " ", new_line_list[temp_ind])
-
+                        print("session_fors=",session_fors)
                         if session_fors == 0:
                             print("ARXIDOKAMPOS")
-                            if "total_session_abc=open" in new_line_list[temp_ind - 1].replace(" ",""):
+                            if "total_session_abc=open" in new_line_list[temp_ind - 1].replace(" ","") or found_total_session==False:
                                 first_time = True
                                 print("NOREP=")
                                 no_rep = True
                                 print("1POUTANES=", new_line_list[temp_ind])
-                                write_space = len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                                write_space = first_for_space #len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
                                 print("1WRITE SPACE =", write_space)
-                                write_ind = temp_ind
+                                write_ind = session_for_ind+1
                         elif new_line_list[temp_ind].replace(" ", "").startswith("for"):
                             print("3ELENHLINE=",new_line_list[temp_ind]+"---",for_counter)
                             for_counter += 1
@@ -250,7 +254,7 @@ def find_epoch_size(line_list,file_path):
                         print("HIROSHIMA=",new_line_list[temp_sess])
                         new_line_list = new_line_list[:temp_sess+1] + [write_] + new_line_list[ temp_sess+1:]
                         if session_fors%2==1:
-                            write_ind+=1
+                            #write_ind+=1
                             print("SIERRAXINW=",new_line_list[write_ind])
                         else:
                             write_ind += 1
@@ -336,17 +340,17 @@ def handle_feed_dict(line,num_of_space):
     if "feed_dict=" not in line.replace(" ",""):
         feed_dict=line.replace(" ", "").split(",")[-1].replace(")","")
     else:
-        feed_dict=line.split("feed_dict=")[1].replace(")","").replace(" ","")
+        feed_dict=line.split("feed_dict=")[1].split(")")[0].replace(" ","")
     print("FEED DICT=",feed_dict)
     before_list=[]
-    before_list.append((num_of_space) * " " + "f = open('FILE', 'w')\n")
+    before_list.append((num_of_space) * " " + "mYFiLe = open('FILE', 'w')\n")
     if "{" in feed_dict:
         before_list.append(num_of_space*" "+"feed_dict="+feed_dict+"\n")
         before_list.append(num_of_space * " " + "for key,value in feed_dict.items():\n")
     else:
         before_list.append(num_of_space * " " + "for key,value in "+feed_dict+".items():\n")
-    before_list.append((num_of_space + 1) * " " + "f.write(str(tf.shape(key).shape[0])+'||||')\n")
-    before_list.append(num_of_space * " " + "f.close()\n")
+    before_list.append((num_of_space + 1) * " " + "mYFiLe.write(str(tf.shape(key).shape[0])+'||||')\n")
+    before_list.append(num_of_space * " " + "mYFiLe.close()\n")
     return before_list
 
 def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path):
@@ -368,9 +372,9 @@ def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_pa
             session_counter) + "]_"+str(session_counter) + ".batch"
     name = os.path.dirname(file_path).split(github.dirName)[1].replace("\\", "_")
     temp_list = []
-    temp_list.append((write_space) * " " + "f = open('" + write_file_line + "', 'a')\n")
-    temp_list.append((write_space) * " " + "f.write('" + "----" + "')\n")
-    temp_list.append((write_space) * " " + "f.close()\n")
+    temp_list.append((write_space) * " " + "mYFiLe = open('" + write_file_line + "', 'a')\n")
+    temp_list.append((write_space) * " " + "mYFiLe.write('" + "----" + "')\n")
+    temp_list.append((write_space) * " " + "mYFiLe.close()\n")
     return (write_file,write_file_line,write_file_batch,temp_list,name)
 
 def append_file_lines(name,line_of_sess_run,new_line_list,temp_list,line_list_for_feed,write_file,write_file_line,write_file_batch,write_ind,before_sess_run,num_of_space,files_written):
@@ -382,12 +386,12 @@ def append_file_lines(name,line_of_sess_run,new_line_list,temp_list,line_list_fo
     new_line_list.append(num_of_space * " " + "tmp__ = locals().copy()\n")
     new_line_list.append(num_of_space * " " + "for k, v in tmp__.items():\n")
     new_line_list.append((num_of_space + 1) * " " + "abc +='KEY:'+ k + 'VALUE:' + str(v) + '||||'\n")
-    new_line_list.append(num_of_space * " " + "f = open('" + write_file + "', 'w')\n")
-    new_line_list.append(num_of_space * " " + "f.write(abc)\n")
-    new_line_list.append((num_of_space) * " " + "f.close()\n")
-    new_line_list.append((num_of_space) * " " + "f = open('" + write_file_line + "', 'a')\n")
-    new_line_list.append((num_of_space) * " " + "f.write('" + line_of_sess_run + "||||')\n")
-    new_line_list.append((num_of_space) * " " + "f.close()\n")
+    new_line_list.append(num_of_space * " " + "mYFiLe = open('" + write_file + "', 'w')\n")
+    new_line_list.append(num_of_space * " " + "mYFiLe.write(abc)\n")
+    new_line_list.append((num_of_space) * " " + "mYFiLe.close()\n")
+    new_line_list.append((num_of_space) * " " + "mYFiLe = open('" + write_file_line + "', 'a')\n")
+    new_line_list.append((num_of_space) * " " + "mYFiLe.write('" + line_of_sess_run.replace("'","\\'") + "||||')\n")
+    new_line_list.append((num_of_space) * " " + "mYFiLe.close()\n")
     return(file,new_line_list)
 
 
@@ -496,7 +500,7 @@ def handle_evaluation_score(filePath):
 
 def end_loop(cnt,line,number_of_fors,found_total_session):
     if found_total_session==False:
-        if number_of_fors==cnt:
+        if number_of_fors==cnt and number_of_fors!=0:
             return True
     if ".total_session" in line and "= open(" in line:
         print("DONE DUE TO TOTAL SESSION=",line)

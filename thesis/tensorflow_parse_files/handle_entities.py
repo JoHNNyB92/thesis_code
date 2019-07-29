@@ -274,8 +274,11 @@ class handle_entities:
                             epoch=step.epoch
                             for ind,input in enumerate(step.inputs):
 
-                                print("INPUT LAYERS="," ----- ", self.data.annConfiguration.networks[n_name].input_layer)
                                 for inp_ in self.data.annConfiguration.networks[n_name].input_layer:
+                                    print("1INPUT LAYERS=", " ----- ",
+                                          input)
+                                    print("2INPUT LAYERS=", " ----- ",
+                                          inp_.name)
                                     if input==inp_.name:
                                         print("Batch is ",step.batches[ind])
                                         batch=step.batches[ind]
@@ -436,7 +439,6 @@ class handle_entities:
             print("LOGGING:["+name+"]Input is =", input," Dataset is = ",input_layer.placeholder)
             self.data.annConfiguration.networks[name].input_layer.append(input_layer)
             del t_layers[input]
-            print(layers[input])
         for output in outputs:
             print("LOGGING:["+name+"]Output is = ",output.name)
             output_layer = handler_functions.handle_out_layer(output)
