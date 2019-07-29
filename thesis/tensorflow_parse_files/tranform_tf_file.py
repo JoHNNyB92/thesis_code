@@ -84,7 +84,7 @@ def check_if_already_executed(path,proj):
     for filepath in proj:
         for ind, line in enumerate(open(filepath, errors="replace")):
             if "_sEssIOn_" in line:
-                print("LINE=", line)
+                print("SessionLINE=", line)
                 print("LINE=", line.split('\'')[1])
                 prod_files.append(line.split('\'')[1].split('.')[0])
                 no_execution = True
@@ -129,14 +129,21 @@ def find_epoch_size(line_list,file_path):
             multiple_line_sentence_counter=len(new_line_list)-1
             multiple_line_sentence_space=line_space
             done_with_continuous=False
+            print("NOTBACKTONORMA:=",line)
         elif multiple_line_comm==True and multiple_line_sentence_space>=line_space:
             print("BACKTONORMA:=",line)
             new_line_list[-1]=new_line_list[-1]+"\n"
             done_with_continuous=True
             multiple_line_comm=False
+            if (line.replace(" ", "").endswith("\\") or line.count("(") != line.count(
+                ")")) and multiple_line_comm == False:
+                multiple_line_comm = True
+                multiple_line_sentence_counter = len(new_line_list) - 1
+                multiple_line_sentence_space = line_space
+                done_with_continuous = False
+                print("NOTBACKTONORMA:=", line)
         if ind_ == len(line_list) - 1:
             last_line = True
-        print("Gound total ses=",found_total_session,"-",line)
         if found_total_session==True:
             print("In found total session it is Line=",line)
             if first_for_space>=line_space and (last_line==True or for_counter!=0) or first_for_space>line_space:
@@ -169,8 +176,8 @@ def find_epoch_size(line_list,file_path):
                 before_sess_run = multiple_line_sentence_counter
                 print("2222222222BEFORE ADDING=", new_line_list[before_sess_run])
         elif found_run==True and done_with_continuous==False:
-            print("Continuous line for sess run")
             line_of_sess_run+=line
+            print("Continuous line for sess run ", line_of_sess_run)
         if "feed_dict" in line:
             found_model_line = 1
         if found_model_line == 1:
@@ -247,6 +254,7 @@ def find_epoch_size(line_list,file_path):
                             temp_sess+=1
                         temp_space= len(new_line_list[temp_sess]) - len(new_line_list[temp_sess].lstrip(' '))
                         print("SESSION GAMW TRO XRISTO=",new_line_list[temp_sess])
+                        produced_files.append(total_session)
                         open_=(first_for_space)* " " + "total_session_abc = open('" + total_session + "', 'w')\n"
                         write_=(temp_space)* " " + "total_session_abc.write('----|')\n"
                         close_=(first_for_space)* " " + "total_session_abc.close()\n"
@@ -351,6 +359,7 @@ def handle_feed_dict(line,num_of_space):
         before_list.append(num_of_space * " " + "for key,value in "+feed_dict+".items():\n")
     before_list.append((num_of_space + 1) * " " + "mYFiLe.write(str(tf.shape(key).shape[0])+'||||')\n")
     before_list.append(num_of_space * " " + "mYFiLe.close()\n")
+    print("BEFORE LIST = ",before_list)
     return before_list
 
 def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path):

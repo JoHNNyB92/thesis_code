@@ -218,7 +218,7 @@ with open('github/github.csv') as csv_file:
                 print("file_import_dict[",str(path),"]=",file_import_dict[str(path)])
             pathlist = Path(code_repository).glob('**/*.py')
             for path in pathlist:
-                if str(path) not in function_files and "__init__" not in str(path) and "11_" in str(path) and "10_" not in str(path):
+                if str(path) not in function_files and "__init__" not in str(path) and "11_" in str(path):
                     used_files=file_import_dict[str(path)]
                     print(used_files)
                     project_structure=[]
