@@ -15,7 +15,7 @@ class handle_entities:
         #To give different names to layers that exist in multiple networks
         self.sameLayerCounter=0
         #Operations that must be ignored if presented into position that do not represent something important.
-        self.intermediate_operations=["Add","Identity","Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones","Tile"]
+        self.intermediate_operations=["Add","Identity","Unpack","Reshape","StridedSlice","Range","mul","GatherV2","Pack","Transpose","concat","Mean","ExpandDims","Fill","Ones","Tile","OneHot"]
         self.optimizer_operations=["ApplyAdam"]
         #Activation functions upported as of now
         self.activation_operations=["Elu","Relu","Dropout","Softmax","Sigmoid","Tanh","Softplus"]
@@ -59,8 +59,9 @@ class handle_entities:
         #Split the name based on / and when the case (rnn,dense etc) is part of the splitted word,this is the name.
         tmp = name.split("/")
         tmp_name = ""
+        print("NAME=",name)
         for x in tmp:
-            if case in x:
+            if x in case :
                 tmp_name = tmp_name + "/" + x
                 break
             else:
@@ -69,8 +70,9 @@ class handle_entities:
         tmp_name = tmp_name[1:]
         #If this was not encountered again,insert into list keeping complex node names.
         if tmp_name not in self.names_into_separator:
+            print("REMALAKANAME+=",tmp_name," CASE:",case)
             self.names_into_separator.append(tmp_name)
-            if case=="dense":
+            if case==["dense","fully_connected"]:
                     (isSimpleLayer, nodeReturn) = handler_functions.check_simple_layer(self.node_map[tmp_name + "/BiasAdd"],
                                                                                        tmp_name + "/BiasAdd")
                     if isSimpleLayer == True:
@@ -81,10 +83,24 @@ class handle_entities:
             elif case=="flatten":
                 nodeReturn = handler_functions.handle_flatten(node, tmp_name)
                 self.insert_to_list(nodeReturn, tmp_name, "Layer")
-            elif case == "rnn":
-                nodeReturn = handler_functions.handle_lstm(node,tmp_name)
-                self.insert_to_list(nodeReturn, tmp_name, "Layer")
-
+            elif case ==["basic_lstm_cell","gru_cell"]:
+                print("RNN//CASE")
+                name_to_give=""
+                for x in tmp:
+                    if "rnn" in x:
+                        name_to_give = name_to_give + "/" + x
+                        break
+                    else:
+                        name_to_give = name_to_give + "/" + x
+                name_to_give=name_to_give[1:]
+                self.names_into_separator.append(name_to_give)
+                if "lstm" in tmp_name:
+                    nodeReturn = handler_functions.handle_lstm(node,name_to_give)
+                    self.insert_to_list(nodeReturn, name_to_give, "Layer")
+                elif "gru" in tmp_name:
+                    print("GRU//CASE")
+                    nodeReturn = handler_functions.handle_gru(node, name_to_give)
+                    self.insert_to_list(nodeReturn, name_to_give, "Layer")
     def optimizers(self,keyword,e):
         name = self.node_map[e].get_name().split("/")
         real_name = ""
@@ -191,6 +207,7 @@ class handle_entities:
                 if nodeReturn != "":
                     self.objectives(nodeReturn, e)
         elif self.node_map[e].get_op()=="SoftmaxCrossEntropyWithLogits":
+            print("softmax_cross_entropyilleo")
             name_loss = e
             c_name = "cost_function"
             # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
@@ -201,6 +218,10 @@ class handle_entities:
             nodeReturn = handler_functions.handle_cross_entropy(self.node_map[e],name_loss,c_name)
             if nodeReturn != "":
                 self.objectives(nodeReturn, e)
+            else:
+                print("ERROR PROBABLY")
+                import sys
+                sys.exit()
         elif self.node_map[e].get_op()=="Equal":
             nodeReturn= handler_functions.handle_accuracy(self.node_map[e])
             if nodeReturn!=None:
@@ -209,12 +230,12 @@ class handle_entities:
                 print("LOGGING: Equal not metric.")
         elif "flatten" in e :
             self.handle_complex_layers(self.node_map[e],e,"flatten")
-        elif "dense" in e and self.node_map[e].get_op() not in self.optimizer_operations:
-            self.handle_complex_layers(self.node_map[e],e,"dense")
+        elif "dense" in e and self.node_map[e].get_op() not in self.optimizer_operations or "fully_connected" in e:
+            self.handle_complex_layers(self.node_map[e],e,["dense","fully_connected"])
         elif "dropout" in e:
             self.handle_complex_layers(self.node_map[e],e,"dropout")
         elif "rnn" in e:
-            self.handle_complex_layers(self.node_map[e],e,"rnn")
+            self.handle_complex_layers(self.node_map[e],e,["basic_lstm_cell","gru_cell"])
         elif "Placeholder"==self.node_map[e].get_op():
             has_dim=False
             for elem in self.node_map[e].get_output():
@@ -223,6 +244,10 @@ class handle_entities:
                     break
             nodeReturn = handler_functions.handle_in_out_layer(self.node_map[e])
             self.insert_to_list(nodeReturn, e,"Layer")
+        elif  self.node_map[e].get_op()=="SquaredDifference":
+            nodeReturn=handler_functions.handle_mean_square_error(self.node_map[e],self.current_network,self.node_map[e].get_name())
+            if nodeReturn!="":
+                self.objectives(nodeReturn, e)
         elif "mean_squared_error" in self.node_map[e].get_name()\
                and self.node_map[e].get_name().split("/")[0] not in self.discovered_loss:
             lname=self.node_map[e].get_name().split("/")[0]
@@ -255,8 +280,6 @@ class handle_entities:
                     weight=handler_functions.handle_weights('W'+str(counter),elem_in,layer)
                     tr_model.add_weight(weight)
         optimizer=self.data.annConfiguration.networks[self.current_network].optimizer
-
-
         epoch=0
         batch=0
         optKey=""

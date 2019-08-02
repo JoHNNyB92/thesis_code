@@ -14,6 +14,7 @@ from functions.metric.accuracy import accuracy
 from functions.metric.mean_squared_error import mean_squared_error
 from functions.activation.smooth.softmax import softmax
 from  layers.hidden.activation.rnn_layer.lstm_layer import lstm_layer
+from  layers.hidden.activation.rnn_layer.gru_layer import gru_layer
 from functions.metric.accuracy import accuracy
 from NetworkEvaluation.network_evaluation import network_evaluation
 from DatasetPipe.dataset_pipe import dataset_pipe
@@ -35,8 +36,12 @@ from layers.InOutLayer.InputLayer.input_layer import input_layer
 from layers.InOutLayer.OutputLayer.output_layer import output_layer
 from layers.InOutLayer.in_out_layer import in_out_layer
 from Dataset.label_set import label_set
+
 def handle_lstm( node,name):
     return lstm_layer(node,name)
+
+def handle_gru( node,name):
+    return gru_layer(node,name)
 
 def handle_rms_prop(node,name):
     return rms_prop(node,name)
@@ -121,17 +126,35 @@ def handle_sigmoid_entropy(node,c_name,name):
     return cost_function(c_name, categorical_cross_entropy(name, node,True))
 
 def handle_cross_entropy(node,name,c_name):
-    for t_name in nodes.handler.entitiesHandler.node_map.keys():
-        if "softmax_cross_entropy" in t_name:
-            for elem in nodes.handler.entitiesHandler.node_map[t_name].get_inputs():
-                if elem.get_op() == "Placeholder":
-                    for dim in elem.get_attr()["shape"].shape.dim:
-                        if dim.size != -1:
-                            if dim.size > 2:
-                                return cost_function(c_name,categorical_cross_entropy(name,node))
-                            else:
-                                return cost_function(c_name,binary_cross_entropy(name,node))
-    # In case placeholder has only negative dimensions
+    tmp=node.get_inputs()
+    new_tmp=[]
+    nm = nodes.handler.entitiesHandler.node_map
+    outer_inputs=[]
+    print("On name its=",name)
+    for node_name in nodes.handler.entitiesHandler.node_map.keys():
+        if name in node_name.split("/") and 'gradients' not in node_name:
+            for inp in nm[node_name].get_inputs():
+                if name not in inp.get_name():
+                    outer_inputs.append(inp)
+    while outer_inputs!=[]:
+        for inp in outer_inputs:
+            print("Searching for ",inp.get_name()," operation ",inp.get_op())
+            if inp.get_op()== "Placeholder":
+                for dim in inp.get_attr()["shape"].shape.dim:
+                    if dim.size != -1:
+                        if dim.size > 2:
+                            return cost_function(c_name, categorical_cross_entropy(name, node))
+                        else:
+                            return cost_function(c_name, binary_cross_entropy(name, node))
+                print("ERROR:Found placeholder,but the sizes are all negatives.")
+                return cost_function(c_name, categorical_cross_entropy(name, node))
+            elif inp.get_op() in nodes.handler.entitiesHandler.intermediate_operations:
+                print("inp in ",inp.get_name())
+                for inp_ in inp.get_inputs():
+                    new_tmp.append(inp_)
+        outer_inputs=new_tmp
+        new_tmp=[]
+    return ""
 
 def handle_flatten(node,name):
     return flatten_layer(node,name)

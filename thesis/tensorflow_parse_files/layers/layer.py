@@ -139,11 +139,13 @@ class layer:
                     #Case of already added from above case
                     if layer_obj.name not in self.previous_layer:
                         self.previous_layer.append(layer_obj.name)
-                        if layers[layer_obj.name].node.get_op() == 'Placeholder':
+                        #if layers[layer_obj.name].node.get_op() == 'Placeholder':
+                        if layer_obj.node.get_op() == 'Placeholder':
                             self.is_input = True
                             self.placeholder=layer_obj.name
+                        print("Layer is ",layer,"----",layer_obj.name)
                         nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
-                            layer_obj.name].next_layer.append(self.name)
+                            layer].next_layer.append(self.name)
                         print("1)NODE:", self.node.get_name(), "\nPL:", self.previous_layer, "\nLAY:", layer, "\nNL:",
                               nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
                                   layer].next_layer)

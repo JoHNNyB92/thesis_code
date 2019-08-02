@@ -158,7 +158,8 @@ def find_epoch_size(line_list,file_path):
                     #new_line_list=new_line_list[:-1]+[close_]+new_line_list[-1:]
                     new_line_list = new_line_list[:-1] + [close_] + new_line_list[-1:]
                     close_=""
-
+        if found_run==True and multiple_line_comm==False:
+            found_run=False
         if ".run" in line:
             if multiple_line_comm==False:
                 num_of_space = len(line) - len(line.lstrip(' '))
@@ -175,11 +176,13 @@ def find_epoch_size(line_list,file_path):
                 found_run = True
                 before_sess_run = multiple_line_sentence_counter
                 print("2222222222BEFORE ADDING=", new_line_list[before_sess_run])
-        elif found_run==True and done_with_continuous==False:
-            line_of_sess_run+=line
-            print("Continuous line for sess run ", line_of_sess_run)
-        if "feed_dict" in line:
-            found_model_line = 1
+        if found_run==True:
+            if done_with_continuous==False:
+                line_of_sess_run+=line
+                print("Continuous line for sess run ", line_of_sess_run)
+            if "feed_dict" in line:
+                print("FOUND LILBIGMAN ",line)
+                found_model_line = 1
         if found_model_line == 1:
             if (line.replace("\n", "").endswith(')')== True or "}" in line):
                 line_of_sess_run=line_of_sess_run.replace("\n", "").replace(" ", "")
@@ -304,11 +307,19 @@ def find_number_of_fors(ind_,line_list):
     ret_for_ind=None
     first_time=True
     session_for=0
-    previous_for=0
+    fors_list_len=[]
     for ind,line in enumerate(line_list):
-        if ind<ind_:
-            #print("DEBUG in forsssssssssssss=",line)
+        if ind<=ind_:
+            print("DEBUG in forsssssssssssss=",line)
             num_of_space = len(line) - len(line.lstrip(' '))
+            if fors_list_len!=[]:
+                print("KAKAKAKAKAKAKAKAKAKAKAKAKLINE: ",num_of_space," Previous: ",fors_list_len[-1])
+
+            if fors_list_len!=[] and num_of_space<=fors_list_len[-1] and line.isspace()==False:
+                print("REDUCING FOR=", session_for)
+                del fors_list_len[-1]
+                session_for -= 1
+                print("REDUCING FOR=", session_for)
             if num_of_space <= for_space and line.isspace()==False and first_time==False:
                 print("DEBUG:Find:Exited for = ", line,' __num_of_space= ',num_of_space," ____for_space= ",for_space)
                 first_time = True
@@ -318,7 +329,7 @@ def find_number_of_fors(ind_,line_list):
                 for_space=-1
                 session_for = 0
             if line.replace(" ","").startswith("for")==True:
-                print("DEBUG FIRST TIME IS ", first_time," num_of_space=",num_of_space," for_space=",for_space," matters=",session_for)
+                print(line," - DEBUG FIRST TIME IS ", first_time," num_of_space=",num_of_space," for_space=",for_space," matters=",session_for)
                 print("File=",line)
                 if first_time==True:
                     print("DEBUG:Find:Line with first time for is=",line)
@@ -326,15 +337,20 @@ def find_number_of_fors(ind_,line_list):
                     ret_for_space=num_of_space
                     for_space=ret_for_space
                     ret_for_ind=ind
+                    fors_list_len=[]
                     session_for=0
-                    previous_for=-1
                     print("DEBUG:Find:Line with num_of_spaces=", ret_for_space)
-                if num_of_space>previous_for:
-                    previous_for=num_of_space
+                if fors_list_len==[] or num_of_space>fors_list_len[-1]:
+                    print("INCREASING FOR=", session_for)
+                    fors_list_len.append(num_of_space)
+                    print("HOORAY=",fors_list_len[-1])
                     session_for+=1
-                elif num_of_space<previous_for:
+                    print("INCREASING FOR=", session_for)
+                elif num_of_space<fors_list_len[-1]:
+                    print("REDUCING FOR=",session_for)
+                    del fors_list_len[-1]
                     session_for -= 1
-                    previous_for=num_of_space
+                    print("REDUCING FOR=", session_for)
                 for_counter+=1
         else:
             break
@@ -455,19 +471,6 @@ def create_new_file(line_list,path,file,tf_run_app):
             new_line_list.append(min_space*" "+elem)
     os.chdir(current_folder)
     return new_line_list
-
-def get_model_name(line):
-    model_var = line.split(".")[0]
-    return model_var
-
-
-def model_find(path):
-    for line in reversed(list(open(path))):
-            if '.run' in line:
-                model_variable=get_model_name(line)
-                print("Model name is ",model_variable)
-                model_find(model_variable)
-
 
 def create_code_for_pbtxt_and_tensorboard(path,file):
     backwards_dir = ""

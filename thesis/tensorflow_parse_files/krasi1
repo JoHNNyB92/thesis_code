@@ -1,0 +1,74 @@
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/TensorFlow-Examples.git  already exists
+ERROR:Folder  ..\git_repositories_temp/TensorFlow-Examples.git  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/TensorFlow-Examples.git
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/test_repository  already exists
+ERROR:Folder  ..\git_repositories_temp/test_repository  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/test_repository
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/tensorflow_tutorials.git  already exists
+ERROR:Folder  ..\git_repositories_temp/tensorflow_tutorials.git  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/tensorflow_tutorials.git
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/domain-transfer-network.git  already exists
+ERROR:Folder  ..\git_repositories_temp/domain-transfer-network.git  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/domain-transfer-network.git
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/srgan.git  already exists
+ERROR:Folder  ..\git_repositories_temp/srgan.git  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/srgan.git
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/write-rnn-tensorflow.git  already exists
+ERROR:Folder  ..\git_repositories_temp/write-rnn-tensorflow.git  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/write-rnn-tensorflow.git
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/cnn-text-classification-tf-master  already exists
+ERROR:Folder  ..\git_repositories_temp/cnn-text-classification-tf-master  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/cnn-text-classification-tf-master
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/GRU  already exists
+ERROR:Folder  ..\git_repositories_temp/GRU  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/GRU
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/TensorFlow-Autoencoders-master  already exists
+ERROR:Folder  ..\git_repositories_temp/TensorFlow-Autoencoders-master  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/TensorFlow-Autoencoders-master
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/temp_folder  already exists
+ERROR:Folder  ..\git_repositories_temp/temp_folder  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/temp_folder
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/simple_file  already exists
+ERROR:Folder  ..\git_repositories_temp/simple_file  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/simple_file
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/test_repository_splitted_1  already exists
+ERROR:Folder  ..\git_repositories_temp/test_repository_splitted_1  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/test_repository_splitted_1
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/test_repository_splitted_2  already exists
+ERROR:Folder  ..\git_repositories_temp/test_repository_splitted_2  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/test_repository_splitted_2
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/test_repository_splitted_3  already exists
+ERROR:Folder  ..\git_repositories_temp/test_repository_splitted_3  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/test_repository_splitted_3
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/test_repository_splitted_4  already exists
+ERROR:Folder  ..\git_repositories_temp/test_repository_splitted_4  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/test_repository_splitted_4
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/test_repository_splitted_5  already exists
+ERROR:Folder  ..\git_repositories_temp/test_repository_splitted_5  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/test_repository_splitted_5
+LOGGING:Directory  ..\..\git_repositories_temp  already exists
+LOGGING:Directory  ..\..\git_repositories_temp/test_repository_splitted_7  already exists
+ERROR:Folder  ..\git_repositories_temp/test_repository_splitted_7  already contains a repository.
+LOGGING:About to start processing repository into  ..\git_repositories_temp/test_repository_splitted_7
+..\git_repositories_temp\test_repository_splitted_7\s\my_txtutils.py
+..\git_repositories_temp\test_repository_splitted_7\s\rnn_play.py
+..\git_repositories_temp\test_repository_splitted_7\s\rnn_train.py
+..\git_repositories_temp\test_repository_splitted_7\s\rnn_train_steteistuple.py
+..\git_repositories_temp\test_repository_splitted_7\s\tests.py
+[['s', 'my_txtutils'], ['s', 'rnn_play'], ['s', 'rnn_train'], ['s', 'rnn_train_steteistuple'], ['s', 'tests']]

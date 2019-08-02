@@ -253,12 +253,14 @@ def update_inner_epochs(sessions):
     ret_sessions=sessions.copy()
     for sess in sessions.keys():
         co_train=""
+        print("SESS IS ",sess)
         found_co_train = False
         for step in sessions[sess].steps:
             if co_train in step.name:
                 found_co_train=True
                 break
         if found_co_train==True:
+            print("ret sessions=",ret_sessions)
             new_steps=divide_epochs(sessions[sess].steps,sessions[sess].session_epoch)
             ret_sessions[sess].steps=new_steps
     return ret_sessions

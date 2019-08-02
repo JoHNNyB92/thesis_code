@@ -13,6 +13,7 @@ def code_in_one_file(file,subdir):
     result=""
     handler_entities=""
     if str(file).endswith('.py'):
+        print("Opening ",str(file))
         with open(file, encoding="utf8", errors='replace') as myfile:
             has_sess = False
             has_run=False
@@ -93,7 +94,8 @@ def find_imports(toCheck):
     in if/else or try/except blocks will always be included.
     """
     importedItems = []
-    with open(toCheck, 'r') as pyFile:
+    print("To Check : ",toCheck)
+    with open(toCheck, 'r',encoding="utf8") as pyFile:
         for line in pyFile:
             # ignore comments
             if "import " in line:
@@ -178,7 +180,7 @@ with open('github/github.csv') as csv_file:
         main_files=[]
         function_files=[]
         file_import_dict={}
-        if "..\git_repositories_temp/test_repository_splitted_4" in code_repository:
+        if "..\git_repositories_temp/test_repository_splitted_7" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -213,12 +215,14 @@ with open('github/github.csv') as csv_file:
                                 break
                     function_files.append(str(trans[t_key]))
                     import_paths.append(str(trans[t_key]))
-                print("Path is = ",import_paths)
+                print("Imported files are  = ",import_paths)
                 file_import_dict[str(path)] = import_paths
                 print("file_import_dict[",str(path),"]=",file_import_dict[str(path)])
             pathlist = Path(code_repository).glob('**/*.py')
+            print("Bitch pathlist is =",pathlist)
+            print("Functions are = ",function_files)
             for path in pathlist:
-                if str(path) not in function_files and "__init__" not in str(path) and "11_" in str(path):
+                if str(path) not in function_files and "__init__" not in str(path):#and "11_" in str(path):
                     used_files=file_import_dict[str(path)]
                     print(used_files)
                     project_structure=[]
