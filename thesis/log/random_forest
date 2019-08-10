@@ -1,3 +1,0 @@
-VirtuosoWrapper:Function to insert new init_data with name random_forest
-VirtuosoWrapper:Function to insert new init network with name random_forest_net
-VirtuosoWrapper:Function to insert new init evaluation with name random_forest_eval:random_forest_net
