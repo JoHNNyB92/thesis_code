@@ -180,7 +180,7 @@ with open('github/github.csv') as csv_file:
         main_files=[]
         function_files=[]
         file_import_dict={}
-        if "..\git_repositories_temp/test_repository_splitted_7" in code_repository:
+        if "..\git_repositories_temp/test_repository_splitted_5" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -241,6 +241,7 @@ with open('github/github.csv') as csv_file:
 
                     print("Files include in main file ",path," are ",project_structure)
                     (result,found_network,handler_entities,produced_files)=code_in_one_file(str(path),subdir)
+                    print("Produced files are =", produced_files)
                     produced_files=[m for m in produced_files if "sEssIOn" in m]
                     print("Produced files are =",produced_files)
                     if found_network == True:
@@ -249,9 +250,9 @@ with open('github/github.csv') as csv_file:
                         pathlistBatch = Path(code_repository).glob("**/*.batch")
                         pathListSession=Path(code_repository).glob("**/*.total_session")
                         timeList=[]
-                        pathlistInfo=check_lists(pathlistInfo,'.info',produced_files,1)
+                        pathlistInfo=check_lists(pathlistInfo,'.info',produced_files)
                         pathlistLine = check_lists(pathlistLine, '.lines', produced_files)
-                        pathListSession = check_lists(pathListSession, '.total_session', produced_files)
+                        pathListSession = check_lists(pathListSession, '.total_session', produced_files,1)
                         pathlistBatch = check_lists(pathlistBatch, '.batch', produced_files)
                         print("KALEMIA=",pathlistBatch)
                         print("KALEMIA2=", pathListSession)

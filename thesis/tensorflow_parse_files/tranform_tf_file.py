@@ -177,7 +177,8 @@ def find_epoch_size(line_list,file_path):
                 before_sess_run = multiple_line_sentence_counter
                 print("2222222222BEFORE ADDING=", new_line_list[before_sess_run])
         if found_run==True:
-            if done_with_continuous==False:
+            if done_with_continuous==False and line not in line_of_sess_run:
+                print("LINE MALAKA GINAME=",line)
                 line_of_sess_run+=line
                 print("Continuous line for sess run ", line_of_sess_run)
             if "feed_dict" in line:
@@ -186,6 +187,7 @@ def find_epoch_size(line_list,file_path):
         if found_model_line == 1:
             if (line.replace("\n", "").endswith(')')== True or "}" in line):
                 line_of_sess_run=line_of_sess_run.replace("\n", "").replace(" ", "")
+                print(":SKARMOUTSOS:=",line_of_sess_run)
                 line_list_for_feed = handle_feed_dict(line_of_sess_run, num_of_space)
                 if ind_+1 >=len(line_list) or line_list[ind_ + 1][0].replace(" ","") != ".":
                     added_lines = len(new_line_list) - ind_-1
@@ -202,6 +204,7 @@ def find_epoch_size(line_list,file_path):
                         (number_of_fors,session_for_ind,first_for_space,session_fors)=find_number_of_fors(temp_ind,new_line_list)
                     no_rep=False
                     print("thelw na skasw =",line_of_sess_run ,"-",session_fors)
+                    temp_ind=before_sess_run-1
                     while end_loop(for_counter,new_line_list[temp_ind],number_of_fors,found_total_session) ==False and no_rep==False:
                         if "feed_dict" in new_line_list[temp_ind] and num_of_space!=prev_line_space:
                             is_co_train=True
@@ -288,7 +291,6 @@ def find_epoch_size(line_list,file_path):
                                       before_sess_run,num_of_space,files_added)
                     print("POUSTH5=", new_line_list[before_sess_run])
                     print("PRODUCED FILE ADDED ",prod_file)
-
                     produced_files.append(prod_file)
                     print("=",produced_files)
                     found_sess=True
