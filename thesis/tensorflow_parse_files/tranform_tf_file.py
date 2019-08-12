@@ -376,7 +376,11 @@ def handle_feed_dict(line,num_of_space):
     if "feed_dict=" not in line.replace(" ",""):
         feed_dict=line.replace(" ", "").split(",")[-1].replace(")","")
     else:
-        feed_dict=line.split("feed_dict=")[1].split("}")[0].replace(" ","")+"}"
+        feed_dict = line.split("feed_dict=")[1]
+        if "}" in feed_dict:
+            feed_dict=feed_dict.split("}")[0].replace(" ","")+"}"
+        else:
+            feed_dict=feed_dict.replace(")","")
     print("FEED DICT=",feed_dict)
     before_list=[]
     before_list.append((num_of_space) * " " + "mYFiLe = open('FILE', 'w')\n")

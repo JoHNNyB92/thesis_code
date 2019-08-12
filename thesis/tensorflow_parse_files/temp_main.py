@@ -180,7 +180,7 @@ with open('github/github.csv') as csv_file:
         main_files=[]
         function_files=[]
         file_import_dict={}
-        if "..\git_repositories_temp/test_repository_splitted_10" in code_repository:
+        if "..\git_repositories_temp/test_repository_splitted_1" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
