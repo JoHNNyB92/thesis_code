@@ -104,12 +104,13 @@ class layer:
 
     def find_input_layer(self,input_node):
         layers=nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer
-        print("FINDING INPUT LAYER FOR ",self.name)
-        print("INPUT NODES ARE ",self.input)
+        print("LOGGING:FINDING INPUT LAYER FOR ",self.name)
+        print("LOGGING:INPUT NODES ARE ",self.input)
+        print("LOGGING:OUTPUT NODES ARE ", self.output_nodes)
         for input_name in set(self.input):
             if input_name!=self.name:
                 if input_name in layers.keys() and input_name!=self.name :
-                    #print("Immediate connection found between ", input_name, " and ", self.name)
+                    print("Immediate connection found between ", input_name, " and ", self.name)
                     input_node=nodes.handler.entitiesHandler.node_map[input_name]
                     self.previous_layer.append(input_node.get_name())
                     if input_node.get_op()=='Placeholder':
@@ -120,9 +121,12 @@ class layer:
         for layer in layers.keys():
             layer_obj = layers[layer]
             elems_in_both_lists = set(layer_obj.output_nodes) & set(self.input)
-            #print("Check if output of ",layer_obj.name," and ",self.name," input have common elements.The result is ",elems_in_both_lists)
-            if layer_obj.name!= self.name and (self.name in layer_obj.output_nodes or  len(elems_in_both_lists)!=0):
+            print("Check if output of ",layer_obj.name," and ",self.name," input have common elements.The result is ",elems_in_both_lists)
+            if layer_obj.name != self.name and (self.name in layer_obj.output_nodes or len(elems_in_both_lists) != 0):
+            #if layer_obj.name != self.name and all(x in self.name.split("/") for elem in layer_obj.output_nodes for x in elem.split("/") or len(elems_in_both_lists) != 0):
+            #if layer_obj.name!= self.name and (self.name in layer_obj.output_nodes or  len(elems_in_both_lists)!=0):
                 found_in_other_layer=False
+                '''
                 for elem in elems_in_both_lists:
                     if elem in layer_obj.output_intermediate_nodes:
                         temp=layer_obj.output_intermediate_nodes[elem]
@@ -135,6 +139,7 @@ class layer:
                                 temp=layer_obj.output_intermediate_nodes[temp]
                             else:
                                 temp=""
+                '''
                 if found_in_other_layer==False:
                     #Case of already added from above case
                     if layer_obj.name not in self.previous_layer:
@@ -222,19 +227,42 @@ class layer:
                         if res != 0:
                             found = False
                             input = nm[node].get_inputs()
-                            #print("1:START SEARCHING FOR=", node)
                             while found == False:
                                 temp_in = []
                                 for elem_in in input:
                                     #print("2:START SEARCHING FOR=", elem_in.get_name())
+                                    if "rnn/transpose" in elem_in.get_name():
+                                        print("PERIGELOS:",elem_in.get_name(),"---",elem_in.get_op())
                                     if elem_in.get_op() in nodes.handler.entitiesHandler.intermediate_operations:
                                         for elem_in_in in nm[elem_in.get_name()].get_inputs():
                                             temp_in.append(elem_in_in)
                                     else:
+                                        if "rnn" in self.name:
+                                            print("PERIGELOS2:Adding:",nm[node].get_name(),"----",nm[node].get_op())
+                                        if nm[node].get_op() in nodes.handler.entitiesHandler.intermediate_operations:
+                                            tmp_=[]
+                                            inputs=[node]
+                                            while inputs != []:
+                                                for node_ in nm.keys():
+                                                    for elem in inputs:
+                                                        if nm[node_].search_inputs(elem)==True:
+                                                            print("NODE_:",node_,"---","ELEM=",elem)
+                                                            if nm[node_].get_op() in nodes.handler.entitiesHandler.intermediate_operations:
+                                                                print("1:",node_)
+                                                                tmp_.append(node_)
+                                                            else:
+                                                                print("2:", node_)
+                                                                self.input.append(node_)
+                                                inputs=tmp_
+                                                print("---------------------------")
+                                                print("TMP_ ARE",tmp_)
+                                                print("INPUTS ARE", inputs)
+                                        else:
+                                            self.input.append(node)
                                         found = True
-                                        self.input.append(node)
                                         break
                                 input = temp_in
+
 
     def find_output_node_complex(self):
         for name in nodes.handler.entitiesHandler.node_map.keys():

@@ -296,7 +296,6 @@ class handle_entities:
                             print("Epoch is ",step.epoch)
                             epoch=step.epoch
                             for ind,input in enumerate(step.inputs):
-
                                 for inp_ in self.data.annConfiguration.networks[n_name].input_layer:
                                     print("1INPUT LAYERS=", " ----- ",
                                           input)
@@ -307,7 +306,6 @@ class handle_entities:
                                         batch=step.batches[ind]
                                         optKey=key
         IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name], "train")
-        #print("LOCO=",optimizer[key].name)
         primary_tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,[optimizer[optKey].name],epoch,batch,"")
         tr_session=handler_functions.handle_training_session(part_name+"_training_session",[],primary_tr_step)
         tr_strategy=handler_functions.handle_training_strategy(part_name+"_training_strategy",[tr_session],tr_model)
@@ -531,14 +529,26 @@ class handle_entities:
             gradient=""
             print("Start searching for ",optimizer)
             for name in self.node_map.keys():
-                if name.startswith(optimizer+"/"):
+                enter=False
+                for partName in name.split("/"):
+                    if optimizer==partName:
+                        enter=True
+                        break
+                if enter==True:
                     for input in self.node_map[name].get_inputs():
                         #Try to match the optimizer with input that contain gradient word.This will lead us to a layer that we can afterwards
                         #assume that the optimizer is connected with the respective network.
-                        if input.get_name().startswith("gradient"):
+                        #if input.get_name().startswith("gradient"):
+                        if "gradients" in input.get_name():
                             print(name,"---",input.get_name())
-                            print("LOGGING:Successfuly matched optimizer to gradient. Information:\nOptimizer=",optimizer,"\nGradient=",input.get_name().split("/")[0])
-                            gradient=input.get_name().split("/")[0]
+                            gradientList=input.get_name().split("/")
+                            for elem in gradientList:
+                                gradient = gradient + elem+"/"
+                                if "gradients" in elem:
+                                    break
+                            gradient=gradient[:-1]
+                            #gradient = input.get_name().split("/")[0]
+                            print("LOGGING:Successfuly matched optimizer to gradient. Information:\nOptimizer=",optimizer,"\nGradient=",gradient)
                             found_gradient=True
                             break
                 if found_gradient==True:
@@ -725,10 +735,11 @@ class handle_entities:
 
     def remove_unused_optimizers(self,sessions,opl):
         tmp_opl=opl.copy()
-        ret_session=sessions.copy()
         for sess in sessions.keys():
+            print("ELENA:",sess)
             for trStep in sessions[sess].steps:
                 for optimizer in trStep.optimizer:
+                    print("ELENA:Optimizer is ",optimizer)
                     if optimizer in tmp_opl.keys():
                         print("DELETING ",optimizer)
                         del tmp_opl[optimizer]
@@ -736,6 +747,7 @@ class handle_entities:
             del opl[key]
             print("ERROR:DELETED OPTIMIZER NOT FOUND IN FILE TRAINING ",key)
         for optimizer in opl.keys():
+            print("ELENAKOURTH:ABOUT TO INSERT OPTIMIZER TO ANNETTO ",optimizer)
             self.data.annConfiguration.networks[self.current_network].optimizer[optimizer].insert_in_annetto()
         return opl
 

@@ -5,7 +5,6 @@ import os
 import ntpath
 import sys
 import github.github as github
-from sklearn.utils.bench import total_seconds
 
 
 def execute_file(new_file,new_line_list,path_to_folder):
@@ -122,7 +121,7 @@ def find_epoch_size(line_list,file_path):
     for ind_,line in enumerate(line_list):
         new_line_list.append(line)
         line_space=len(line) - len(line.lstrip(' '))
-        if line.isspace() == True:
+        if line.isspace() == True or line.replace(" ","").startswith("#")==True:
             continue
         if (line.replace(" ","").endswith("\\") or line.count("(")!=line.count(")")) and multiple_line_comm==False:
             multiple_line_comm=True
@@ -366,7 +365,7 @@ def handle_feed_dict(line,num_of_space):
     if "feed_dict=" not in line.replace(" ",""):
         feed_dict=line.replace(" ", "").split(",")[-1].replace(")","")
     else:
-        feed_dict=line.split("feed_dict=")[1].split(")")[0].replace(" ","")
+        feed_dict=line.split("feed_dict=")[1].split("}")[0].replace(" ","")+"}"
     print("FEED DICT=",feed_dict)
     before_list=[]
     before_list.append((num_of_space) * " " + "mYFiLe = open('FILE', 'w')\n")
@@ -434,7 +433,10 @@ def create_new_file(line_list,path,file,tf_run_app):
         last_ind=0
         spaces_to_use=0
         only_once=False
+        found_import_tf=False
         for ind, line in enumerate(line_list):
+            if "import" in line and "tensorflow" in line:
+                found_import_tf=True
             if "def main" in line:
                 main_func.append(line)
                 found_def_main=True
@@ -443,12 +445,16 @@ def create_new_file(line_list,path,file,tf_run_app):
                 if only_once==False:
                     only_once=True
                     spaces_to_use=len(line) - len(line.lstrip(' '))
-                if (len(line) - len(line.lstrip(' ')))>spaces:
+                if (len(line) - len(line.lstrip(' ')))>spaces or line.isspace()==True:
                     main_func.append(line)
                 else:
                     last_ind=ind
-                    for line_ in return_list[1:]:
-                        main_func.append(str(spaces_to_use*" "+line_))
+                    if found_import_tf==True:
+                        for line_ in return_list[2:]:
+                            main_func.append(str(spaces_to_use*" "+line_))
+                    else:
+                        for line_ in return_list[1:]:
+                            main_func.append(str(spaces_to_use*" "+line_))
                     break
             else:
                 new_line_list.append(line)

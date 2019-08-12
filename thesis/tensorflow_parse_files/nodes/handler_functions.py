@@ -126,13 +126,12 @@ def handle_sigmoid_entropy(node,c_name,name):
     return cost_function(c_name, categorical_cross_entropy(name, node,True))
 
 def handle_cross_entropy(node,name,c_name):
-    tmp=node.get_inputs()
     new_tmp=[]
     nm = nodes.handler.entitiesHandler.node_map
     outer_inputs=[]
     print("On name its=",name)
     for node_name in nodes.handler.entitiesHandler.node_map.keys():
-        if name in node_name.split("/") and 'gradients' not in node_name:
+        if (name in node_name.split("/") or all(x in node_name.split("/")) for x in name.split("/")) and 'gradients' not in node_name:
             for inp in nm[node_name].get_inputs():
                 if name not in inp.get_name():
                     outer_inputs.append(inp)

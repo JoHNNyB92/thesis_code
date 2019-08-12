@@ -1,26 +1,31 @@
 from generated_files_classes.file_tr_step import file_tr_step
 from generated_files_classes.file_training_session import file_training_session
+import types
+
 
 def get_output_networks(sess_run):
+    network_list = []
+    if "sess.run" not in sess_run:
+        optimizer=sess_run.split(".")[0].replace("-","")
+        print("FUCCCCCCCCCCCCCCCCC=",optimizer)
+        network_list.append(optimizer)
+        return network_list
     print("0=",sess_run)
     print("1=",sess_run.split('sess.run('))
+    if 'fetches=' in sess_run.replace(" ",""):
+        sess_run=sess_run.replace("fetches=","")
     print("2=",sess_run.split('sess.run(')[1].split(","))
     comma_separated=sess_run.replace(" ","").split('sess.run(')[1].split(",")
     complex=False
-    complex_start=False
-    complex_end=False
-    network_list = []
     for elem in comma_separated:
         if elem.count("[")!=elem.count("]"):
             complex=True
             if elem.count("[") > elem.count("]"):
-                complex_start=True
                 network_list.append(elem[1:])
             if elem.count("[") < elem.count("]"):
-                complex_end=True
                 network_list.append(elem[:-1])
     if complex==True:
-        print("ZOGRAFAKI:Networks List=",network_list)
+        print(":Networks List=",network_list)
     else:
         networks = sess_run.split('sess.run(')[1].split(",")[0].replace(" ", "")
         network_list.append(networks.split(",")[0])
@@ -109,7 +114,6 @@ def search_feed_dict(feed_dict,key,value,inputs):
             outer_var=input.split("[")[0]
         else:
             n_input=input
-        #print("EVAZOGR=",n_input)
         #print("KEY=",key)
         if outer_var!="":
             if outer_var==key:
@@ -125,6 +129,11 @@ def handle_info(content,networks,feed_dict):
     loss=[]
     optimizer=[]
     inputs=[]
+    new_networks=[]
+    for network in networks:
+        if "." in network:
+            temp=network.split(".")
+            new_networks.append(temp)
     for element in dict:
         value=""
         try:
@@ -133,13 +142,20 @@ def handle_info(content,networks,feed_dict):
             continue
         key = element.split("VALUE:")[0].split("KEY:")[1]
         for network in networks:
-            print("ZOGRAFAKI:Network=",network)
-            if network==key:
-                print("KEY=",key,"-",network)
+            n_network=network
+            if isinstance(network, list):
+                import sys
+                print("ERROR:Unable to handle objects that refer are class members")
+                sys.exit()
+            print(":Network=",network)
+            if n_network==key:
+                print("KEY=",key,"-",n_network)
                 (case,n_value)=handle_network_var(value)
                 if case=="L":
                     loss.append(n_value)
                 elif case=="O":
+                    if "/" in n_value:
+                        n_value=n_value.split("/")[-1]
                     optimizer.append(n_value)
                 else:
                     for key in n_value.keys():
@@ -148,7 +164,6 @@ def handle_info(content,networks,feed_dict):
                                 loss.append(elem)
                             else:
                                 optimizer.append(elem)
-
                 break
         if str(type(feed_dict))=="<class 'list'>":
             inputs=search_feed_dict(feed_dict,key,value,inputs)
@@ -182,6 +197,11 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
                 with open(str(file), 'r') as content_file:
                     content = content_file.read()
                     (feed_dict,networks,epoch)=handle_lines(content)
+                    print("LOGGING:-----------------------------------------------")
+                    print("LOGGING:Found information from handling produced files")
+                    print("LOGGING:Feed Dict:",feed_dict)
+                    print("LOGGING:Networks:",networks)
+                    print("LOGGING:-----------------------------------------------")
                 new_file_training=file_tr_step()
                 step_name=str(file).replace(".lines","")
                 new_file_training.name=str(step_name)
