@@ -121,7 +121,7 @@ class layer:
         for layer in layers.keys():
             layer_obj = layers[layer]
             elems_in_both_lists = set(layer_obj.output_nodes) & set(self.input)
-            print("Check if output of ",layer_obj.name," and ",self.name," input have common elements.The result is ",elems_in_both_lists)
+            #print("Check if output of ",layer_obj.name," and ",self.name," input have common elements.The result is ",elems_in_both_lists)
             if layer_obj.name != self.name and (self.name in layer_obj.output_nodes or len(elems_in_both_lists) != 0):
             #if layer_obj.name != self.name and all(x in self.name.split("/") for elem in layer_obj.output_nodes for x in elem.split("/") or len(elems_in_both_lists) != 0):
             #if layer_obj.name!= self.name and (self.name in layer_obj.output_nodes or  len(elems_in_both_lists)!=0):
@@ -148,7 +148,7 @@ class layer:
                         if layer_obj.node.get_op() == 'Placeholder':
                             self.is_input = True
                             self.placeholder=layer_obj.name
-                        print("Layer is ",layer,"----",layer_obj.name)
+                        #print("Layer is ",layer,"----",layer_obj.name)
                         nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
                             layer].next_layer.append(self.name)
                         print("1)NODE:", self.node.get_name(), "\nPL:", self.previous_layer, "\nLAY:", layer, "\nNL:",

@@ -309,10 +309,17 @@ def find_number_of_fors(ind_,line_list):
     first_time=True
     session_for=0
     fors_list_len=[]
+    prev_num=-1
+    prev_ind=-1
     for ind,line in enumerate(line_list):
         if ind<=ind_:
             print("DEBUG in forsssssssssssss=",line)
             num_of_space = len(line) - len(line.lstrip(' '))
+            tmp_line=line.replace(" ","")
+            #maybe need fix,covers only with/if case.
+            if tmp_line.startswith("if") or tmp_line.startswith("with"):
+                prev_num=num_of_space
+                prev_ind=ind-1
             if fors_list_len!=[]:
                 print("KAKAKAKAKAKAKAKAKAKAKAKAKLINE: ",num_of_space," Previous: ",fors_list_len[-1])
 
@@ -355,6 +362,10 @@ def find_number_of_fors(ind_,line_list):
                 for_counter+=1
         else:
             break
+    if ret_for_ind==None:
+        print("LOGGING:Returning index for first for is none,no for presented.Line is ",line_list[prev_ind])
+        ret_for_space=prev_num
+        ret_for_ind=prev_ind
     print("DEBUG RETURNING=IND",ret_for_ind," For_counter=",for_counter," ret_for_space=",ret_for_space," session that matters ",session_for)
     return (for_counter,ret_for_ind,ret_for_space,session_for)
 
