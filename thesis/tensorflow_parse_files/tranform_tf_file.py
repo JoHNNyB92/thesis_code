@@ -206,6 +206,7 @@ def find_epoch_size(line_list,file_path):
                     no_rep=False
                     print("thelw na skasw =",line_of_sess_run ,"-",session_fors)
                     temp_ind=before_sess_run-1
+                    print("line is the following ",new_line_list[temp_ind])
                     while end_loop(for_counter,new_line_list[temp_ind],number_of_fors,found_total_session) ==False and no_rep==False:
                         if "feed_dict" in new_line_list[temp_ind] and num_of_space!=prev_line_space:
                             is_co_train=True
