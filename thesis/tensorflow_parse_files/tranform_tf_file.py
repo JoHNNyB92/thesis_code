@@ -192,6 +192,8 @@ def find_epoch_size(line_list,file_path):
                     added_lines = len(new_line_list) - ind_-1
                     temp_ind = ind_ + added_lines
                     prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                    #before_sess_run
+                    #prev_line_space = len(new_line_list[before_sess_run]) - len(new_line_list[before_sess_run].lstrip(' '))
                     is_co_train=False
                     session_counter+=1
                     for_counter=0
@@ -221,28 +223,24 @@ def find_epoch_size(line_list,file_path):
                             print("re file=", files_replace, " ", new_line_list[temp_ind])
                         print("session_fors=",session_fors)
                         if session_fors == 0:
-                            print("ARXIDOKAMPOS")
                             if "total_session_abc=open" in new_line_list[temp_ind - 1].replace(" ","") or found_total_session==False:
                                 first_time = True
-                                print("NOREP=")
                                 no_rep = True
-                                print("1POUTANES=", new_line_list[temp_ind])
-                                write_space = first_for_space #len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                                print("1WRITE SPACE =", write_space)
+                                write_space = first_for_space
                                 write_ind = session_for_ind+1
+                                print("LOGGING:1:Line to be inserted before ", new_line_list[write_ind])
                         elif new_line_list[temp_ind].replace(" ", "").startswith("for"):
-                            print("3ELENHLINE=",new_line_list[temp_ind]+"---",for_counter)
                             for_counter += 1
-                            if num_of_space > prev_line_space and first_time==False:
+                            for_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                            print("num_of_space=",num_of_space,"for_space=",for_space,"first_time=",first_time)
+                            if num_of_space > for_space and first_time==False:
                                 first_time=True
                                 if found_total_session==False:
                                     write_ind = temp_ind+1
                                 else:
                                     write_ind = temp_ind
-                                print("2POUTANES=",new_line_list[temp_ind])
-                                print("2")
+                                print("LOGGING:2:Line to write the lines for finding number of sessions",new_line_list[write_ind])
                                 write_space = len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                                print("2WRITE SPACE =", write_space)
                         temp_ind-=1
                         prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
                     if found_total_session==False:
