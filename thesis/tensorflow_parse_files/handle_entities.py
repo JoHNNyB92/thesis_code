@@ -61,7 +61,12 @@ class handle_entities:
         tmp_name = ""
         print("NAME=",name)
         for x in tmp:
-            if x in case :
+            end=False
+            for cs in case:
+                if cs in x:
+                    end=True
+                    break
+            if end==True :
                 tmp_name = tmp_name + "/" + x
                 break
             else:
