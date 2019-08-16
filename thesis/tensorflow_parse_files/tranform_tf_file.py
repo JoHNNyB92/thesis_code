@@ -24,9 +24,9 @@ def execute_file(new_file,new_line_list,path_to_folder):
     except subprocess.CalledProcessError as e:
         return "error"
 
-def handle_imported_files(proj):
+def handle_imported_files(proj,prod_files):
     print("LOGGING:Started searching for project included files")
-    produced_files=[]
+
     for path in proj:
         line_list=[]
         for line in open(path, errors="replace"):
@@ -36,8 +36,8 @@ def handle_imported_files(proj):
         (new_line_list,found,produced_files_one_file)=find_epoch_size(line_list,str(path))
 
         for produced_file in produced_files_one_file:
-            produced_files.append(produced_file)
-        print("PRODUCED FILES MADAFAKA ARE =",produced_files)
+            prod_files.append(produced_file)
+        print("PRODUCED FILES MADAFAKA ARE =",prod_files)
         import ntpath
         real_path=ntpath.basename(str(path))
         if found==True:
@@ -47,8 +47,8 @@ def handle_imported_files(proj):
                 f.write(elem)
             f.close()
         os.chdir(str(dir_))
-    print("MADAFAKA RETURNING ",produced_files)
-    return produced_files
+    print("MADAFAKA RETURNING ",prod_files)
+    return prod_files
 
 def parse_file(path,tf_run_app,proj):
     path_to_folder=os.path.dirname(path)
@@ -60,9 +60,9 @@ def parse_file(path,tf_run_app,proj):
     new_line_list=create_new_file(line_list,path,file,tf_run_app)
     dir_ = os.getcwd()
     os.chdir(os.path.dirname(str(path)))
-    #(new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
+    (new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
     os.chdir(str(dir_))
-    produced_files=handle_imported_files(proj)
+    produced_files=handle_imported_files(proj,produced_files)
     result=execute_file(new_file,new_line_list,path_to_folder)
     if result=="error":
         print("ERROR:File contains inner error,cannot execute it.")
