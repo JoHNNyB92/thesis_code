@@ -227,6 +227,7 @@ class handle_entities:
             nodeReturn= handler_functions.handle_accuracy(self.node_map[e])
             if nodeReturn!=None:
                 self.data.evaluationResult.metric=nodeReturn
+                self.data.evaluationResult.network=self.current_network
             else:
                 print("LOGGING: Equal not metric.")
         elif "flatten" in e :
@@ -311,8 +312,8 @@ class handle_entities:
         tr_strategy=handler_functions.handle_training_strategy(part_name+"_training_strategy",[tr_session],tr_model)
         self.data.evaluationResult.train_strategy=tr_strategy
         self.data.annConfiguration.training_strategy[tr_strategy.name]=tr_strategy
-        self.insert_to_evaluation_pipe(n_name)
         del self.data.annConfiguration.networks[self.current_network]
+        self.insert_to_evaluation_pipe(n_name)
 
     def check_multiple_networks(self):
         self.handle_possible_loss_functions()
@@ -372,6 +373,8 @@ class handle_entities:
                         if type=="MSE":
                             nodeReturn = handler_functions.handle_mse_metric(node)
                             self.data.evaluationResult.metric = nodeReturn
+                            self.data.evaluationResult.network = self.current_network
+
                         else:
                             print("ERROR:Cannot find type of loss function to make it evaluation")
                             import sys
@@ -636,6 +639,12 @@ class handle_entities:
                     del self.data.annConfiguration.networks[self.current_network].layer[layer_names[0]]
                 layer_names.remove(layer_names[0])
                 print(len(layer_names))
+    def find_network_for_metric(self):
+        for network in self.data.annConfiguration.networks.keys():
+            if network!=self.current_network:
+                print("HERE WE NEED TO DO STH")
+                import sys
+                sys.exit()
 
     def find_training(self,sessions):
         res = self.check_multiple_networks()
@@ -682,6 +691,8 @@ class handle_entities:
                 allSessions.append(tr_session)
             else:
                 print("ERROR:",trSession," had no kind of training steps.Thus not training session added.")
+        if self.data.evaluationResult.metric!="":
+            self.find_network_for_metric()
         self.insert_strategy(allSessions)
         del self.data.annConfiguration.networks[self.current_network]
         return 1

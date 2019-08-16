@@ -25,7 +25,6 @@ class annet_o_data_management:
 
     def init_new_network_evaluation(self,name,network):
         self.evaluationResult = evaluation_result(name)
-        self.evaluationResult.network=network
 
     def insert_annConfiguration(self,name):
         #Handle existing networks differently,depending on which network we have
