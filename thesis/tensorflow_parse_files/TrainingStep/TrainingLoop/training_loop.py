@@ -9,10 +9,17 @@ class training_loop:
 
         self.hasStopCondition.insert_in_annetto()
         rdfWrapper.new_has_stop_cond(self.name,self.hasStopCondition.name)
+        print("ALEO=",self.primaryLoop)
         self.primaryLoop.insert_in_annetto()
-        rdfWrapper.new_has_primary_loop(self.name,self.primaryLoop.name)
+        print("done=",self.primaryLoop.name)
+        if self.primaryLoop!="":
+            rdfWrapper.new_has_primary_loop(self.name,self.primaryLoop.name)
+        else:
+            print("LOGGING:There is no primary loop.")
         for lstep in self.loopSteps:
-            rdfWrapper.new_has_primary_loop(self.name, lstep.name)
+            print("volta=",lstep)
+            lstep.insert_in_annetto()
+            rdfWrapper.new_has_looping_step(self.name, lstep.name)
 
     def __init__(self,name,primaryLoop,loopSteps,stopCond):
         self.type="TrainingLoop"

@@ -342,3 +342,9 @@ class annet_o_data_management:
         o = self.prefix_annet_o + "hasLoopTrainingStep"
         p = self.prefix_annet_o + loopStep
         self.crud.insert(s, o, p)
+
+    def insert_primary_looping_step(self,loop,loopStep):
+        s = self.prefix_annet_o + loop
+        o = self.prefix_annet_o + "hasPrimaryLoopTrainingStep"
+        p = self.prefix_annet_o + loopStep
+        self.crud.insert(s, o, p)

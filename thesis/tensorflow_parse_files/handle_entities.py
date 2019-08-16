@@ -596,7 +596,7 @@ class handle_entities:
                             optimizer_per_layer[optimizer]=[]
                         if elem_ not in optimizer_per_layer[optimizer]:
                             optimizer_per_layer[optimizer].append(elem_)
-                            #print("FOUND:\nOptimizer=",optimizer,"\nLname=",elem_,"\ngradient=",gradient)
+                            print("FOUND:\nOptimizer=",optimizer,"\nLname=",elem_,"\ngradient=",gradient)
                             print(optimizer_per_layer)
         for key in optimizer_per_layer.keys():
             str=""
@@ -675,9 +675,13 @@ class handle_entities:
                     isLoop=True
             if isLoop==True:
                 print("LOGGING:Begin handling session ",trSession," that is a loop session.")
+                print("LOGGING:Info is:")
+                trSessionElem.print()
                 tr_session=self.handle_training_step(trSessionElem,trSession,optimizer_map,True)
             else:
                 print("LOGGING:Begin handling session ", trSession, " that is a normal session.")
+                print("LOGGING:Info is:")
+                trSessionElem.print()
                 tr_session=self.handle_training_step(trSessionElem,trSession,optimizer_map,False)
             if tr_session!=None:
                 allSessions.append(tr_session)
@@ -693,7 +697,8 @@ class handle_entities:
         looping_steps = []
         stop_cond=-1
         primary_tr_step=""
-        for step in trSession.steps:
+        for ind,step in enumerate(trSession.steps):
+            print("LOGGING:Training step has ",step.optimizer)
             if len(step.optimizer)==0:
                 print("ERROR:Return,no optimizer handle for ",trSessionName," it smh after,skip it for now")
             elif len(step.optimizer)>1:
@@ -713,9 +718,19 @@ class handle_entities:
                                     primary_in_loop_tr_step=trStep
                                     stop_cond=step.epoch
                                 else:
+                                    print("LOGGING:Creating looping training step for ", optimizer, " and ", network,
+                                          " and ", step.name)
                                     looping_steps.append(trStep)
+
                             else:
-                                trSteps.append(trStep)
+                                if ind == 1:
+                                    print("LOGGING:Creating primary training step for ", optimizer, " and ", network,
+                                          " and ", step.name)
+                                    primary_tr_step = trStep
+                                else:
+                                    print("LOGGING:Creating simple training step for ", optimizer, " and ", network,
+                                          " and ", step.name)
+                                    trSteps.append(trStep)
                         else:
                             print(network," OPTIMIZER ",optimizer_map[network]," not in ",step.optimizer)
                     else:
@@ -726,14 +741,33 @@ class handle_entities:
                     if network in optimizer_map.keys():
                         for optimizer in optimizer_map[network]:
                             if optimizer ==step.optimizer[0]:
-                                trStep = self.create_tr_step([optimizer], network, step)
-                                primary_tr_step=trStep
+                                trStep = self.create_tr_step(step.optimizer, network, step)
+                                if isLoop == True:
+                                    if "_co_train" in step.name:
+                                        primary_in_loop_tr_step = trStep
+                                        stop_cond = step.epoch
+                                    else:
+                                        print("LOGGING:Creating looping training step for ", optimizer, " and ",
+                                              network,
+                                              " and ", step.name)
+                                        looping_steps.append(trStep)
+
+                                else:
+                                    if ind==1:
+                                        print("LOGGING:Creating primary training step for ", optimizer, " and ", network,
+                                              " and ", step.name)
+                                        primary_tr_step=trStep
+                                    else:
+                                        print("LOGGING:Creating simple training step for ", optimizer, " and ", network,
+                                              " and ", step.name)
+                                        trSteps.append(trStep)
                     else:
                         print("ERROR:Network ",network," with no optimizer.")
         if trSteps==[] and looping_steps==[] and primary_in_loop_tr_step=="" and primary_tr_step=="":
             print("ERROR:Unable to find any kind of training steps for ",trSessionName)
             return None
         if primary_in_loop_tr_step!="":
+            print("LOGGING:There is a primary in loop training step ",primary_in_loop_tr_step.name)
             primary_tr_step=handler_functions.handle_loop(trSessionName+"_training_loop",primary_in_loop_tr_step,looping_steps,stop_cond)
         tr_session = handler_functions.handle_training_session(trSessionName + "_training_session", trSteps,primary_tr_step)
         return tr_session

@@ -16,7 +16,7 @@ class crud:
         print_query="INSERT DATA { GRAPH " + self.graph + len("INSERT DATA { GRAPH \n" + str(self.graph))*" "+"\n{ \n<"+s+">\n<"+o+">\n<"+p+">\n}\n}"
         rdfWrapper.log(print_query)
         rdfWrapper.log(len(final_query)*"-")
-        rdfWrapper.log(log_msg_ins+final_query)
+        #rdfWrapper.log(log_msg_ins+final_query)
         #self.sparql.setQuery(final_query)
         #self.sparql.setReturnFormat('json')
         #self.sparql.method = "POST"

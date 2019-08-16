@@ -34,8 +34,10 @@ def handle_imported_files(proj):
         dir_ = os.getcwd()
         os.chdir(os.path.dirname(str(path)))
         (new_line_list,found,produced_files_one_file)=find_epoch_size(line_list,str(path))
+
         for produced_file in produced_files_one_file:
             produced_files.append(produced_file)
+        print("PRODUCED FILES MADAFAKA ARE =",produced_files)
         import ntpath
         real_path=ntpath.basename(str(path))
         if found==True:
@@ -45,6 +47,7 @@ def handle_imported_files(proj):
                 f.write(elem)
             f.close()
         os.chdir(str(dir_))
+    print("MADAFAKA RETURNING ",produced_files)
     return produced_files
 
 def parse_file(path,tf_run_app,proj):
@@ -57,9 +60,10 @@ def parse_file(path,tf_run_app,proj):
     new_line_list=create_new_file(line_list,path,file,tf_run_app)
     dir_ = os.getcwd()
     os.chdir(os.path.dirname(str(path)))
-    (new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
+    #(new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
+    print("1992BLOODYHAWK=",produced_files)
     os.chdir(str(dir_))
-    handle_imported_files(proj)
+    produced_files=handle_imported_files(proj)
     result=execute_file(new_file,new_line_list,path_to_folder)
     if result=="error":
         print("ERROR:File contains inner error,cannot execute it.")
@@ -208,7 +212,8 @@ def find_epoch_size(line_list,file_path):
                     temp_ind=before_sess_run-1
                     print("line is the following ",new_line_list[temp_ind])
                     while end_loop(for_counter,new_line_list[temp_ind],number_of_fors,found_total_session) ==False and no_rep==False:
-                        if "feed_dict" in new_line_list[temp_ind] and num_of_space!=prev_line_space:
+                        if "feed_dict=" in new_line_list[temp_ind] and num_of_space!=prev_line_space \
+                                and ")" in new_line_list[temp_ind]:
                             is_co_train=True
                         if "_sEssIOn_" in new_line_list[temp_ind]:
                             file_replace=new_line_list[temp_ind].split('\'')[1].split('.')[0]
@@ -384,8 +389,8 @@ def handle_feed_dict(line,num_of_space):
     before_list=[]
     before_list.append((num_of_space) * " " + "mYFiLe = open('FILE', 'w')\n")
     if "{" in feed_dict:
-        before_list.append(num_of_space*" "+"feed_dict="+feed_dict+"\n")
-        before_list.append(num_of_space * " " + "for key,value in feed_dict.items():\n")
+        before_list.append(num_of_space*" "+"FEED_DICT="+feed_dict+"\n")
+        before_list.append(num_of_space * " " + "for key,value in FEED_DICT.items():\n")
     else:
         before_list.append(num_of_space * " " + "for key,value in "+feed_dict+".items():\n")
     before_list.append((num_of_space + 1) * " " + "mYFiLe.write(str(tf.shape(key).shape[0])+'||||')\n")

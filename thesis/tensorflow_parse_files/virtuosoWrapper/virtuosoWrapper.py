@@ -3,7 +3,8 @@ log_msg1="VirtuosoWrapper:Function to insert new "
 log_msg2=" with name "
 log_file=""
 map_to_entry_name={}
-not_added_yet={}
+not_added_yet=[]
+same_layer=[]
 counter=0
 file_counter=0
 def reset_vars():
@@ -11,9 +12,9 @@ def reset_vars():
     global map_to_entry_name
     global not_added_yet
     map_to_entry_name = {}
-    not_added_yet = {}
-    counter = 0
+    not_added_yet = []
 
+    counter = 0
 
 def log(str):
     global counter
@@ -72,9 +73,7 @@ def new_next_layer(name ,next_layer):
     global file_counter
     if next_layer not in map_to_entry_name.keys():
         map_to_entry_name[next_layer]=next_layer+str(file_counter)
-        file_counter+=1
-    if name not in map_to_entry_name.keys():
-        map_to_entry_name[name]=name+str(file_counter)
+        not_added_yet.append(next_layer)
         file_counter+=1
     #log(log_msg1 + "next layer" + log_msg2 + name+"->"+next_layer)
     nodes.handler.entitiesHandler.data.insert_nextLayer(map_to_entry_name[name],map_to_entry_name[next_layer])
@@ -83,9 +82,7 @@ def new_previous_layer(name ,previous_layer):
     global file_counter
     #log(log_msg1 + "previous layer" + log_msg2 + name+"->"+previous_layer)
     if previous_layer not in map_to_entry_name.keys():
-        map_to_entry_name[previous_layer]=previous_layer+str(file_counter)
-        file_counter+=1
-    if name not in map_to_entry_name.keys():
+        not_added_yet.append(previous_layer)
         map_to_entry_name[previous_layer]=previous_layer+str(file_counter)
         file_counter+=1
     nodes.handler.entitiesHandler.data.insert_prevLayer(map_to_entry_name[name], map_to_entry_name[previous_layer])
@@ -94,12 +91,18 @@ def new_named_individual(name):
     global file_counter
     #log(log_msg1 + "named individual" + log_msg2 + name)
     isSameLayer=""
-    if name in map_to_entry_name.keys():
-        sameLayer=map_to_entry_name[name]
-    if name not in map_to_entry_name.keys():
-        map_to_entry_name[name]=name+str(file_counter)
-        file_counter+=1
-    nodes.handler.entitiesHandler.data.insert_named_indiv(map_to_entry_name[name])
+    if name in not_added_yet:
+        nodes.handler.entitiesHandler.data.insert_named_indiv(map_to_entry_name[name])
+    elif name not in map_to_entry_name.keys():
+        map_to_entry_name[name] = name + str(file_counter)
+        file_counter += 1
+        nodes.handler.entitiesHandler.data.insert_named_indiv(map_to_entry_name[name])
+        return 0
+    elif name in map_to_entry_name.keys():
+        print("LOGGING:Individual ",name," is re-used")
+        return 1
+
+
 
 
 def new_has_activation(name ,activation):
@@ -260,8 +263,11 @@ def new_has_stop_cond(loop,cond):
 def new_has_primary_loop(loop,primaryLoop):
     nodes.handler.entitiesHandler.data.insert_primary_loop(map_to_entry_name[loop], map_to_entry_name[primaryLoop])
 
-def new_has_primary_loop(loop,loopingStep):
+def new_has_looping_step(loop,loopingStep):
     nodes.handler.entitiesHandler.data.insert_looping_step(map_to_entry_name[loop], map_to_entry_name[loopingStep])
+
+def new_has_primary_loop(loop,loopingStep):
+    nodes.handler.entitiesHandler.data.insert_primary_looping_step(map_to_entry_name[loop], map_to_entry_name[loopingStep])
 
 def new_num_of_iterations(name,iterations):
     nodes.handler.entitiesHandler.data.insert_stop_condition_number(map_to_entry_name[name],iterations)
