@@ -7,14 +7,13 @@ def get_output_networks(sess_run):
     network_list = []
     if "sess.run" not in sess_run:
         optimizer=sess_run.split(".")[0].replace("-","")
-        print("FUCCCCCCCCCCCCCCCCC=",optimizer)
         network_list.append(optimizer)
         return network_list
-    print("0=",sess_run)
-    print("1=",sess_run.split('sess.run('))
+    #print("0=",sess_run)
+    #print("1=",sess_run.split('sess.run('))
     if 'fetches=' in sess_run.replace(" ",""):
         sess_run=sess_run.replace("fetches=","")
-    print("2=",sess_run.split('sess.run(')[1].split(","))
+    #print("2=",sess_run.split('sess.run(')[1].split(","))
     comma_separated=sess_run.replace(" ","").split('sess.run(')[1].split(",")
     complex=False
     for elem in comma_separated:
@@ -24,9 +23,9 @@ def get_output_networks(sess_run):
                 network_list.append(elem[1:])
             if elem.count("[") < elem.count("]"):
                 network_list.append(elem[:-1])
-    if complex==True:
-        print(":Networks List=",network_list)
-    else:
+    #if complex==True:
+        #print(":Networks List=",network_list)
+    if complex==False:
         networks = sess_run.split('sess.run(')[1].split(",")[0].replace(" ", "")
         network_list.append(networks.split(",")[0])
     return network_list
@@ -61,14 +60,14 @@ def handle_batch(content):
     return batches_list
 
 def handle_network_var(value):
-    print("Value is ",value)
+    #print("Value is ",value)
     if value.startswith("["):
         value=value.replace("[","").replace("]","").split(",")
         elem_lst={}
         elem_lst["L"] = []
         elem_lst["O"] = []
         for val in value:
-            print("Value is ", val)
+            #print("Value is ", val)
             if "Tensor" in val:
                 n_value = val.split("Tensor")[1].split("'")[1]
                 elem_lst["L"].append(n_value)
@@ -89,10 +88,9 @@ def handle_network_var(value):
 def handle_input_var(value,isDict=False,nVal=""):
     if isDict==True:
         value=value.replace(" ","")[1:-1]
-        print('list_val=',value)
+        #print('list_val=',value)
         list_val=value.split(",")
         for elem in list_val:
-            print("YEAP=",elem.split(":")[0],"-",nVal)
             if elem.split(":")[0]==nVal:
                 value=elem.split(":")[1]
                 if "tf.Tensor" in value:
@@ -147,9 +145,9 @@ def handle_info(content,networks,feed_dict):
                 import sys
                 print("ERROR:Unable to handle objects that refer are class members")
                 sys.exit()
-            print(":Network=",network)
+            #print(":Network=",network)
             if n_network==key:
-                print("KEY=",key,"-",n_network)
+                #print("KEY=",key,"-",n_network)
                 (case,n_value)=handle_network_var(value)
                 if case=="L":
                     loss.append(n_value)
@@ -173,7 +171,7 @@ def handle_info(content,networks,feed_dict):
                 vars=vars[1:]
                 for var in vars:
                     inputs.append(var.split("'")[1].split(":")[0])
-    print("Returning inputs=",inputs)
+    #print("Returning inputs=",inputs)
     return(loss,optimizer,inputs)
 
 
@@ -191,9 +189,9 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
         print("LOGGING:Session name is : ",session_name," Epochs :",session_epochs)
         fts=file_training_session(session_name,session_epochs,[])
         for file in pathlistLine:
-            print("begin searching for ",file)
+            print("LOGGING:Begin searching for ",file)
             if  session_name in str(file) :
-                print("Found line-file : ",file)
+                #print("Found line-file : ",file)
                 with open(str(file), 'r') as content_file:
                     content = content_file.read()
                     (feed_dict,networks,epoch)=handle_lines(content)
@@ -205,17 +203,17 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
                 new_file_training=file_tr_step()
                 step_name=str(file).replace(".lines","")
                 new_file_training.name=str(step_name)
-                print("LOGGING:New ante gia step is ",str(step_name))
+                #print("LOGGING:New ante gia step is ",str(step_name))
                 for file_ in pathlistInfo:
                     if str(file).replace(".lines","")==str(file_).replace(".info",""):
-                        print("Found info-file : ", file_)
+                        #print("Found info-file : ", file_)
                         with open(str(file_), 'r') as content_file:
                             content = content_file.read()
                             (loss,optimizer,inputs)=handle_info(content,networks,feed_dict)
-                            print("Returned:Loss")
+                            #print("Returned:Loss")
                 for file_ in pathlistBatch:
                     if str(file).replace(".lines", "") == str(file_).replace(".batch", ""):
-                        print("Found batch-file : ", file_)
+                        #print("Found batch-file : ", file_)
                         with open(str(file_), 'r') as content_file:
                             content = content_file.read()
                             (batch_list)=handle_batch(content)
@@ -225,9 +223,9 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
                             new_file_training.epoch = epoch
                             new_file_training.inputs = inputs
                             fts.steps.append(new_file_training)
-                            print("\n\n\n||||||||||||||||||||||||||||||||||||||||||||||||||")
+                            print("\n||||||||||||||||||||||||||||||||||||||||||||||||||")
                             fts.print()
-                            print("||||||||||||||||||||||||||||||||||||||||||||||||||\n\n\n")
+                            print("||||||||||||||||||||||||||||||||||||||||||||||||||\n")
         total_sessions_dict[fts.name]=fts
     return total_sessions_dict
 
@@ -243,7 +241,6 @@ def find_next_session_and_step(sessions,timeList):
                 list_index.append([step,timeList.index(step.name)])
             list_index = sorted(list_index, key=lambda x: x[1])
             while counter<len(list_index)-1:
-                print("JUICE:Step ",list_index[counter][0].name," next ",list_index[counter+1][0].name)
                 list_index[counter][0].next =list_index[counter+1][0].name
                 new_step_list.append(list_index[counter][0])
                 counter+=1
@@ -273,14 +270,12 @@ def update_inner_epochs(sessions):
     ret_sessions=sessions.copy()
     for sess in sessions.keys():
         co_train=""
-        print("SESS IS ",sess)
         found_co_train = False
         for step in sessions[sess].steps:
             if co_train in step.name:
                 found_co_train=True
                 break
         if found_co_train==True:
-            print("ret sessions=",ret_sessions)
             new_steps=divide_epochs(sessions[sess].steps,sessions[sess].session_epoch)
             ret_sessions[sess].steps=new_steps
     return ret_sessions

@@ -129,7 +129,6 @@ def handle_cross_entropy(node,name,c_name):
     new_tmp=[]
     nm = nodes.handler.entitiesHandler.node_map
     outer_inputs=[]
-    print("On name its=",name)
     for node_name in nodes.handler.entitiesHandler.node_map.keys():
         if (name in node_name.split("/") or all(x in node_name.split("/")) for x in name.split("/")) and 'gradients' not in node_name:
             for inp in nm[node_name].get_inputs():
@@ -137,7 +136,7 @@ def handle_cross_entropy(node,name,c_name):
                     outer_inputs.append(inp)
     while outer_inputs!=[]:
         for inp in outer_inputs:
-            print("Searching for ",inp.get_name()," operation ",inp.get_op())
+            #print("Searching for ",inp.get_name()," operation ",inp.get_op())
             if inp.get_op()== "Placeholder":
                 for dim in inp.get_attr()["shape"].shape.dim:
                     if dim.size != -1:
@@ -148,7 +147,6 @@ def handle_cross_entropy(node,name,c_name):
                 print("ERROR:Found placeholder,but the sizes are all negatives.")
                 return cost_function(c_name, categorical_cross_entropy(name, node))
             elif inp.get_op() in nodes.handler.entitiesHandler.intermediate_operations:
-                print("inp in ",inp.get_name())
                 for inp_ in inp.get_inputs():
                     new_tmp.append(inp_)
         outer_inputs=new_tmp

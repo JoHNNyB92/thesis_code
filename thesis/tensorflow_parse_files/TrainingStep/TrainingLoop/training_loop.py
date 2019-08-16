@@ -9,7 +9,6 @@ class training_loop:
 
         self.hasStopCondition.insert_in_annetto()
         rdfWrapper.new_has_stop_cond(self.name,self.hasStopCondition.name)
-        print("ALEO=",self.primaryLoop)
         self.primaryLoop.insert_in_annetto()
         print("done=",self.primaryLoop.name)
         if self.primaryLoop!="":

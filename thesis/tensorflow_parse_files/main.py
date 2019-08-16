@@ -13,7 +13,7 @@ def code_in_one_file(file,subdir):
     result=""
     handler_entities=""
     if str(file).endswith('.py'):
-        print("Opening ",str(file))
+        print("LOGGING:Examining main file ",str(file))
         with open(file, encoding="utf8", errors='replace') as myfile:
             has_sess = False
             has_run=False
@@ -38,7 +38,6 @@ def code_in_one_file(file,subdir):
             myfile.seek(0)
             if "def main(" in myfile.read():
                 has_def_main=True
-            print("FILE= ",file," hasRun=",has_run," HasSess=",has_sess," is main=",is_main)
             produced_files=[]
             if (has_sess==True and has_run==True) or is_main==True or (has_def_main==True and has_tf_app_run==True) or has_interactive==True:
                 path = os.getcwd()
@@ -71,14 +70,11 @@ def code_in_one_file(file,subdir):
                             found_network = True
                         print(
                             " ----------------------------------------------------------------------------------------------------------------------")
-                        print("|Finished parsing of file ", os.path.basename(total_path), " Result:", result, "|")
+                        print("LOGGING:|Finished parsing of file ", os.path.basename(total_path), " Result:", result, "|")
 
                         print(
                             " ---------------------------------------------------------------------------------------------------------------------")
     return(result,found_network,handler_entities,produced_files)
-
-def code_in_multiple_files(file):
-    print(file)
 
 def handle_dotted_imports(import_):
     path=[]
@@ -94,13 +90,12 @@ def find_imports(toCheck):
     in if/else or try/except blocks will always be included.
     """
     importedItems = []
-    print("To Check : ",toCheck)
+    print("LOGGING:Checking file for imports:",toCheck)
     with open(toCheck, 'r',encoding="utf8") as pyFile:
         for line in pyFile:
             # ignore comments
             if "import " in line:
                 if "from" not in line:
-                    #print("ELEOR=",line)
                     line_=line.replace("import ","").replace("\n","").split(" ")
                     final_import=[]
                     for elem in line_:
@@ -121,7 +116,6 @@ def find_imports(toCheck):
                                     final_import.append(tpath)
                                 else:
                                     final_import.append([elem])
-                                    print(final_import[-1])
 
                     for elem in final_import:
                         importedItems.append(elem)
@@ -151,7 +145,7 @@ def check_if_file_in_files(elem,files):
         else:
             if elem in files:
                 return True
-    print("Did not found file=",elem," in ",files)
+    print("ERROR:Did not found file ",elem," in ",files)
     return False
 
 def check_lists(pathList,suffix,produced_files,log=0):
@@ -159,10 +153,9 @@ def check_lists(pathList,suffix,produced_files,log=0):
     pathList=list(pathList)
     for prFile in produced_files:
         for file in pathList:
-            if log ==1:
-                print("check_lists:::::prFile=",prFile,"  file=",file)
+            #if log ==1:
+                #print("check_lists:::::prFile=",prFile,"  file=",file)
             if (prFile+suffix) in str(file):
-                print("\nBREAK\n")
                 retPathList.append(file)
                 break
     return retPathList
@@ -188,11 +181,9 @@ with open('github/github.csv') as csv_file:
             files=[]
             trans={}
             for path in pathlist:
-                print(str(path))
                 files.append(str(path).replace(".py","").split(windows)[1].split("\\"))
                 trans["/".join(files[-1])]=str(path)
                 #file_import_dict[str(path)].append([str(path).split(windows)[1].split("\\")])
-            print(files)
             pathlist = Path(code_repository).glob('**/*.py')
             skip=False
             for path in pathlist:
@@ -201,37 +192,32 @@ with open('github/github.csv') as csv_file:
                 imported=find_imports(path_in_str)
                 import ntpath
                 subdir=ntpath.dirname(path_in_str)
-                print("\n\n Begin searching for ",path_in_str,"with imported ",imported)
+                print("\nLOGGING:Begin searching for ",path_in_str,"with imported ",imported,"\n")
                 repo_files_imp=handle_file_with_imports(imported,files)
-                print("Found imports ", repo_files_imp)
+                #print("Found imports ", repo_files_imp)
                 import_paths=[]
                 for imports in repo_files_imp:
                     t_key="/".join(imports)
                     if len(imports)==1:
                         for key in trans.keys():
-                            print(key)
                             if str(key).endswith(t_key):
                                 t_key=key
                                 break
                     function_files.append(str(trans[t_key]))
                     import_paths.append(str(trans[t_key]))
-                print("Imported files are  = ",import_paths)
+                print("LOGGING:Imported files are  = ",import_paths)
                 file_import_dict[str(path)] = import_paths
-                print("file_import_dict[",str(path),"]=",file_import_dict[str(path)])
+                #print("file_import_dict[",str(path),"]=",file_import_dict[str(path)])
             pathlist = Path(code_repository).glob('**/*.py')
-            print("Bitch pathlist is =",pathlist)
-            print("Functions are = ",function_files)
             for path in pathlist:
                 if str(path) not in function_files and "__init__" not in str(path):#and "11_" in str(path):
                     used_files=file_import_dict[str(path)]
-                    print(used_files)
                     project_structure=[]
                     while used_files!=[]:
                         tmp=[]
                         for elem_ in used_files:
                             if elem_!=[]:
                                 if elem_ not in project_structure:
-                                    print("used file=", elem_)
                                     project_structure.append(elem_)
                                     if file_import_dict[elem_]!=[]:
                                         for x in file_import_dict[elem_]:
@@ -239,11 +225,11 @@ with open('github/github.csv') as csv_file:
                                                 tmp.append(x)
                             used_files=tmp
 
-                    print("Files include in main file ",path," are ",project_structure)
+                    #print("Files include in main file ",path," are ",project_structure)
                     (result,found_network,handler_entities,produced_files)=code_in_one_file(str(path),subdir)
-                    print("Produced files are =", produced_files)
+                    #print("LOGGING:Produced files are =", produced_files)
                     produced_files=[m for m in produced_files if "sEssIOn" in m]
-                    print("Produced files are =",produced_files)
+                    print("LOGGING:Produced files are ",produced_files)
                     if found_network == True:
                         pathlistInfo = Path(code_repository).glob("**/*.info")
                         pathlistLine = Path(code_repository).glob("**/*.lines")
@@ -254,8 +240,8 @@ with open('github/github.csv') as csv_file:
                         pathlistLine = check_lists(pathlistLine, '.lines', produced_files)
                         pathListSession = check_lists(pathListSession, '.total_session', produced_files,1)
                         pathlistBatch = check_lists(pathlistBatch, '.batch', produced_files)
-                        print("KALEMIA=",pathlistBatch)
-                        print("KALEMIA2=", pathListSession)
+                        print("LOGGING:Batch files are ",pathlistBatch)
+                        print("LOGGING:Session files are ", pathListSession)
                         for file in pathlistInfo:
                             timeList.append([os.path.getmtime(str(file)),str(file)])
                         timeList=sorted(timeList,key=lambda x:float(x[0]))

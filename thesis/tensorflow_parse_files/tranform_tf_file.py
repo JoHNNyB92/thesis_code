@@ -25,7 +25,7 @@ def execute_file(new_file,new_line_list,path_to_folder):
         return "error"
 
 def handle_imported_files(proj):
-    print("Started searching for project included files")
+    print("LOGGING:Started searching for project included files")
     produced_files=[]
     for path in proj:
         line_list=[]
@@ -61,7 +61,6 @@ def parse_file(path,tf_run_app,proj):
     dir_ = os.getcwd()
     os.chdir(os.path.dirname(str(path)))
     #(new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
-    print("1992BLOODYHAWK=",produced_files)
     os.chdir(str(dir_))
     produced_files=handle_imported_files(proj)
     result=execute_file(new_file,new_line_list,path_to_folder)
@@ -79,16 +78,16 @@ def check_if_already_executed(path,proj):
     no_execution=False
     for ind, line in enumerate(open(path, errors="replace")):
         if "_sEssIOn_" in line:
-            print("LINE=", line)
-            print("LINE=", line.split('\'')[1])
+            #print("LINE=", line)
+            #print("LINE=", line.split('\'')[1])
             prod_files.append(line.split('\'')[1].split('.')[0])
             no_execution = True
         line_list.append(line)
     for filepath in proj:
         for ind, line in enumerate(open(filepath, errors="replace")):
             if "_sEssIOn_" in line:
-                print("SessionLINE=", line)
-                print("LINE=", line.split('\'')[1])
+                #print("SessionLINE=", line)
+                #print("LINE=", line.split('\'')[1])
                 prod_files.append(line.split('\'')[1].split('.')[0])
                 no_execution = True
 
@@ -132,9 +131,9 @@ def find_epoch_size(line_list,file_path):
             multiple_line_sentence_counter=len(new_line_list)-1
             multiple_line_sentence_space=line_space
             done_with_continuous=False
-            print("NOTBACKTONORMA:=",line)
+            #print("NOTBACKTONORMA:=",line)
         elif multiple_line_comm==True and multiple_line_sentence_space>=line_space:
-            print("BACKTONORMA:=",line)
+            #print("BACKTONORMA:=",line)
             new_line_list[-1]=new_line_list[-1]+"\n"
             done_with_continuous=True
             multiple_line_comm=False
@@ -144,20 +143,19 @@ def find_epoch_size(line_list,file_path):
                 multiple_line_sentence_counter = len(new_line_list) - 1
                 multiple_line_sentence_space = line_space
                 done_with_continuous = False
-                print("NOTBACKTONORMA:=", line)
+                #print("NOTBACKTONORMA:=", line)
         if ind_ == len(line_list) - 1:
             last_line = True
         if found_total_session==True:
-            print("In found total session it is Line=",line)
+            print("LOGGING:Found total session it is Line=",line)
             if first_for_space>=line_space and (last_line==True or for_counter!=0) or first_for_space>line_space:
                 found_total_session = False
-                print("FS=",first_for_space," LS=",line_space)
+                #print("FS=",first_for_space," LS=",line_space)
                 added_lines+=1
-                print("ARXIDOMOURIS=",line)
+                #print("Handling total_session in line ",line)
                 if (found_run==True or ".run(" in line) and last_line==True:
                     last_line_run=True
                 else:
-                    print(":D:D:D:D:D:D")
                     #new_line_list=new_line_list[:-1]+[close_]+new_line_list[-1:]
                     new_line_list = new_line_list[:-1] + [close_] + new_line_list[-1:]
                     close_=""
@@ -166,19 +164,19 @@ def find_epoch_size(line_list,file_path):
         if ".run" in line:
             if multiple_line_comm==False:
                 num_of_space = len(line) - len(line.lstrip(' '))
-                print("Found run=",num_of_space)
+                #print("Found run=",num_of_space)
                 line_of_sess_run=line
                 found_run=True
                 added_lines = len(new_line_list) - ind_ - 1
                 before_sess_run=ind_+added_lines
-                print("1BEFORE ADDING=", new_line_list[before_sess_run])
+                #print("1BEFORE ADDING=", new_line_list[before_sess_run])
             else:
                 num_of_space = multiple_line_sentence_space
-                print("2222222222Found run=", num_of_space)
+                #print("2222222222Found run=", num_of_space)
                 line_of_sess_run = line
                 found_run = True
                 before_sess_run = multiple_line_sentence_counter
-                print("2222222222BEFORE ADDING=", new_line_list[before_sess_run])
+                #print("2222222222BEFORE ADDING=", new_line_list[before_sess_run])
         if found_run==True:
             if done_with_continuous==False and line not in line_of_sess_run:
                 print("LINE MALAKA GINAME=",line)

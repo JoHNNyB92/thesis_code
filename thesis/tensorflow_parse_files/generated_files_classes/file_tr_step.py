@@ -14,17 +14,17 @@ class file_tr_step:
 
     def print(self):
         print("--------------------------------------------------")
-        print("Name=",self.name)
-        print("Inputs=", self.inputs)
-        print("Batches=",self.batches)
-        print("Loss=",self.loss)
-        print("Optimizer=",self.optimizer)
-        print("Epoch=",self.epoch)
+        print("LOGGING:Name=",self.name)
+        print("LOGGING:Inputs=", self.inputs)
+        print("LOGGING:Batches=",self.batches)
+        print("LOGGING:Loss=",self.loss)
+        print("LOGGING:Optimizer=",self.optimizer)
+        print("LOGGING:Epoch=",self.epoch)
         if self.objective!="":
-            print("Objective=",self.objective.cost_function.loss)
+            print("LOGGING:Objective=",self.objective.cost_function.loss)
         if self.next!="":
-            print("Next Step is =",self.next)
+            print("LOGGING:Next Step is =",self.next)
         if self.next_file!="":
-            print("Next File step is =",self.next_file)
-        print("Network=",self.network)
+            print("LOGGING:Next File step is =",self.next_file)
+        print("LOGGING:Network=",self.network)
         print("--------------------------------------------------")

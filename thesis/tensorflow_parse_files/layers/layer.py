@@ -231,14 +231,10 @@ class layer:
                                 temp_in = []
                                 for elem_in in input:
                                     #print("2:START SEARCHING FOR=", elem_in.get_name())
-                                    if "rnn/transpose" in elem_in.get_name():
-                                        print("PERIGELOS:",elem_in.get_name(),"---",elem_in.get_op())
                                     if elem_in.get_op() in nodes.handler.entitiesHandler.intermediate_operations:
                                         for elem_in_in in nm[elem_in.get_name()].get_inputs():
                                             temp_in.append(elem_in_in)
                                     else:
-                                        if "rnn" in self.name:
-                                            print("PERIGELOS2:Adding:",nm[node].get_name(),"----",nm[node].get_op())
                                         if nm[node].get_op() in nodes.handler.entitiesHandler.intermediate_operations:
                                             tmp_=[]
                                             inputs=[node]
@@ -246,17 +242,17 @@ class layer:
                                                 for node_ in nm.keys():
                                                     for elem in inputs:
                                                         if nm[node_].search_inputs(elem)==True:
-                                                            print("NODE_:",node_,"---","ELEM=",elem)
+                                                            #print("NODE_:",node_,"---","ELEM=",elem)
                                                             if nm[node_].get_op() in nodes.handler.entitiesHandler.intermediate_operations:
-                                                                print("1:",node_)
+                                                                #print("1:",node_)
                                                                 tmp_.append(node_)
                                                             else:
-                                                                print("2:", node_)
+                                                                #print("2:", node_)
                                                                 self.input.append(node_)
                                                 inputs=tmp_
-                                                print("---------------------------")
-                                                print("TMP_ ARE",tmp_)
-                                                print("INPUTS ARE", inputs)
+                                                #print("---------------------------")
+                                                #print("TMP_ ARE",tmp_)
+                                                #print("INPUTS ARE", inputs)
                                         else:
                                             self.input.append(node)
                                         found = True

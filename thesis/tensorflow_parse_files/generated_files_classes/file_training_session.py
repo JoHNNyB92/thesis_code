@@ -6,12 +6,11 @@ class file_training_session:
         self.next_session=""
 
     def print(self):
-        print("Session is ",self.name)
-        print("With session epoch",self.session_epoch)
-        print("With steps :")
+        print("LOGGING:Session is ",self.name)
+        print("LOGGING:With session epoch",self.session_epoch)
+        print("LOGGING:With steps :")
         if self.next_session!="":
-            print("Next session is ",self.next_session)
-        print("LOCO=",self.steps)
+            print("LOGGING:Next session is ",self.next_session)
         for st in self.steps:
-            print("Step:[",st.name,"]")
+            print("LOGGING:Step:[",st.name,"]")
             st.print()

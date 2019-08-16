@@ -2,12 +2,10 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class network:
     def insert_in_annetto_netwr(self):
         #print("Annetto::Network-",self.name)
-        print("START")
         rdfWrapper.new_named_individual(self.name)
         for layer_name in self.layer.keys():
             self.layer[layer_name].insert_in_annetto()
             rdfWrapper.new_network_has_layer(self.name, layer_name)
-            print("DONE")
             #TODO: inputLayer/OutputLayer/Tasktype
         if self.objective!="":
             for objective_name in self.objective.keys():

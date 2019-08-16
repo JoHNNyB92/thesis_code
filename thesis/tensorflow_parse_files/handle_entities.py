@@ -75,7 +75,6 @@ class handle_entities:
         tmp_name = tmp_name[1:]
         #If this was not encountered again,insert into list keeping complex node names.
         if tmp_name not in self.names_into_separator:
-            print("REMALAKANAME+=",tmp_name," CASE:",case)
             self.names_into_separator.append(tmp_name)
             if case==["dense","fully_connected"]:
                     (isSimpleLayer, nodeReturn) = handler_functions.check_simple_layer(self.node_map[tmp_name + "/BiasAdd"],
@@ -89,7 +88,6 @@ class handle_entities:
                 nodeReturn = handler_functions.handle_flatten(node, tmp_name)
                 self.insert_to_list(nodeReturn, tmp_name, "Layer")
             elif case ==["basic_lstm_cell","gru_cell"]:
-                print("RNN//CASE")
                 name_to_give=""
                 for x in tmp:
                     if "rnn" in x:
@@ -103,7 +101,6 @@ class handle_entities:
                     nodeReturn = handler_functions.handle_lstm(node,name_to_give)
                     self.insert_to_list(nodeReturn, name_to_give, "Layer")
                 elif "gru" in tmp_name:
-                    print("GRU//CASE")
                     nodeReturn = handler_functions.handle_gru(node, name_to_give)
                     self.insert_to_list(nodeReturn, name_to_give, "Layer")
     def optimizers(self,keyword,e):
@@ -212,7 +209,6 @@ class handle_entities:
                 if nodeReturn != "":
                     self.objectives(nodeReturn, e)
         elif self.node_map[e].get_op()=="SoftmaxCrossEntropyWithLogits":
-            print("softmax_cross_entropyilleo")
             name_loss = e
             c_name = "cost_function"
             # TODO:NEED TO DECIDE WHAT TO DO WITH MIN/MAX,RIGHT NOW by default min
@@ -224,7 +220,7 @@ class handle_entities:
             if nodeReturn != "":
                 self.objectives(nodeReturn, e)
             else:
-                print("ERROR PROBABLY")
+                print("ERROR:Objective is empty")
                 import sys
                 sys.exit()
         elif self.node_map[e].get_op()=="Equal":
@@ -289,10 +285,9 @@ class handle_entities:
         batch=0
         optKey=""
         for key in optimizer.keys():
-            print("OUTER KEY OPTIMIZER=",key)
+            #print("OUTER KEY OPTIMIZER=",key)
             for sess in session.keys():
-                print("1992INNER KEY OPTIMIZER=", sess)
-                print("session=",sess)
+                #print("1992INNER KEY OPTIMIZER=", sess)
                 trSession=session[sess]
                 for step in trSession.steps:
                     for opt in step.optimizer:

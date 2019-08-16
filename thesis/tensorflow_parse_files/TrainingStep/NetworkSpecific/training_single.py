@@ -6,7 +6,6 @@ class training_single(network_specific):
 
     def insert_in_annetto(self):
         #rdfWrapper.new_named_individual(self.name)
-        print("ELEOS")
         super(training_single, self).insert_in_annetto()
         #rdfWrapper.new_type(self.name, self.type)
         rdfWrapper.new_batch_size(self.name, self.batch)
