@@ -747,6 +747,7 @@ class handle_entities:
                                         primary_in_loop_tr_step = trStep
                                         stop_cond = step.epoch
                                     else:
+                                        print()
                                         print("LOGGING:Creating looping training step for ", optimizer, " and ",
                                               network,
                                               " and ", step.name)
