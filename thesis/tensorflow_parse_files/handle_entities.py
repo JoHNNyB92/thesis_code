@@ -297,12 +297,12 @@ class handle_entities:
                             epoch=step.epoch
                             for ind,input in enumerate(step.inputs):
                                 for inp_ in self.data.annConfiguration.networks[n_name].input_layer:
-                                    print("1INPUT LAYERS=", " ----- ",
-                                          input)
-                                    print("2INPUT LAYERS=", " ----- ",
-                                          inp_.name)
+                                    #print("1INPUT LAYERS=", " ----- ",
+                                          #input)
+                                    #print("2INPUT LAYERS=", " ----- ",
+                                          #inp_.name)
                                     if input==inp_.name:
-                                        print("Batch is ",step.batches[ind])
+                                        #print("Batch is ",step.batches[ind])
                                         batch=step.batches[ind]
                                         optKey=key
         IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name], "train")

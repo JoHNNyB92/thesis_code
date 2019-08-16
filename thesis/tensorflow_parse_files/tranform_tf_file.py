@@ -391,13 +391,11 @@ def handle_feed_dict(line,num_of_space):
         before_list.append(num_of_space * " " + "for key,value in FEED_DICT.items():\n")
     else:
         before_list.append(num_of_space * " " + "for key,value in "+feed_dict+".items():\n")
-    before_list.append((num_of_space + 1) * " " + "mYFiLe.write(str(tf.shape(key).shape[0])+'||||')\n")
+    before_list.append((num_of_space + 1) * " " + "mYFiLe.write(str(len(value))+'||||')\n")
     before_list.append(num_of_space * " " + "mYFiLe.close()\n")
-    print("BEFORE LIST = ",before_list)
     return before_list
 
 def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path):
-    print("1ARETH=FILE",file," Session counter=",str(session_counter))
     file=file.replace(".py","")
     if is_co_train == True:
         write_file = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_co_train_" + str(
