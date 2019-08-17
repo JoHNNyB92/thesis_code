@@ -16,6 +16,6 @@ class training_strategy:
 
     def __init__(self,name,session,trModel):
         self.name=name
-        self.type="TrainingStrategy"
+        self.type="TrainingStrategy "
         self.primary_training_session=session
         self.training_model=trModel
