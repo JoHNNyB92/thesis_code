@@ -283,7 +283,7 @@ class handle_entities:
                     tr_model.add_weight(weight)
         optimizer=self.data.annConfiguration.networks[self.current_network].optimizer
         epoch=0
-        batch=0
+        batch=-1
         optKey=""
         for key in optimizer.keys():
             #print("OUTER KEY OPTIMIZER=",key)
@@ -303,9 +303,12 @@ class handle_entities:
                                     #print("2INPUT LAYERS=", " ----- ",
                                           #inp_.name)
                                     if input==inp_.name:
-                                        #print("Batch is ",step.batches[ind])
-                                        batch=step.batches[ind]
-                                        optKey=key
+
+                                        if step.batches[ind]!=str(0):
+                                            print("Batch is ", step.batches[ind])
+                                            batch=step.batches[ind]
+                                            optKey=key
+                                            break
         IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name], "train")
         primary_tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,[optimizer[optKey].name],epoch,batch,"")
         tr_session=handler_functions.handle_training_session(part_name+"_training_session",[],primary_tr_step)

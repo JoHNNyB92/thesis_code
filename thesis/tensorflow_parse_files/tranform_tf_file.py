@@ -391,7 +391,10 @@ def handle_feed_dict(line,num_of_space):
         before_list.append(num_of_space * " " + "for key,value in FEED_DICT.items():\n")
     else:
         before_list.append(num_of_space * " " + "for key,value in "+feed_dict+".items():\n")
-    before_list.append((num_of_space + 1) * " " + "mYFiLe.write(str(len(value))+'||||')\n")
+    before_list.append((num_of_space + 1) * " " + "if 'numpy.ndarray' in str(type(value)):\n")
+    before_list.append((num_of_space + 2) * " " + "mYFiLe.write(str(len(value))+'||||')\n")
+    before_list.append((num_of_space + 1) * " " + "else:\n")
+    before_list.append((num_of_space + 2) * " " + "mYFiLe.write(str(0)+'||||')\n")
     before_list.append(num_of_space * " " + "mYFiLe.close()\n")
     return before_list
 

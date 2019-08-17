@@ -7,15 +7,15 @@ class evaluation_result(network_evaluation):
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name,self.type)
         rdfWrapper.new_evaluates_ann_conf(self.name, self.ann_conf.name)
-        rdfWrapper.new_evaluates_network(self.name, self.network)
         for i,_ in enumerate(self.IOPipe):
             self.IOPipe[i].insert_in_annetto()
             rdfWrapper.new_evaluates_using_io(self.name,self.IOPipe[i].name)
         if self.metric!="":
             self.metric.insert_in_annetto()
             rdfWrapper.new_has_metric(self.name, self.metric.name)
+            rdfWrapper.new_evaluates_network(self.name, self.network)
         else:
-            print("ERROR:EVALUATION_RESULT W/O METRIC")
+            print("ERROR:Evaluation result w/o metric.")
         rdfWrapper.new_with_tr_strategy(self.name, self.train_strategy.name)
 
     def __init__(self,name):

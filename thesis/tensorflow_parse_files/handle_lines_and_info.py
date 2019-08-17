@@ -283,8 +283,16 @@ def update_inner_epochs(sessions):
 
 def divide_epochs(steps,sess_epochs):
     new_steps=[]
+    is_co_trained=False
     for step in steps:
-        new_step=step
-        new_step.epoch=int(new_step.epoch/sess_epochs)
-        new_steps.append(new_step)
-    return new_steps
+        if "co_train" in step.name:
+            is_co_trained=True
+            break
+    if is_co_trained==True:
+        for step in steps:
+            new_step=step
+            if step.epoch!=sess_epochs:
+                new_step.epoch=int(new_step.epoch/sess_epochs)
+            new_steps.append(new_step)
+        return new_steps
+    return steps
