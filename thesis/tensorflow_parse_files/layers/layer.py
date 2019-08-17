@@ -11,7 +11,7 @@ class layer:
 
     def insert_in_annetto(self):
         ret=rdfWrapper.new_named_individual(self.name)
-        if ret!=0:
+        if ret==0:
             rdfWrapper.new_type(self.name, self.type)
             for elem in self.next_layer:
                 rdfWrapper.new_next_layer(self.name, elem)

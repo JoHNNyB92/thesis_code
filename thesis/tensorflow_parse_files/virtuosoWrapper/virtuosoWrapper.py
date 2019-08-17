@@ -40,6 +40,7 @@ def new_init_data(name):
 
 def new_init_new_network(name):
     #log(log_msg1 + "init network" + log_msg2 + name)
+    #log(log_msg1 + "init network" + log_msg2 + name)
     nodes.handler.entitiesHandler.current_network =name
     nodes.handler.entitiesHandler.data.init_new_network(name)
 
@@ -92,6 +93,7 @@ def new_named_individual(name):
     isSameLayer=""
     if name in not_added_yet:
         nodes.handler.entitiesHandler.data.insert_named_indiv(map_to_entry_name[name])
+        return 0
     elif name not in map_to_entry_name.keys():
         map_to_entry_name[name] = name + str(file_counter)
         file_counter += 1
