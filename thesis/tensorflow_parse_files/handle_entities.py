@@ -227,7 +227,6 @@ class handle_entities:
             nodeReturn= handler_functions.handle_accuracy(self.node_map[e])
             if nodeReturn!=None:
                 self.data.evaluationResult.metric=nodeReturn
-                self.data.evaluationResult.network=self.current_network
             else:
                 print("LOGGING: Equal not metric.")
         elif "flatten" in e :
@@ -314,6 +313,7 @@ class handle_entities:
         tr_session=handler_functions.handle_training_session(part_name+"_training_session",[],primary_tr_step)
         tr_strategy=handler_functions.handle_training_strategy(part_name+"_training_strategy",[tr_session],tr_model)
         self.data.evaluationResult.train_strategy=tr_strategy
+        self.data.evaluationResult.network=n_name
         self.data.annConfiguration.training_strategy[tr_strategy.name]=tr_strategy
         del self.data.annConfiguration.networks[self.current_network]
         self.insert_to_evaluation_pipe(n_name)
@@ -376,8 +376,6 @@ class handle_entities:
                         if type=="MSE":
                             nodeReturn = handler_functions.handle_mse_metric(node)
                             self.data.evaluationResult.metric = nodeReturn
-                            self.data.evaluationResult.network = self.current_network
-
                         else:
                             print("ERROR:Cannot find type of loss function to make it evaluation")
                             import sys

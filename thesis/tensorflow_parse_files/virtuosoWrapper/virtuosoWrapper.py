@@ -28,6 +28,7 @@ def log(str):
 
 def insert_ann_graph():
     nodes.handler.entitiesHandler.data.annConfiguration.insert_in_annetto()
+    nodes.handler.entitiesHandler.data.evaluationResult.insert_in_annetto()
 
 
 def new_init_data(name):
