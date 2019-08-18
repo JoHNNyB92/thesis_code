@@ -110,6 +110,12 @@ class annet_o_data_management:
         p = self.prefix_annet_o + activation
         self.crud.insert(s, o, p)
 
+    def insert_next_step(self,step,nextStep):
+        s = self.prefix_annet_o + step
+        o = self.prefix_annet_o + "nextTrainingStep"
+        p = self.prefix_annet_o + nextStep
+        self.crud.insert(s, o, p)
+
     def insert_nextLayer(self,name,nextLayer):
         s = self.prefix_annet_o + name
         o = self.prefix_annet_o + "nextLayer"
@@ -234,6 +240,7 @@ class annet_o_data_management:
         o = self.prefix_annet_o + "evaluatesUsingIOPipe"
         p = self.prefix_annet_o + str(pipe)
         self.crud.insert(s, o, p)
+
     def insert_eval_network(self,evRes,network):
         s = self.prefix_annet_o + evRes
         o = self.prefix_annet_o + "evaluatesNetwork"

@@ -107,6 +107,12 @@ def new_named_individual(name):
 
 
 def new_next_step(step,nextStep):
+    global file_counter
+    # log(log_msg1 + "named individual" + log_msg2 + name)
+    if nextStep not in map_to_entry_name.keys():
+        map_to_entry_name[nextStep] = nextStep + str(file_counter)
+        not_added_yet.append(nextStep)
+        file_counter += 1
     nodes.handler.entitiesHandler.data.insert_next_step(map_to_entry_name[step], map_to_entry_name[nextStep])
 
 def new_has_activation(name ,activation):

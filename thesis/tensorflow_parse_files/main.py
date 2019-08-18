@@ -256,4 +256,5 @@ with open('github/github.csv') as csv_file:
                             print("----------------------------------------------\n\n")
                         handler_entities.find_training(session_dict)
                         file_counter=tensorflow_parser.insert_in_annetto()
+                        print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 
