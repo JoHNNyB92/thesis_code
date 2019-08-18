@@ -6,14 +6,15 @@ class training_step:
         print("Annetto::training_step-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
-        rdfWrapper.new_trains_network(self.name,self.network)
+        for network in self.networks:
+            rdfWrapper.new_trains_network(self.name,network)
+        inserted=[]
         for i,_ in enumerate(self.IOPipe):
-            self.IOPipe[i].insert_in_annetto()
-            rdfWrapper.new_io_pipe(self.name,self.IOPipe[i].name)
-        for optimizer in self.trainingOptimizer:
-            print("OPTIMIZER= ",optimizer)
-            rdfWrapper.new_has_optimizer(self.name,optimizer)
-        print("LEAVING=",self.name)
+            if self.IOPipe[i].name not in inserted:
+                inserted.append(self.IOPipe[i].name)
+                self.IOPipe[i].insert_in_annetto()
+                rdfWrapper.new_io_pipe(self.name,self.IOPipe[i].name)
+        rdfWrapper.new_has_optimizer(self.name,self.trainingOptimizer)
 
     def __init__(self,name):
         self.name=name

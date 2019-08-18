@@ -479,15 +479,22 @@ class handle_entities:
             self.data.annConfiguration.networks[name].datasets=datasets
         print("\n---------------END NEW NETWORK-----------------\n")
 
+    def update_io_pipes(self,networks):
+        IOPipe_list=[]
+        for network in networks:
+            IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network], "train")
+            for elem in IOPipe:
+                IOPipe_list.append(elem)
+        return IOPipe_list
+
     def create_tr_step(self,optimizer,network,step):
-        for opt in optimizer:
-            optimizer_=self.data.annConfiguration.networks[self.current_network].optimizer[opt]
-            self.data.annConfiguration.networks[network].optimizer[opt]=optimizer_
-        input_layer=self.data.annConfiguration.networks[network].input_layer
-        print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer)
-        IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network],"train")
+        #for opt in optimizer:
+            #optimizer_=self.data.annConfiguration.networks[self.current_network].optimizer[opt]
+            #self.data.annConfiguration.networks[network].optimizer[opt]=optimizer_
+        #input_layer=self.data.annConfiguration.networks[network].input_layer
+        #print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer)
         #TODO:Maybe needs check with input for batches,for the moment consider it to be the first one
-        tr_step = handler_functions.handle_training_single(step.name, network, IOPipe,optimizer, step.epoch,step.batches[0], step.next)
+        tr_step = handler_functions.handle_training_single(step.name, network, "",optimizer, step.epoch,step.batches[0], step.next)
         return tr_step
 
     def check_metric(self,IOPipe,network):
@@ -704,73 +711,39 @@ class handle_entities:
         looping_steps = []
         stop_cond=-1
         primary_tr_step=""
+        is_primary = False
         for ind,step in enumerate(trSession.steps):
-            print("LOGGING:Training step has ",step.optimizer)
+            print("LOGGING:Training step ", step.name," has ",step.optimizer)
             if len(step.optimizer)==0:
                 print("ERROR:Return,no optimizer handle for ",trSessionName," it smh after,skip it for now")
-            elif len(step.optimizer)>1:
-                print("LOGGING:Multiple co training of networks")
-                for network in self.data.annConfiguration.networks:
-                    if network in optimizer_map.keys():
-                        found = True
-                        for optimizer in optimizer_map[network]:
-                            if optimizer not in step.optimizer:
-                                found=False
-                                break
-                        if found==True:
-                            print("STAVRIOS PANERAS IS =",network," for ",step.name)
-                            trStep=self.create_tr_step(step.optimizer,network,step)
-                            if isLoop==True:
-                                if "_co_train" in step.name:
-                                    primary_in_loop_tr_step=trStep
-                                    stop_cond=step.epoch
-                                else:
-                                    print("LOGGING:Creating looping training step for ", optimizer, " and ", network,
-                                          " and ", step.name)
-                                    looping_steps.append(trStep)
-
-                            else:
-                                if ind == 1:
-                                    print("LOGGING:Creating primary training step for ", optimizer, " and ", network,
-                                          " and ", step.name)
-                                    primary_tr_step = trStep
-                                else:
-                                    print("LOGGING:Creating simple training step for ", optimizer, " and ", network,
-                                          " and ", step.name)
-                                    trSteps.append(trStep)
-                        else:
-                            print(network," OPTIMIZER ",optimizer_map[network]," not in ",step.optimizer)
-                    else:
-                        print("ERROR:Network ",network," with no optimizer.")
             else:
-                print("LOGGING:Only one optimizer-network")
-                for network in self.data.annConfiguration.networks:
-                    if network in optimizer_map.keys():
-                        for optimizer in optimizer_map[network]:
-                            if optimizer ==step.optimizer[0]:
-                                trStep = self.create_tr_step(step.optimizer, network, step)
-                                if isLoop == True:
-                                    if "_co_train" in step.name:
-                                        primary_in_loop_tr_step = trStep
-                                        stop_cond = step.epoch
-                                    else:
-                                        print()
-                                        print("LOGGING:Creating looping training step for ", optimizer, " and ",
-                                              network,
-                                              " and ", step.name)
-                                        looping_steps.append(trStep)
-
-                                else:
-                                    if ind==1:
-                                        print("LOGGING:Creating primary training step for ", optimizer, " and ", network,
-                                              " and ", step.name)
-                                        primary_tr_step=trStep
-                                    else:
-                                        print("LOGGING:Creating simple training step for ", optimizer, " and ", network,
-                                              " and ", step.name)
-                                        trSteps.append(trStep)
+                print("LOGGING:Multiple co training of networks")
+                name_counter=0
+                for step_optimizer in step.optimizer:
+                    step_copy=step
+                    step_copy.name = step_copy.name + "----" + str(name_counter)
+                    name_counter += 1
+                    trStep = self.create_tr_step(step_optimizer, [], step_copy)
+                    created_tr_step = False
+                    for network in self.data.annConfiguration.networks:
+                        if network in optimizer_map.keys():
+                            for optimizer in optimizer_map[network]:
+                                if optimizer == step_optimizer:
+                                    created_tr_step = True
+                                    optimizer_ = self.data.annConfiguration.networks[self.current_network].optimizer[
+                                    optimizer]
+                                    self.data.annConfiguration.networks[network].optimizer[optimizer] = optimizer_
+                                    trStep.networks.append(network)
+                        else:
+                            print("ERROR:Network ", network, " with no optimizer.")
+                    IOPipe_list = self.update_io_pipes(trStep.networks)
+                    trStep.IOPipe = IOPipe_list
+                    if created_tr_step == True:
+                        (is_primary, primary_tr_step, primary_in_loop_tr_step, looping_steps, trSteps,stop_cond) = \
+                            self.handle_step_information(isLoop, is_primary, step, step_optimizer, trStep, primary_tr_step,
+                                                         primary_in_loop_tr_step, looping_steps, trSteps, ind,stop_cond)
                     else:
-                        print("ERROR:Network ",network," with no optimizer.")
+                        print("LOGGING:Did not create a tr step for ", step.name)
         if trSteps==[] and looping_steps==[] and primary_in_loop_tr_step=="" and primary_tr_step=="":
             print("ERROR:Unable to find any kind of training steps for ",trSessionName)
             return None
@@ -779,6 +752,31 @@ class handle_entities:
             primary_tr_step=handler_functions.handle_loop(trSessionName+"_training_loop",primary_in_loop_tr_step,looping_steps,stop_cond)
         tr_session = handler_functions.handle_training_session(trSessionName + "_training_session", trSteps,primary_tr_step)
         return tr_session
+
+    def handle_step_information(self,isLoop,is_primary,step,optimizer,trStep,primary_tr_step,primary_in_loop_tr_step,looping_steps,trSteps,ind,stop_cond):
+        if isLoop == True:
+            if "_co_train" in step.name and is_primary == False:
+                print("LOGGING:Creating primary looping training step for ", optimizer, " and ",
+                      network,
+                      " and ", step.name)
+                is_primary = True
+                primary_in_loop_tr_step = trStep
+                stop_cond = step.epoch
+            else:
+                print("LOGGING:Creating looping training step for ", optimizer, " and ",
+                      network,
+                      " and ", step.name)
+                looping_steps.append(trStep)
+        else:
+            if ind == 1:
+                print("LOGGING:Creating primary training step for ", optimizer, " and ", network,
+                      " and ", step.name)
+                primary_tr_step = trStep
+            else:
+                print("LOGGING:Creating simple training step for ", optimizer, " and ", network,
+                      " and ", step.name)
+                trSteps.append(trStep)
+        return (is_primary,primary_tr_step,primary_in_loop_tr_step,looping_steps,trSteps,stop_cond)
 
     def remove_unused_optimizers(self,sessions,opl):
         tmp_opl=opl.copy()

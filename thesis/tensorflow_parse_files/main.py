@@ -173,7 +173,7 @@ with open('github/github.csv') as csv_file:
         main_files=[]
         function_files=[]
         file_import_dict={}
-        if "..\git_repositories_temp/test_repository_splitted_4" in code_repository:
+        if "..\git_repositories_temp/test_repository_splitted_8" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -250,11 +250,16 @@ with open('github/github.csv') as csv_file:
                         session_dict=handle_lines_and_info.handle_lines_and_info(produced_files,pathlistInfo,pathlistLine,pathlistBatch,pathListSession)
                         import ntpath
                         for sess in session_dict.keys():
-                            print("\n\n----------------------------------------------")
+                            print("\n\n2222222222222222222222222222222222222222")
                             print("About to see info for ",sess)
                             session_dict[sess].print()
                             print("----------------------------------------------\n\n")
                         session_dict=handle_lines_and_info.find_next_session_and_step(session_dict,[x.replace(".info","") for x in timeList])
+                        for sess in session_dict.keys():
+                            print("\n\n1111111111111111111111111111111111111111")
+                            print("About to see info for ",sess)
+                            session_dict[sess].print()
+                            print("----------------------------------------------\n\n")
                         session_dict=handle_lines_and_info.update_inner_epochs(session_dict)
                         for sess in session_dict.keys():
                             print("\n\n----------------------------------------------")

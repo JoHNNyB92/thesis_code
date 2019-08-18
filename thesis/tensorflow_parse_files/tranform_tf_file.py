@@ -248,12 +248,15 @@ def find_epoch_size(line_list,file_path):
                         temp_ind-=1
                         prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
                     if found_total_session==False:
+
                         found_total_session=True
                         total_session = "_temporary_" + file.replace(".py","") + "_" + "_sEssIOn_[" + str(
                             session_counter) + "]_" + str(
                             session_counter) + ".total_session"
-
-                        temp_sess=session_for_ind+1
+                        if session_fors == 1:
+                            temp_sess=session_for_ind-1
+                        else:
+                            temp_sess=session_for_ind+1
                         print("before1=",new_line_list[temp_sess])
                         if "total_session_abc.close()" in new_line_list[session_for_ind]:
                             session_for_ind+=1

@@ -3,12 +3,13 @@ from layers.layer import layer
 class in_out_layer(layer):
 
     def insert_in_annetto(self):
-        rdfWrapper.new_named_individual(self.name)
-        rdfWrapper.new_type(self.name, self.type)
-        if self.num_layer!="":
-            rdfWrapper.layer_num_units(self.name, self.num_layer)
-        else:
-            print("ERROR:IN OUT W/O NUM LAYER")
+        res=rdfWrapper.new_named_individual(self.name)
+        if res==0:
+            rdfWrapper.new_type(self.name, self.type)
+            if self.num_layer!="":
+                rdfWrapper.layer_num_units(self.name, self.num_layer)
+            else:
+                print("ERROR:IN OUT W/O NUM LAYER")
 
     def find_output_node(self,name):
         layer.find_output_node(self,name)

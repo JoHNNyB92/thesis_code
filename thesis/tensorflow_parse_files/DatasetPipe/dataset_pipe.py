@@ -4,13 +4,13 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class dataset_pipe:
 
     def insert_in_annetto(self):
-        rdfWrapper.new_named_individual(self.name)
-        rdfWrapper.new_type(self.name, self.type)
-        rdfWrapper.new_joins_layer(self.name,self.input_layer.name)
-        if self.dataset!="":
-            self.dataset.insert_in_annetto()
-            rdfWrapper.new_joins_dataset(self.name,self.dataset.name)
-
+        res=rdfWrapper.new_named_individual(self.name)
+        if res==0:
+            rdfWrapper.new_type(self.name, self.type)
+            rdfWrapper.new_joins_layer(self.name,self.input_layer.name)
+            if self.dataset!="":
+                self.dataset.insert_in_annetto()
+                rdfWrapper.new_joins_dataset(self.name,self.dataset.name)
 
     def __init__(self,node,layer,type,count,dataset):
         self.input_layer=layer

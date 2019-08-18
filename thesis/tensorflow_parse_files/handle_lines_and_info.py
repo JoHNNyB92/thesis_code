@@ -50,6 +50,7 @@ def get_feed_dict(sess_run):
 
 def handle_lines(content):
     epoch=content.count("----")
+    print("EPOCH IS RE ZOGRAFAKI ",epoch)
     sess_run=content.split("||||")[0]
     networks=get_output_networks(sess_run)
     feed_dict=get_feed_dict(sess_run)
@@ -199,21 +200,18 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
                     print("LOGGING:Found information from handling produced files")
                     print("LOGGING:Feed Dict:",feed_dict)
                     print("LOGGING:Networks:",networks)
+                    print("LOGGING:Epoch:", epoch)
                     print("LOGGING:-----------------------------------------------")
                 new_file_training=file_tr_step()
                 step_name=str(file).replace(".lines","")
                 new_file_training.name=str(step_name)
-                #print("LOGGING:New ante gia step is ",str(step_name))
                 for file_ in pathlistInfo:
                     if str(file).replace(".lines","")==str(file_).replace(".info",""):
-                        #print("Found info-file : ", file_)
                         with open(str(file_), 'r') as content_file:
                             content = content_file.read()
                             (loss,optimizer,inputs)=handle_info(content,networks,feed_dict)
-                            #print("Returned:Loss")
                 for file_ in pathlistBatch:
                     if str(file).replace(".lines", "") == str(file_).replace(".batch", ""):
-                        #print("Found batch-file : ", file_)
                         with open(str(file_), 'r') as content_file:
                             content = content_file.read()
                             (batch_list)=handle_batch(content)
@@ -223,10 +221,11 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
                             new_file_training.epoch = epoch
                             new_file_training.inputs = inputs
                             fts.steps.append(new_file_training)
-                            print("\n||||||||||||||||||||||||||||||||||||||||||||||||||")
-                            fts.print()
-                            print("||||||||||||||||||||||||||||||||||||||||||||||||||\n")
         total_sessions_dict[fts.name]=fts
+    for key in total_sessions_dict.keys():
+        print("\n\nLOGGING:Session information along with steps:")
+        total_sessions_dict[fts.name].print()
+        print("LOGGING:End session information along with steps.\n\n")
     return total_sessions_dict
 
 
@@ -292,7 +291,10 @@ def divide_epochs(steps,sess_epochs):
         for step in steps:
             new_step=step
             if step.epoch!=sess_epochs:
+                print("ZOGRAFAKIMOUNARA=",step.name,"-step-",step.epoch,"-sess-",sess_epochs)
                 new_step.epoch=int(new_step.epoch/sess_epochs)
+            else:
+                print("ZOGRAFAKIPORNH=",step.name,"-step-",step.epoch,"-sess-",sess_epochs)
             new_steps.append(new_step)
         return new_steps
     return steps

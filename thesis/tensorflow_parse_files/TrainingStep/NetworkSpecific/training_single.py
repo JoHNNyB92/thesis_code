@@ -22,7 +22,7 @@ class training_single(network_specific):
     def __init__(self,name,network,IOPipe,trainingOptimizer,epochs,batch,nextTrStep):
         super(training_single, self).__init__(name)
         self.type="TrainingSingle"
-        self.network=network
+        self.networks=network
         self.IOPipe=IOPipe
         self.nextTrStep=nextTrStep
         self.trainingOptimizer=trainingOptimizer
