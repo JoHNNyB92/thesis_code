@@ -50,7 +50,6 @@ def get_feed_dict(sess_run):
 
 def handle_lines(content):
     epoch=content.count("----")
-    print("EPOCH IS RE ZOGRAFAKI ",epoch)
     sess_run=content.split("||||")[0]
     networks=get_output_networks(sess_run)
     feed_dict=get_feed_dict(sess_run)
@@ -291,10 +290,7 @@ def divide_epochs(steps,sess_epochs):
         for step in steps:
             new_step=step
             if step.epoch!=sess_epochs:
-                print("ZOGRAFAKIMOUNARA=",step.name,"-step-",step.epoch,"-sess-",sess_epochs)
                 new_step.epoch=int(new_step.epoch/sess_epochs)
-            else:
-                print("ZOGRAFAKIPORNH=",step.name,"-step-",step.epoch,"-sess-",sess_epochs)
             new_steps.append(new_step)
         return new_steps
     return steps
