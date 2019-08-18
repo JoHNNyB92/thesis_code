@@ -13,7 +13,6 @@ def reset_vars():
     global not_added_yet
     map_to_entry_name = {}
     not_added_yet = []
-
     counter = 0
 
 def log(str):
@@ -29,11 +28,12 @@ def log(str):
 def insert_ann_graph():
     nodes.handler.entitiesHandler.data.annConfiguration.insert_in_annetto()
     nodes.handler.entitiesHandler.data.evaluationResult.insert_in_annetto()
+    return file_counter
 
-
-def new_init_data(name):
+def new_init_data(name,file_counter_):
     #log(log_msg1 + "init_data" + log_msg2 + name)
     global file_counter
+    file_counter=file_counter_
     if name not in map_to_entry_name.keys():
         map_to_entry_name[name]=name+str(file_counter)
         file_counter+=1
@@ -106,6 +106,8 @@ def new_named_individual(name):
 
 
 
+def new_next_step(step,nextStep):
+    nodes.handler.entitiesHandler.data.insert_next_step(map_to_entry_name[step], map_to_entry_name[nextStep])
 
 def new_has_activation(name ,activation):
     #log(log_msg1 + "has activation" + log_msg2 + name+"->"+activation)

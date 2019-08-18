@@ -254,7 +254,8 @@ def find_epoch_size(line_list,file_path):
                             session_counter) + "]_" + str(
                             session_counter) + ".total_session"
                         if session_fors == 1:
-                            temp_sess=session_for_ind-1
+                            #temp_sess=session_for_ind-1
+                            temp_sess = session_for_ind
                         else:
                             temp_sess=session_for_ind+1
                         print("before1=",new_line_list[temp_sess])

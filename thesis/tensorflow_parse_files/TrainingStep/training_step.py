@@ -6,6 +6,8 @@ class training_step:
         print("Annetto::training_step-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
+        if self.nextTrStep!="":
+            rdfWrapper.new_next_step(self.name,self.nextTrStep)
         for network in self.networks:
             rdfWrapper.new_trains_network(self.name,network)
         inserted=[]

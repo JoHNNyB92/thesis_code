@@ -285,7 +285,6 @@ class handle_entities:
         batch=-1
         optKey=""
         for key in optimizer.keys():
-            #print("OUTER KEY OPTIMIZER=",key)
             for sess in session.keys():
                 #print("1992INNER KEY OPTIMIZER=", sess)
                 trSession=session[sess]
@@ -297,19 +296,19 @@ class handle_entities:
                             epoch=step.epoch
                             for ind,input in enumerate(step.inputs):
                                 for inp_ in self.data.annConfiguration.networks[n_name].input_layer:
-                                    #print("1INPUT LAYERS=", " ----- ",
-                                          #input)
-                                    #print("2INPUT LAYERS=", " ----- ",
-                                          #inp_.name)
+                                    print("1INPUT LAYERS=", " ----- ",
+                                          input)
+                                    print("2INPUT LAYERS=", " ----- ",
+                                          inp_.name)
                                     if input==inp_.name:
-
-                                        if step.batches[ind]!=str(0):
+                                        print("Step batches = ",step.batches[ind],"---",ind)
+                                        if step.batches[ind]!=str(0) or step.batches[ind]!=0:
                                             print("Batch is ", step.batches[ind])
                                             batch=step.batches[ind]
                                             optKey=key
                                             break
         IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name], "train")
-        primary_tr_step = handler_functions.handle_training_single(part_name+"_training_step",n_name,IOPipe,[optimizer[optKey].name],epoch,batch,"")
+        primary_tr_step = handler_functions.handle_training_single(part_name+"_training_step",[n_name],IOPipe,optimizer[optKey].name,epoch,batch,"")
         tr_session=handler_functions.handle_training_session(part_name+"_training_session",[],primary_tr_step)
         tr_strategy=handler_functions.handle_training_strategy(part_name+"_training_strategy",[tr_session],tr_model)
         self.data.evaluationResult.train_strategy=tr_strategy
@@ -717,7 +716,7 @@ class handle_entities:
             if len(step.optimizer)==0:
                 print("ERROR:Return,no optimizer handle for ",trSessionName," it smh after,skip it for now")
             else:
-                print("LOGGING:Multiple co training of networks")
+                print("LOGGING:Found optimizers ",step.optimizer," of ",step.name)
                 name_counter=0
                 for step_optimizer in step.optimizer:
                     step_copy=step
@@ -734,8 +733,10 @@ class handle_entities:
                                     optimizer]
                                     self.data.annConfiguration.networks[network].optimizer[optimizer] = optimizer_
                                     trStep.networks.append(network)
+                                    print("LOGGING:Associated ", optimizer, " to ", network, " for ", step.name)
                         else:
                             print("ERROR:Network ", network, " with no optimizer.")
+                    print("NETWORKS ARE ",trStep.networks)
                     IOPipe_list = self.update_io_pipes(trStep.networks)
                     trStep.IOPipe = IOPipe_list
                     if created_tr_step == True:

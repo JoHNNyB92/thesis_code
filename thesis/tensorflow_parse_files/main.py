@@ -7,7 +7,7 @@ import handle_lines_and_info
 import csv
 from modulefinder import ModuleFinder
 
-def code_in_one_file(file,subdir):
+def code_in_one_file(file,subdir,file_counter):
     found_network=False
     total_path = os.path.join(subdir, file)
     result=""
@@ -65,7 +65,7 @@ def code_in_one_file(file,subdir):
                         print("ERROR:There was an error with the creation of pbtxt file  ",pbtxt_file)
                     else:
                         print("LOGGING:Begin parsing pbtxt file ", pbtxt_file, " with anneto logging in ", log_file)
-                        (result,handler_entities)= tensorflow_parser.begin_parsing(os.path.basename(subdir), pbtxt_file,log_file)
+                        (result,handler_entities)= tensorflow_parser.begin_parsing(os.path.basename(subdir), pbtxt_file,log_file,file_counter)
                         if result == "success":
                             found_network = True
                         print(
@@ -164,6 +164,8 @@ def check_lists(pathList,suffix,produced_files,log=0):
 with open('github/github.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
+    cnt___=0
+    file_counter=0
     for url in csv_reader:
         #print("LOGGING:Url for repository is ",url[0])
         repository_path=github.get_github_repository(url[0])
@@ -173,7 +175,9 @@ with open('github/github.csv') as csv_file:
         main_files=[]
         function_files=[]
         file_import_dict={}
-        if "..\git_repositories_temp/test_repository_splitted_8" in code_repository:
+        cnt___+=1
+        if cnt___>8:
+        #if "..\git_repositories_temp/test_repository_splitted_8" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -183,7 +187,6 @@ with open('github/github.csv') as csv_file:
             for path in pathlist:
                 files.append(str(path).replace(".py","").split(windows)[1].split("\\"))
                 trans["/".join(files[-1])]=str(path)
-                #file_import_dict[str(path)].append([str(path).split(windows)[1].split("\\")])
             pathlist = Path(code_repository).glob('**/*.py')
             skip=False
             for path in pathlist:
@@ -194,7 +197,6 @@ with open('github/github.csv') as csv_file:
                 subdir=ntpath.dirname(path_in_str)
                 print("\nLOGGING:Begin searching for ",path_in_str,"with imported ",imported,"\n")
                 repo_files_imp=handle_file_with_imports(imported,files)
-                #print("Found imports ", repo_files_imp)
                 import_paths=[]
                 for imports in repo_files_imp:
                     t_key="/".join(imports)
@@ -207,7 +209,6 @@ with open('github/github.csv') as csv_file:
                     import_paths.append(str(trans[t_key]))
                 print("LOGGING:Imported files are  = ",import_paths)
                 file_import_dict[str(path)] = import_paths
-                #print("file_import_dict[",str(path),"]=",file_import_dict[str(path)])
             pathlist = Path(code_repository).glob('**/*.py')
             for path in pathlist:
                 if str(path) not in function_files and "__init__" not in str(path):#and "11_" in str(path):
@@ -225,9 +226,7 @@ with open('github/github.csv') as csv_file:
                                                 tmp.append(x)
                             used_files=tmp
 
-                    #print("Files include in main file ",path," are ",project_structure)
-                    (result,found_network,handler_entities,produced_files)=code_in_one_file(str(path),subdir)
-                    #print("LOGGING:Produced files are =", produced_files)
+                    (result,found_network,handler_entities,produced_files)=code_in_one_file(str(path),subdir,file_counter)
                     produced_files=[m for m in produced_files if "sEssIOn" in m]
                     print("LOGGING:Produced files are ",produced_files)
                     if found_network == True:
@@ -267,6 +266,5 @@ with open('github/github.csv') as csv_file:
                             session_dict[sess].print()
                             print("----------------------------------------------\n\n")
                         handler_entities.find_training(session_dict)
-                        tensorflow_parser.insert_in_annetto()
-            break
+                        file_counter=tensorflow_parser.insert_in_annetto()
 
