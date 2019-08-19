@@ -175,8 +175,8 @@ with open('github/github.csv') as csv_file:
         main_files=[]
         function_files=[]
         file_import_dict={}
-        if True==True:
-        #if "..\git_repositories_temp/test_repository_splitted_9" in code_repository:
+        #if True==True:
+        if "..\git_repositories_temp/test_repository_splitted_1" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -257,4 +257,5 @@ with open('github/github.csv') as csv_file:
                         handler_entities.find_training(session_dict)
                         file_counter=tensorflow_parser.insert_in_annetto()
                         print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+                        break
 
