@@ -303,11 +303,13 @@ class handle_entities:
                                           inp_.name)
                                     if input==inp_.name:
                                         print("Step batches = ",step.batches[ind],"---",ind)
+                                        optKey = key
                                         if step.batches[ind]!=str(0) and step.batches[ind]!=0:
                                             print("Batch is ", step.batches[ind])
                                             batch=step.batches[ind]
-                                            optKey=key
                                             break
+        if batch==-1:
+            print("ERROR:Unable to retrieve batch information.")
         IOPipe = handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[n_name], "train")
         primary_tr_step = handler_functions.handle_training_single(part_name+"_training_step",[n_name],IOPipe,optimizer[optKey].name,epoch,batch,"")
         tr_session=handler_functions.handle_training_session(part_name+"_training_session",[],primary_tr_step)
@@ -717,6 +719,7 @@ class handle_entities:
         stop_cond=-1
         primary_tr_step=""
         is_primary = False
+        new_step_name={}
         for ind,step in enumerate(trSession.steps):
             print("LOGGING:Training step ", step.name," has ",step.optimizer)
             if len(step.optimizer)==0:
@@ -727,6 +730,7 @@ class handle_entities:
                 for step_optimizer in step.optimizer:
                     step_copy=step
                     step_copy.name = step_copy.name + "----" + str(name_counter)
+                    new_step_name[step.name]=step_copy.name
                     name_counter += 1
                     trStep = self.create_tr_step(step_optimizer, [], step_copy)
                     created_tr_step = False
@@ -751,13 +755,26 @@ class handle_entities:
                                                          primary_in_loop_tr_step, looping_steps, trSteps, ind,stop_cond)
                     else:
                         print("LOGGING:Did not create a tr step for ", step.name)
+        temp=trSteps
+        for ind,step in enumerate(temp):
+            if step.nextTrStep in new_step_name.keys():
+                print("LOGGING:Changing next step name from ",step.nextTrStep," to ",new_step_name[step.nextTrStep])
+                trSteps[ind].nextTrStep=new_step_name[step.nextTrStep]
+        temp = looping_steps
+        for ind,step in enumerate(temp):
+            if step.nextTrStep in new_step_name.keys():
+                print("LOGGING:Changing next step name from ",step.nextTrStep," to ",new_step_name[step.nextTrStep])
+                looping_steps[ind].nextTrStep=new_step_name[step.nextTrStep]
+
         if trSteps==[] and looping_steps==[] and primary_in_loop_tr_step=="" and primary_tr_step=="":
             print("ERROR:Unable to find any kind of training steps for ",trSessionName)
             return None
+
         if primary_in_loop_tr_step!="":
             print("LOGGING:There is a primary in loop training step ",primary_in_loop_tr_step.name)
             primary_tr_step=handler_functions.handle_loop(trSessionName+"_training_loop",primary_in_loop_tr_step,looping_steps,stop_cond)
         tr_session = handler_functions.handle_training_session(trSessionName + "_training_session", trSteps,primary_tr_step)
+
         return tr_session
 
     def handle_step_information(self,isLoop,is_primary,step,optimizer,trStep,primary_tr_step,primary_in_loop_tr_step,looping_steps,trSteps,ind,stop_cond):
