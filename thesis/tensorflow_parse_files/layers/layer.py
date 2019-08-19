@@ -147,7 +147,7 @@ class layer:
                         #if layers[layer_obj.name].node.get_op() == 'Placeholder':
                         if layer_obj.node.get_op() == 'Placeholder':
                             self.is_input = True
-                            self.placeholder=layer_obj.name
+                            self.placeholder.append(layer_obj.name)
                         #print("Layer is ",layer,"----",layer_obj.name)
                         nodes.handler.entitiesHandler.data.annConfiguration.networks[nodes.handler.entitiesHandler.current_network].layer[
                             layer].next_layer.append(self.name)
@@ -273,7 +273,7 @@ class layer:
 
     def __init__(self,node,name,hasBias,searchForInner=False):
         self.node=node
-        self.placeholder=""
+        self.placeholder=[]
         self.is_input=False
         self.is_output=False
         self.name=name

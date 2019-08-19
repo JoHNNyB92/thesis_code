@@ -302,7 +302,7 @@ class handle_entities:
                                           inp_.name)
                                     if input==inp_.name:
                                         print("Step batches = ",step.batches[ind],"---",ind)
-                                        if step.batches[ind]!=str(0) or step.batches[ind]!=0:
+                                        if step.batches[ind]!=str(0) and step.batches[ind]!=0:
                                             print("Batch is ", step.batches[ind])
                                             batch=step.batches[ind]
                                             optKey=key
@@ -405,8 +405,10 @@ class handle_entities:
                 for prev_layer in prev:
                     if layers[prev_layer].is_input==True:
                         print("LOGGING:Discovered input layer = ",prev_layer)
-                        ret_layer.append(layers[prev_layer].placeholder)
-                        net_layers[layers[prev_layer].placeholder]=layers[layers[prev_layer].placeholder]
+                        for placeholder in layers[prev_layer].placeholder:
+                            print("LOGGING:With placeholder ",placeholder)
+                            ret_layer.append(placeholder)
+                            net_layers[placeholder]=layers[placeholder]
                         net_layers[prev_layer] = layers[prev_layer]
                         for elem in layers[prev_layer].previous_layer:
                             temp.append(elem)
@@ -537,7 +539,7 @@ class handle_entities:
         for optimizer in self.data.annConfiguration.networks[self.current_network].optimizer.keys():
             found_gradient = False
             gradient=""
-            print("Start searching for ",optimizer)
+            print("LOGGING:Start searching for ",optimizer)
             for name in self.node_map.keys():
                 enter=False
                 for partName in name.split("/"):
@@ -576,7 +578,6 @@ class handle_entities:
             #Flatter for exampel requires different handling.
             shape_grad=[gradient+"/"+x+"/Reshape_grad/Shape" for x in node_layers]
             grad_layers_names=shape_grad+grad_layers_names
-            print("gradient list layer =",grad_layers_names)
             for name in self.node_map.keys():
                 name_list=name.split("/")
                 found=False
@@ -601,7 +602,7 @@ class handle_entities:
                             optimizer_per_layer[optimizer]=[]
                         if elem_ not in optimizer_per_layer[optimizer]:
                             optimizer_per_layer[optimizer].append(elem_)
-                            print("FOUND:\nOptimizer=",optimizer,"\nLname=",elem_,"\ngradient=",gradient)
+                            print("LOGGING:Found:\nOptimizer=",optimizer,"\nLname=",elem_,"\ngradient=",gradient)
                             print(optimizer_per_layer)
         for key in optimizer_per_layer.keys():
             str=""
@@ -782,18 +783,13 @@ class handle_entities:
     def remove_unused_optimizers(self,sessions,opl):
         tmp_opl=opl.copy()
         for sess in sessions.keys():
-            print("ELENA:",sess)
             for trStep in sessions[sess].steps:
                 for optimizer in trStep.optimizer:
-                    print("ELENA:Optimizer is ",optimizer)
                     if optimizer in tmp_opl.keys():
-                        print("DELETING ",optimizer)
                         del tmp_opl[optimizer]
         for key in tmp_opl.keys():
             del opl[key]
-            print("ERROR:DELETED OPTIMIZER NOT FOUND IN FILE TRAINING ",key)
         for optimizer in opl.keys():
-            print("ELENAKOURTH:ABOUT TO INSERT OPTIMIZER TO ANNETTO ",optimizer)
             self.data.annConfiguration.networks[self.current_network].optimizer[optimizer].insert_in_annetto()
         return opl
 
@@ -827,9 +823,8 @@ class handle_entities:
             st=st+"\n"+x
         network_optimizers=[]
         for optimizer in opl.keys():
-            found_optimizer=True
             for layer in layers.keys():
-                print("searching for layer ", layer, " in ", optimizer," with ",opl[optimizer])
+                #print("searching for layer ", layer, " in ", optimizer," with ",opl[optimizer])
                 if layer in opl[optimizer]:
                     network_optimizers.append(optimizer)
                     break
