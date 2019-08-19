@@ -229,6 +229,15 @@ class handle_entities:
                 self.data.evaluationResult.metric=nodeReturn
             else:
                 print("LOGGING: Equal not metric.")
+        elif "Placeholder" == self.node_map[e].get_op():
+            has_dim = False
+            for elem in self.node_map[e].get_output():
+                for _ in elem.dim:
+                    has_dim = True
+                    break
+            nodeReturn = handler_functions.handle_in_out_layer(self.node_map[e])
+            print("PSARRAKOS=", e)
+            self.insert_to_list(nodeReturn, e, "Layer")
         elif "flatten" in e :
             self.handle_complex_layers(self.node_map[e],e,"flatten")
         elif "dense" in e and self.node_map[e].get_op() not in self.optimizer_operations or "fully_connected" in e:
@@ -237,14 +246,6 @@ class handle_entities:
             self.handle_complex_layers(self.node_map[e],e,"dropout")
         elif "rnn" in e:
             self.handle_complex_layers(self.node_map[e],e,["basic_lstm_cell","gru_cell"])
-        elif "Placeholder"==self.node_map[e].get_op():
-            has_dim=False
-            for elem in self.node_map[e].get_output():
-                for _ in elem.dim:
-                    has_dim=True
-                    break
-            nodeReturn = handler_functions.handle_in_out_layer(self.node_map[e])
-            self.insert_to_list(nodeReturn, e,"Layer")
         elif  self.node_map[e].get_op()=="SquaredDifference":
             nodeReturn=handler_functions.handle_mean_square_error(self.node_map[e],self.current_network,self.node_map[e].get_name())
             if nodeReturn!="":
@@ -396,8 +397,10 @@ class handle_entities:
         prev=layers[prev].previous_layer
         ret_layer = []
         if layers[output.name].is_input==True:
-            ret_layer.append(layers[output.name].placeholder)
-            net_layers[layers[output.name].placeholder] = layers[layers[output.name].placeholder]
+            for placeholder in layers[output.name].placeholder:
+                print("LOGGING:With placeholder ", placeholder)
+                ret_layer.append(placeholder)
+                net_layers[placeholder] = layers[placeholder]
             net_layers[output.name] = layers[output.name]
         else:
             while prev!=[]:
@@ -418,6 +421,7 @@ class handle_entities:
                         for elem in layers[prev_layer].previous_layer:
                             temp.append(elem)
                 prev=list(set(temp))
+        print("PSARRAKOS=",ret_layer)
         return (ret_layer, net_layers)
 
     def find_network_output_layer(self,children):
@@ -633,9 +637,10 @@ class handle_entities:
             for layer in self.data.annConfiguration.networks[self.current_network].layer.keys():
                 inner=self.data.annConfiguration.networks[self.current_network].layer[layer].inner_nodes
                 if [ layer_names[0] for x in inner if layer_names[0]==x]!=[]:
-                    del self.data.annConfiguration.networks[self.current_network].layer[layer_names[0]]
-                    print("LOGGING:Deleted inner node ",layer_names[0])
-                    break
+                    if layer_names[0] in self.node_map.keys() and self.node_map[layer_names[0]].get_op()!="Placeholder":
+                        del self.data.annConfiguration.networks[self.current_network].layer[layer_names[0]]
+                        print("LOGGING:Deleted inner node ",layer_names[0])
+                        break
             layer_names.remove(layer_names[0])
         objs = list(self.data.annConfiguration.networks[self.current_network].objective)
         layer_names = list(self.data.annConfiguration.networks[self.current_network].layer.keys())
