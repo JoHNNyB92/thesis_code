@@ -8,7 +8,6 @@ class ANNConfiguration:
         rdfWrapper.new_named_individual(self.name)
         for network in nodes.handler.entitiesHandler.data.annConfiguration.networks.keys():
             network_node = nodes.handler.entitiesHandler.data.annConfiguration.networks[network]
-            print("ARGYPAPPAS=",network)
             network_node.insert_in_annetto_netwr()
 
         for trStrategy in nodes.handler.entitiesHandler.data.annConfiguration.training_strategy.keys():

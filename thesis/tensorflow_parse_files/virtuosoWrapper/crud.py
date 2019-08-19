@@ -21,6 +21,6 @@ class crud:
         #self.sparql.setReturnFormat('json')
         #self.sparql.method = "POST"
         #res=self.sparql.query()
-        print("RESULT:\n",0)
+        #print("RESULT:\n",0)
 
 
