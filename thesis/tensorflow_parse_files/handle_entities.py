@@ -729,8 +729,9 @@ class handle_entities:
                 name_counter=0
                 for step_optimizer in step.optimizer:
                     step_copy=step
+                    temp_name=step.name
                     step_copy.name = step_copy.name + "----" + str(name_counter)
-                    new_step_name[step.name]=step_copy.name
+                    new_step_name[temp_name]=step_copy.name
                     name_counter += 1
                     trStep = self.create_tr_step(step_optimizer, [], step_copy)
                     created_tr_step = False
@@ -756,15 +757,29 @@ class handle_entities:
                     else:
                         print("LOGGING:Did not create a tr step for ", step.name)
         temp=trSteps
+        print("LOGO=",temp)
         for ind,step in enumerate(temp):
+            print("PSARRAKOS=",step.nextTrStep)
+            print("PSARAAKOS2=",new_step_name.keys())
             if step.nextTrStep in new_step_name.keys():
                 print("LOGGING:Changing next step name from ",step.nextTrStep," to ",new_step_name[step.nextTrStep])
                 trSteps[ind].nextTrStep=new_step_name[step.nextTrStep]
         temp = looping_steps
+        print("LOGO=", temp)
         for ind,step in enumerate(temp):
+            print("PSARRAKOS=", step.nextTrStep)
+            print("PSARAAKOS2=", new_step_name.keys())
             if step.nextTrStep in new_step_name.keys():
                 print("LOGGING:Changing next step name from ",step.nextTrStep," to ",new_step_name[step.nextTrStep])
                 looping_steps[ind].nextTrStep=new_step_name[step.nextTrStep]
+        if primary_in_loop_tr_step!="":
+            if primary_in_loop_tr_step.nextTrStep in new_step_name.keys():
+                print("LOGGING:Changing next step name from ",primary_in_loop_tr_step.nextTrStep," to ",new_step_name[primary_in_loop_tr_step.nextTrStep])
+                primary_in_loop_tr_step.nextTrStep=new_step_name[primary_in_loop_tr_step.nextTrStep]
+        if primary_tr_step!="":
+            if primary_tr_step.nextTrStep in new_step_name.keys():
+                print("LOGGING:Changing next step name from ",primary_tr_step.nextTrStep," to ",new_step_name[primary_tr_step.nextTrStep])
+                primary_tr_step.nextTrStep=new_step_name[primary_tr_step.nextTrStep]
 
         if trSteps==[] and looping_steps==[] and primary_in_loop_tr_step=="" and primary_tr_step=="":
             print("ERROR:Unable to find any kind of training steps for ",trSessionName)
