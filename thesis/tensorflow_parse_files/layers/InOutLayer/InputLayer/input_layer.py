@@ -4,7 +4,6 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class input_layer(in_out_layer):
 
     def insert_in_annetto(self):
-        #print("Annetto::input_layer-", self.name)
         super(input_layer, self).insert_in_annetto()
         for elem in self.next_layer:
             rdfWrapper.new_next_layer(self.name, elem)

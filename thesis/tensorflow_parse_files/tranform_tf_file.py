@@ -37,7 +37,6 @@ def handle_imported_files(proj,prod_files):
 
         for produced_file in produced_files_one_file:
             prod_files.append(produced_file)
-        print("PRODUCED FILES MADAFAKA ARE =",prod_files)
         import ntpath
         real_path=ntpath.basename(str(path))
         if found==True:
@@ -47,7 +46,6 @@ def handle_imported_files(proj,prod_files):
                 f.write(elem)
             f.close()
         os.chdir(str(dir_))
-    print("MADAFAKA RETURNING ",prod_files)
     return prod_files
 
 def parse_file(path,tf_run_app,proj):
@@ -78,16 +76,12 @@ def check_if_already_executed(path,proj):
     no_execution=False
     for ind, line in enumerate(open(path, errors="replace")):
         if "_sEssIOn_" in line:
-            #print("LINE=", line)
-            #print("LINE=", line.split('\'')[1])
             prod_files.append(line.split('\'')[1].split('.')[0])
             no_execution = True
         line_list.append(line)
     for filepath in proj:
         for ind, line in enumerate(open(filepath, errors="replace")):
             if "_sEssIOn_" in line:
-                #print("SessionLINE=", line)
-                #print("LINE=", line.split('\'')[1])
                 prod_files.append(line.split('\'')[1].split('.')[0])
                 no_execution = True
 
@@ -171,7 +165,7 @@ def find_epoch_size(line_list,file_path):
         if found_run==True:
             if done_with_continuous==False and line not in line_of_sess_run:
                 line_of_sess_run+=line
-                print("Continuous line for sess run ", line_of_sess_run)
+                #print("Continuous line for sess run ", line_of_sess_run)
             if "feed_dict" in line:
                 found_model_line = 1
         if found_model_line == 1:
@@ -200,7 +194,7 @@ def find_epoch_size(line_list,file_path):
                             is_co_train=True
                         if "_sEssIOn_" in new_line_list[temp_ind]:
                             file_replace=new_line_list[temp_ind].split('\'')[1].split('.')[0]
-                            print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
+                            #print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
                             reg = r'\[[\s\S]*\]'
                             new_line_list[temp_ind] = re.sub(reg, '[' + str(session_counter) + ']',
                                                              new_line_list[temp_ind])
@@ -237,7 +231,7 @@ def find_epoch_size(line_list,file_path):
                             temp_sess = session_for_ind
                         else:
                             temp_sess=session_for_ind+1
-                        print("before1=",new_line_list[temp_sess])
+                        #print("before1=",new_line_list[temp_sess])
                         if "total_session_abc.close()" in new_line_list[session_for_ind]:
                             session_for_ind+=1
                         while new_line_list[temp_sess].isspace()==True:
@@ -259,13 +253,11 @@ def find_epoch_size(line_list,file_path):
                         before_sess_run += 3
                     files_added+=1
                     (write_file, write_file_line, write_file_batch,temp_list, name)=prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path)
-                    #print("POUSTH4=", new_line_list[before_sess_run])
                     (prod_file,new_line_list)=append_file_lines(name,line_of_sess_run, \
                                       new_line_list,temp_list,line_list_for_feed, \
                                       write_file,write_file_line,write_file_batch,write_ind,
                                       before_sess_run,num_of_space,files_added)
                     produced_files.append(prod_file)
-                    print("=",produced_files)
                     found_sess=True
                     found_model_line=0
     if last_line_run==True or close_!="":
@@ -302,7 +294,7 @@ def find_number_of_fors(ind_,line_list):
                 for_space=-1
                 session_for = 0
             if line.replace(" ","").startswith("for")==True:
-                print("File=",line)
+                #print("File=",line)
                 if first_time==True:
                     first_time=False
                     ret_for_space=num_of_space
@@ -482,12 +474,6 @@ def create_code_for_pbtxt_and_tensorboard(path,file):
     return_list.append(str_5)
     return_list.append(str_6)
     return (return_list)
-
-
-def handle_evaluation_score(filePath):
-    print("Path is:",filePath)
-
-
 
 def end_loop(cnt,line,number_of_fors,found_total_session):
     if found_total_session==False:

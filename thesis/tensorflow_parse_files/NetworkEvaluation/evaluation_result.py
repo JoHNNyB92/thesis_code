@@ -3,7 +3,6 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class evaluation_result(network_evaluation):
 
     def insert_in_annetto(self):
-        #print("Annetto::evaluation_result-", self.name)
         if self.metric!="":
             rdfWrapper.new_named_individual(self.name)
             rdfWrapper.new_type(self.name,self.type)

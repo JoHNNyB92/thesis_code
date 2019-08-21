@@ -165,7 +165,6 @@ with open('github/github.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
     cnt___=0
-    file_counter=0
     for url in csv_reader:
         #print("LOGGING:Url for repository is ",url[0])
         repository_path=github.get_github_repository(url[0])
@@ -176,7 +175,13 @@ with open('github/github.csv') as csv_file:
         function_files=[]
         file_import_dict={}
         #if True==True:
-        if "..\git_repositories_temp/test_repository_splitted_4" in code_repository:
+
+        file_counter =0
+        with open("counter.txt", "r") as ins:
+            for line in ins:
+                file_counter=int(line.replace("\n",""))
+        if True==True:
+        #if "..\git_repositories_temp/test_repository_splitted_21" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -249,12 +254,20 @@ with open('github/github.csv') as csv_file:
                         import ntpath
                         session_dict=handle_lines_and_info.find_next_session_and_step(session_dict,[x.replace(".info","") for x in timeList])
                         session_dict=handle_lines_and_info.update_inner_epochs(session_dict)
+                        temp_dict=session_dict.copy()
+                        new_dict={}
                         for sess in session_dict.keys():
+                            new_dict[sess.replace("\\","_").replace("/","_").replace(" ","_")]=session_dict[sess]
+                            new_dict[sess.replace("\\","_").replace("/","_").replace(" ","_")].remove_unsupported_chars()
                             print("\n\n----------------------------------------------")
                             print("About to see info for ",sess)
-                            session_dict[sess].print()
+                            new_dict[sess.replace("\\","_").replace("/","_").replace(" ","_")].print()
                             print("----------------------------------------------\n\n")
-                        handler_entities.find_training(session_dict)
+                        handler_entities.find_training(new_dict)
                         file_counter=tensorflow_parser.insert_in_annetto()
+                        f = open("counter.txt", "w")
+                        f.write(str(file_counter))
+                        f.close()
                         print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 
+            break

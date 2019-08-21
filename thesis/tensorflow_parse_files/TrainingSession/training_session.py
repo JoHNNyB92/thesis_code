@@ -5,7 +5,6 @@ class training_session:
     def insert_in_annetto(self):
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
-        print("ALOKOTA PRAMATA")
         if self.hasTrainingStep!=[]:
             for ind,tr_step in enumerate(self.hasTrainingStep):
                 tr_step.insert_in_annetto()
@@ -44,3 +43,5 @@ class training_session:
             print("LOGGING:Training:Simple training step:", trainingStep.name)
             print("LOGGING:Training:Step epochs:", trainingStep.epochs)
             print("LOGGING:Training:Step batch:", trainingStep.batch)
+
+

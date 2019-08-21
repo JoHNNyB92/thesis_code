@@ -3,7 +3,6 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class trained_model:
 
     def insert_in_annetto(self):
-        #print("Annetto::trained_model-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         for weight in self.has_weight:

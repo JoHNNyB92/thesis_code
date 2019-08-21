@@ -1,7 +1,6 @@
 import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class network:
     def insert_in_annetto_netwr(self):
-        #print("Annetto::Network-",self.name)
         rdfWrapper.new_named_individual(self.name)
         temp_dict_layer=self.layer.copy()
         for elem in temp_dict_layer.keys():

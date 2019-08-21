@@ -3,7 +3,6 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class training_step:
 
     def insert_in_annetto(self):
-        #print("Annetto::training_step-", self.name)
         rdfWrapper.new_named_individual(self.name)
         rdfWrapper.new_type(self.name, self.type)
         if self.nextTrStep!="":
@@ -20,4 +19,4 @@ class training_step:
 
     def __init__(self,name):
         self.name=name
-        self.type="TraininStep"
+        self.type="TrainingStep"

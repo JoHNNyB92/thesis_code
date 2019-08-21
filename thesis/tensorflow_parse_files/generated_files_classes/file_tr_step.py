@@ -11,6 +11,9 @@ class file_tr_step:
         self.network=""
         self.next_file=""
 
+    def remove_unsupported_chars(self):
+        self.name=self.name.replace("\\","_").replace("/","_").replace(" ","_")
+        self.next=self.next.replace("\\","_").replace("/","_").replace(" ","_")
 
     def print(self):
         print("--------------------------------------------------")

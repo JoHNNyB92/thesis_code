@@ -17,5 +17,4 @@ class maxpool_layer(layer):
         self.output_nodes = []
         self.find_output_node(self.name)
         self.update_dicts()
-        #print("LOGGING:CLASS INFORMATION:",self.type, ":Name:", self.name, "\nInput Nodes:", set(self.input), "\nOutput Nodes:", set(self.output_nodes))
 

@@ -14,3 +14,9 @@ class file_training_session:
         for st in self.steps:
             print("LOGGING:Step:[",st.name,"]")
             st.print()
+
+    def remove_unsupported_chars(self):
+        self.name=self.name.replace("\\", "_").replace("/", "_").replace(" ","_")
+        self.next_session=self.next_session.replace("\\", "_").replace("/", "_").replace(" ","_")
+        for st in self.steps:
+            st.remove_unsupported_chars()

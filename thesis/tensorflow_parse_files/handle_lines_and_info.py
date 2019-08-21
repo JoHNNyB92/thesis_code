@@ -9,11 +9,8 @@ def get_output_networks(sess_run):
         optimizer=sess_run.split(".")[0].replace("-","")
         network_list.append(optimizer)
         return network_list
-    #print("0=",sess_run)
-    #print("1=",sess_run.split('sess.run('))
     if 'fetches=' in sess_run.replace(" ",""):
         sess_run=sess_run.replace("fetches=","")
-    #print("2=",sess_run.split('sess.run(')[1].split(","))
     comma_separated=sess_run.replace(" ","").split('sess.run(')[1].split(",")
     complex=False
     for elem in comma_separated:
@@ -23,8 +20,6 @@ def get_output_networks(sess_run):
                 network_list.append(elem[1:])
             if elem.count("[") < elem.count("]"):
                 network_list.append(elem[:-1])
-    #if complex==True:
-        #print(":Networks List=",network_list)
     if complex==False:
         networks = sess_run.split('sess.run(')[1].split(",")[0].replace(" ", "")
         network_list.append(networks.split(",")[0])
@@ -60,14 +55,12 @@ def handle_batch(content):
     return batches_list
 
 def handle_network_var(value):
-    #print("Value is ",value)
     if value.startswith("["):
         value=value.replace("[","").replace("]","").split(",")
         elem_lst={}
         elem_lst["L"] = []
         elem_lst["O"] = []
         for val in value:
-            #print("Value is ", val)
             if "Tensor" in val:
                 n_value = val.split("Tensor")[1].split("'")[1]
                 elem_lst["L"].append(n_value)
@@ -88,7 +81,6 @@ def handle_network_var(value):
 def handle_input_var(value,isDict=False,nVal=""):
     if isDict==True:
         value=value.replace(" ","")[1:-1]
-        #print('list_val=',value)
         list_val=value.split(",")
         for elem in list_val:
             if elem.split(":")[0]==nVal:
@@ -112,7 +104,6 @@ def search_feed_dict(feed_dict,key,value,inputs):
             outer_var=input.split("[")[0]
         else:
             n_input=input
-        #print("KEY=",key)
         if outer_var!="":
             if outer_var==key:
                 in_ = handle_input_var(value,True,n_input)
@@ -145,9 +136,7 @@ def handle_info(content,networks,feed_dict):
                 import sys
                 print("ERROR:Unable to handle objects that refer are class members")
                 sys.exit()
-            #print(":Network=",network)
             if n_network==key:
-                #print("KEY=",key,"-",n_network)
                 (case,n_value)=handle_network_var(value)
                 if case=="L":
                     loss.append(n_value)
@@ -171,7 +160,6 @@ def handle_info(content,networks,feed_dict):
                 vars=vars[1:]
                 for var in vars:
                     inputs.append(var.split("'")[1].split(":")[0])
-    #print("Returning inputs=",inputs)
     return(loss,optimizer,inputs)
 
 
@@ -191,7 +179,6 @@ def handle_lines_and_info(files,pathlistInfo,pathlistLine,pathlistBatch,pathlist
         for file in pathlistLine:
             print("LOGGING:Begin searching for ",file)
             if  session_name in str(file) :
-                #print("Found line-file : ",file)
                 with open(str(file), 'r') as content_file:
                     content = content_file.read()
                     (feed_dict,networks,epoch)=handle_lines(content)
