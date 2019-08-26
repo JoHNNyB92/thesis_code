@@ -7,7 +7,7 @@ import handle_lines_and_info
 import csv
 from modulefinder import ModuleFinder
 
-def code_in_one_file(file,subdir,file_counter):
+def handle_main_file(file,subdir,file_counter):
     found_network=False
     total_path = os.path.join(subdir, file)
     result=""
@@ -160,13 +160,12 @@ def check_lists(pathList,suffix,produced_files,log=0):
                 break
     return retPathList
 
-
+#Beginning of thesis
 with open('github/github.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
     cnt___=0
     for url in csv_reader:
-        #print("LOGGING:Url for repository is ",url[0])
         repository_path=github.get_github_repository(url[0])
         code_repository=github.folder+github.dirName+"/"+repository_path
         windows=github.folder + github.dirName + "\\" + repository_path+"\\"
@@ -174,14 +173,15 @@ with open('github/github.csv') as csv_file:
         main_files=[]
         function_files=[]
         file_import_dict={}
-        #if True==True:
-
+        #File counter is needed in order to insert layers into annetto with distinct names.
+        #For example two networks may have a FC layer with name add,the insertion should be able to give them different names
+        #add234 and add124.For each item inserted it increases the counter,thus each item inserted gets a new number added
+        #to the original name.
         file_counter =0
         with open("counter.txt", "r") as ins:
             for line in ins:
                 file_counter=int(line.replace("\n",""))
         if True==True:
-        #if "..\git_repositories_temp/test_repository_splitted_21" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -194,11 +194,13 @@ with open('github/github.csv') as csv_file:
             pathlist = Path(code_repository).glob('**/*.py')
             skip=False
             for path in pathlist:
-                # because path is object not string
+                #Βecause path is object not string.
                 path_in_str = str(path)
                 imported=find_imports(path_in_str)
                 import ntpath
                 subdir=ntpath.dirname(path_in_str)
+                #Identify the structure of the code ,by finding out possible main files(files do not included anywhere)
+                #and function files.
                 print("\nLOGGING:Begin searching for ",path_in_str,"with imported ",imported,"\n")
                 repo_files_imp=handle_file_with_imports(imported,files)
                 import_paths=[]
@@ -211,11 +213,12 @@ with open('github/github.csv') as csv_file:
                                 break
                     function_files.append(str(trans[t_key]))
                     import_paths.append(str(trans[t_key]))
-                print("LOGGING:Imported files are  = ",import_paths)
+                print("LOGGING:Imported files are ",import_paths)
                 file_import_dict[str(path)] = import_paths
             pathlist = Path(code_repository).glob('**/*.py')
             for path in pathlist:
-                if str(path) not in function_files and "__init__" not in str(path):#and "11_" in str(path):
+                #Iterate over all posible main files.Disregard included files and __init__ files
+                if str(path) not in function_files and "__init__" not in str(path):
                     used_files=file_import_dict[str(path)]
                     project_structure=[]
                     while used_files!=[]:
@@ -229,8 +232,7 @@ with open('github/github.csv') as csv_file:
                                             if x!=[]:
                                                 tmp.append(x)
                             used_files=tmp
-
-                    (result,found_network,handler_entities,produced_files)=code_in_one_file(str(path),subdir,file_counter)
+                    (result,found_network,handler_entities,produced_files)=handle_main_file(str(path),subdir,file_counter)
                     produced_files=[m for m in produced_files if "sEssIOn" in m]
                     print("LOGGING:Produced files are ",produced_files)
                     if found_network == True:
