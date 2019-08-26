@@ -1,5 +1,6 @@
 from layers.layer import layer
 import nodes.handler
+
 class maxpool_layer(layer):
 
     def update_dicts(self):

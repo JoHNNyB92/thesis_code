@@ -20,7 +20,6 @@ class deconv2d_layer(layer):
 
     def __init__(self,input,kernel,node,biasAdd):
         super(deconv2d_layer, self).__init__(node, node.get_name(),True)
-        #Add input to intermediate layers in handler
         self.input_layer=input
         self.kernel=kernel
         self.type="DeconvolutionLayer"
@@ -29,6 +28,5 @@ class deconv2d_layer(layer):
         self.find_output_node(self.biasadd)
         self.dense_layer_name = ""
         self.update_dicts()
-        #print("LOGGING:CLASS INFORMATION:",self.type, ":Name:", self.name, "\nInput Nodes:", set(self.input), "\nOutput Nodes:", set(self.output_nodes))
 
 

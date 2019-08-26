@@ -6,10 +6,12 @@ import nodes.handler
 from handle_entities import handle_entities
 import print_info
 
+#NodeClass object contains the pbtxt nodes produced by the tensorflow program.
 def put_in_map(node):
     inputs=[]
     nodes.handler.entitiesHandler.node_map[node.name] = nodeClass(node, inputs)
 
+#Create a map to store the nodeClass objects identified from pbtxt file.
 def put_inputs_in_map(node):
     inputs = []
     for elem in node.input:

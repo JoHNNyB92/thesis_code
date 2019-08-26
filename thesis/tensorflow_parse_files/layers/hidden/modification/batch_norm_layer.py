@@ -21,4 +21,3 @@ class batch_norm_layer(layer):
         super(batch_norm_layer, self).__init__(node, name, False, True)
         self.find_output_node(self.name)
         self.update_dicts()
-        #No reason to search for input nodes

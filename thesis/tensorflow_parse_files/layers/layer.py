@@ -110,7 +110,7 @@ class layer:
         for input_name in set(self.input):
             if input_name!=self.name:
                 if input_name in layers.keys() and input_name!=self.name :
-                    print("Immediate connection found between ", input_name, " and ", self.name)
+                    #print("Immediate connection found between ", input_name, " and ", self.name)
                     input_node=nodes.handler.entitiesHandler.node_map[input_name]
                     self.previous_layer.append(input_node.get_name())
                     if input_node.get_op()=='Placeholder':
@@ -121,25 +121,8 @@ class layer:
         for layer in layers.keys():
             layer_obj = layers[layer]
             elems_in_both_lists = set(layer_obj.output_nodes) & set(self.input)
-            #print("Check if output of ",layer_obj.name," and ",self.name," input have common elements.The result is ",elems_in_both_lists)
             if layer_obj.name != self.name and (self.name in layer_obj.output_nodes or len(elems_in_both_lists) != 0):
-            #if layer_obj.name != self.name and all(x in self.name.split("/") for elem in layer_obj.output_nodes for x in elem.split("/") or len(elems_in_both_lists) != 0):
-            #if layer_obj.name!= self.name and (self.name in layer_obj.output_nodes or  len(elems_in_both_lists)!=0):
                 found_in_other_layer=False
-                '''
-                for elem in elems_in_both_lists:
-                    if elem in layer_obj.output_intermediate_nodes:
-                        temp=layer_obj.output_intermediate_nodes[elem]
-                        while temp in layer_obj.output_intermediate_nodes:
-                            for layer in layers.keys():
-                                if temp in layers[layer].inner_nodes:
-                                    found_in_other_layer=True
-                                    temp=""
-                            if temp in layer_obj.output_intermediate_nodes:
-                                temp=layer_obj.output_intermediate_nodes[temp]
-                            else:
-                                temp=""
-                '''
                 if found_in_other_layer==False:
                     #Case of already added from above case
                     if layer_obj.name not in self.previous_layer:

@@ -15,7 +15,6 @@ class in_out_layer(layer):
         layer.find_output_node(self,name)
 
     def find_input_layer(self):
-        #print("FINDING INPUT LAYER OF IN/OUT=",self.name)
         layer.find_input_layer(self,self.node)
 
     def __init__(self,node):

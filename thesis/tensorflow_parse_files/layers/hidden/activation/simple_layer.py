@@ -33,8 +33,6 @@ class simple_layer(layer):
         self.input.append(self.matMul.get_name())
         self.next_layer=[]
         self.update_dicts()
-        #print("LOGGING:CLASS INFORMATION:",self.type, ":Name:", self.name, "\nInput Nodes:", set(self.input), "\nOutput Nodes:", set(self.output_nodes))
-
 
 
 

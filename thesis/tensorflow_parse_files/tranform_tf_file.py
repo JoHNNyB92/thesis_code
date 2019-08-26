@@ -41,7 +41,7 @@ def handle_imported_files(proj,prod_files):
         real_path=ntpath.basename(str(path))
         if found==True:
             f=open(real_path,'w')
-            print("Writing to file ",real_path," get=",os.getcwd())
+            print("LOGGING:Finished tranforming file,writing to file ",real_path," get=",os.getcwd())
             for elem in new_line_list:
                 f.write(elem)
             f.close()
@@ -139,7 +139,7 @@ def find_epoch_size(line_list,file_path):
         if ind_ == len(line_list) - 1:
             last_line = True
         if found_total_session==True:
-            print("LOGGING:Found total session it is Line=",line)
+            #print("LOGGING:Found total session it is Line=",line)
             if first_for_space>=line_space and (last_line==True or for_counter!=0) or first_for_space>line_space:
                 found_total_session = False
                 added_lines+=1
@@ -312,7 +312,7 @@ def find_number_of_fors(ind_,line_list):
         else:
             break
     if ret_for_ind==None:
-        print("LOGGING:Returning index for first for is none,no for presented.Line is ",line_list[prev_ind])
+        #print("LOGGING:Returning index for first for is none,no for presented.Line is ",line_list[prev_ind])
         ret_for_space=prev_num
         ret_for_ind=prev_ind
     #print("DEBUG RETURNING=IND",ret_for_ind," For_counter=",for_counter," ret_for_space=",ret_for_space," session that matters ",session_for)

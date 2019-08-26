@@ -1,6 +1,5 @@
 from layers.layer import layer
 
-
 class concat_layer(layer):
 
     def update_dicts(self):

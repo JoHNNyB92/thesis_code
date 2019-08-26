@@ -1,4 +1,11 @@
+
+'''
+Class that contains information retrieved from executing the neural network main python file for each training step.
+File contains extra commands to print those information into a different file.
+'''
+
 class file_tr_step:
+
     def __init__(self):
         self.name=""
         self.loss=[]
@@ -11,6 +18,7 @@ class file_tr_step:
         self.network=""
         self.next_file=""
 
+    #Change names that contain the folder separator(\\) with _.
     def remove_unsupported_chars(self):
         self.name=self.name.replace("\\","_").replace("/","_").replace(" ","_")
         self.next=self.next.replace("\\","_").replace("/","_").replace(" ","_")

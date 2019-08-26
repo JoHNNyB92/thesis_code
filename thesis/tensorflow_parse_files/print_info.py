@@ -5,7 +5,7 @@ def print_topology():
         print("ERROR:Program not a network finally")
         return "ERROR:This tensorflow program is not a network.0 layers were indentified."
 
-    print("\n Layers \n")
+    print("\nLOGGING:Layers \n")
     del_layers=[]
     for key in nodes.handler.entitiesHandler.data.annConfiguration.networks[curr].layer.keys():
         print("_____________________________________________________________________________________")

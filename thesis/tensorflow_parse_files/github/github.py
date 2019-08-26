@@ -1,15 +1,19 @@
 import os
-import requests
-import json
 import git
+
+'''
+This is a file that performs the download of the repository that contains the neural network.
+If the folder is created,it does not re-download the repository.
+'''
+
 api_url = 'https://api.github.com'
-#search_url="https://api.github.com/search/repositories?q=simple+neural+networks+tensorflow+language:python&sort=stars&order=desc"
 proxy_url='https://10.144.1.10:8080'
 proxies = {
   'https': proxy_url
 }
 dirName = "git_repositories_temp"
 folder="..\\"
+
 def create_folder(dirName):
     try:
         # Create target Directory

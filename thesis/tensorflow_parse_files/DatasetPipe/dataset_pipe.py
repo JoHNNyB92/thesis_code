@@ -21,7 +21,6 @@ class dataset_pipe:
             self.name = node.get_name() + "_EVP_"+count
         self.type = "DatasetPipe"
         self.node=node
-        #self.find_datasets(type,helper)
 
     def find_datasets(self,type,helper):
         found = False

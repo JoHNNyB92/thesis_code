@@ -3,10 +3,10 @@ import nodes.handler
 
 class training_optimizer(algorithm):
 
+    #Retrieve learning rate.The value can be found in a node that has the optimizer_name+"/learning_rate"
     def find_learning_rate(self):
         nm = nodes.handler.entitiesHandler.node_map
         for key in nm.keys():
-            #if key.endswith("/learning_rate"):
             if key.endswith(self.name+"/learning_rate"):
                 self.learning_rate = nm[key].get_attr()["value"].tensor.float_val[0]
                 return
