@@ -48,13 +48,17 @@ def handle_imported_files(proj,prod_files):
         os.chdir(str(dir_))
     return prod_files
 
+#Parse file will parse the python file and it will replace the existing one with the new one that include changes
+#to force the print of information to obtain the graph and the training info
 def parse_file(path,tf_run_app,proj):
     path_to_folder=os.path.dirname(path)
     file=ntpath.basename(path)
     new_file=path_to_folder+"/"+file
+    #If the file was already executed,we just retrieve the file list of the produced files.
     (no_execution,line_list,produced_files)=check_if_already_executed(path,proj)
     if no_execution==True:
         return ("no execution",list(set(produced_files)))
+    #Here we perform the creation of the new file.
     new_line_list=create_new_file(line_list,path,file,tf_run_app)
     dir_ = os.getcwd()
     os.chdir(os.path.dirname(str(path)))
@@ -388,6 +392,7 @@ def create_new_file(line_list,path,file,tf_run_app):
     new_line_list=[]
     current_folder=os.getcwd()
     found_main=0
+    #Create the lines for the pbtxt file.
     return_list=create_code_for_pbtxt_and_tensorboard(path, file)
     if tf_run_app == True:
         found_def_main=False
@@ -443,6 +448,7 @@ def create_new_file(line_list,path,file,tf_run_app):
     os.chdir(current_folder)
     return new_line_list
 
+#Python code for pbtxt into specific folder _tensorflow\pbtxt with main file name+pbtxt.
 def create_code_for_pbtxt_and_tensorboard(path,file):
     backwards_dir = ""
     real_path = os.path.dirname(path)

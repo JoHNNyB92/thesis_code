@@ -21,6 +21,8 @@ def handle_main_file(file,subdir,file_counter):
             has_tf_app_run=False
             has_def_main=False
             has_interactive=False
+            #Python has many way to implement the main function.Each one requires different handling,
+            #as we must put the graph-to-pbtxt function just before the program ends.
             if "tf.InteractiveSession" in myfile.read():
                 has_interactive=True
             myfile.seek(0)
@@ -44,6 +46,8 @@ def handle_main_file(file,subdir,file_counter):
                 tf_run_app=False
                 if (has_def_main==True and has_tf_app_run==True):
                     tf_run_app=True
+                #We need to parse and tranform the code(add outputs to be printed in files to retrieve network graph,batch,epochs,session
+                #information etc).
                 (result,produced_files)= tranform_tf_file.parse_file(file,tf_run_app,project_structure)
                 os.chdir(path)
                 if "error" in result:
