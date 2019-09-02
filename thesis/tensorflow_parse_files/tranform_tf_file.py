@@ -221,6 +221,10 @@ def find_epoch_size(line_list,file_path):
                         if "feed_dict=" in new_line_list[temp_ind] and num_of_space!=prev_line_space \
                                 and ")" in new_line_list[temp_ind]:
                             is_co_train=True
+                        #Each file name contains a number,the identification that will be used in order to separate
+                        #which training step belongs to which session.Each name will have a prefix that will be the path
+                        #to the file,it will be followed with a number to show which training steps are co-trained or belong
+                        #to the same session.
                         if "_sEssIOn_" in new_line_list[temp_ind]:
                             file_replace=new_line_list[temp_ind].split('\'')[1].split('.')[0]
                             reg = r'\[[\s\S]*\]'
@@ -231,15 +235,21 @@ def find_epoch_size(line_list,file_path):
                                 produced_files.remove(file_replace)
                                 files_replace.append(file_replace)
                                 produced_files.append(new_file)
+                        #No for before sess.run case
                         if session_fors == 0:
                             if "total_session_abc=open" in new_line_list[temp_ind - 1].replace(" ","") or found_total_session==False:
                                 first_time = True
                                 no_rep = True
                                 write_space = first_for_space
                                 write_ind = session_for_ind+1
+                        #For encountered,need increase counter of fors.
                         elif new_line_list[temp_ind].replace(" ", "").startswith("for"):
                             for_counter += 1
                             for_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                            #Check whether the indentation of for is smaller than the indentation for sess run
+                            #if yes and first time for for is true we save the index of the line.The index will be either
+                            #the index(if the session was found) or plus 1 if the session is currently been processed(one extra
+                            #line added for opening the file for writing for a session)
                             if num_of_space > for_space and first_time==False:
                                 first_time=True
                                 if found_total_session==False:
@@ -247,10 +257,11 @@ def find_epoch_size(line_list,file_path):
                                 else:
                                     write_ind = temp_ind
                                 write_space = len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                        #Main loop iterator.We iterate backwards.
                         temp_ind-=1
                         prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
+                    #We encountered new session
                     if found_total_session==False:
-
                         found_total_session=True
                         total_session = "_temporary_" + file.replace(".py","") + "_" + "_sEssIOn_[" + str(
                             session_counter) + "]_" + str(
@@ -259,20 +270,28 @@ def find_epoch_size(line_list,file_path):
                             temp_sess = session_for_ind
                         else:
                             temp_sess=session_for_ind+1
-                        #print("before1=",new_line_list[temp_sess])
                         if "total_session_abc.close()" in new_line_list[session_for_ind]:
                             session_for_ind+=1
+                        #Skip the empty lines.
                         while new_line_list[temp_sess].isspace()==True:
                             temp_sess+=1
                         temp_space= len(new_line_list[temp_sess]) - len(new_line_list[temp_sess].lstrip(' '))
                         produced_files.append(total_session)
+                        #New file to write session info
                         open_=(first_for_space)* " " + "total_session_abc = open('" + total_session + "', 'w')\n"
+                        #For every session required to train neural network(s),we write ----| in the file.
+                        #Later it will be used to perform a split to the string,in order to count the amount of sessions
+                        #executed.
                         write_=(temp_space)* " " + "total_session_abc.write('----|')\n"
+                        #Close session file.
                         close_=(first_for_space)* " " + "total_session_abc.close()\n"
+                        #Place to append the opening of the file .It will be placed before the outer for
                         new_line_list = new_line_list[:session_for_ind] + [open_] + new_line_list[session_for_ind:]
+                        #Place the writing of the file before inner for.
                         new_line_list = new_line_list[:temp_sess+1] + [write_] + new_line_list[ temp_sess+1:]
                         if session_fors%2!=1:
                             write_ind += 1
+                        #5 added lines ,need to be included in the new index pointing at line with the sess.run
                         before_sess_run+=5
                     else:
                         reg = r'\[[\s\S]*\]'
@@ -280,6 +299,7 @@ def find_epoch_size(line_list,file_path):
                                                          new_line_list[temp_ind])
                         before_sess_run += 3
                     files_added+=1
+                    #Prepare the other file lines.
                     (write_file, write_file_line, write_file_batch,temp_list, name)=prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path)
                     (prod_file,new_line_list)=append_file_lines(name,line_of_sess_run, \
                                       new_line_list,temp_list,line_list_for_feed, \
@@ -387,6 +407,11 @@ def handle_feed_dict(line,num_of_space):
 
 def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_path):
     file=file.replace(".py","")
+    #If co train variable is true we need to change the name of the files to be written.Co train means there is a training loop.
+    #   -.info file: Will contain a dictionary with all the variables up until this point of the program.
+    #   -.lines file: Number of session represented by ----,the line that has sess.run
+    #   -.batch file: Feed dict inputs value. Up to this point the placeholder would contain the batch,thus the dimension regarding
+    #               batch size would be accesible.
     if is_co_train == True:
         write_file = "_temporary_" + file + "_" + "_sEssIOn_[" + str(session_counter) + "]_co_train_" + str(
             session_counter) + ".info"
@@ -409,6 +434,7 @@ def prepare_lists_and_lines(is_co_train,file,session_counter,write_space,file_pa
     return (write_file,write_file_line,write_file_batch,temp_list,name)
 
 def append_file_lines(name,line_of_sess_run,new_line_list,temp_list,line_list_for_feed,write_file,write_file_line,write_file_batch,write_ind,before_sess_run,num_of_space,files_written):
+    #Append the created lists.
     new_line_list = new_line_list[:write_ind] + temp_list + new_line_list[write_ind:]
     line_list_for_feed = [x.replace("FILE", write_file_batch) for x in line_list_for_feed]
     new_line_list = new_line_list[:before_sess_run] + line_list_for_feed + new_line_list[before_sess_run:]
