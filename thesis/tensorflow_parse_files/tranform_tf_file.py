@@ -24,17 +24,18 @@ def execute_file(new_file,new_line_list,path_to_folder):
     except subprocess.CalledProcessError as e:
         return "error"
 
+#Start the handling of the files that are not main files.
 def handle_imported_files(proj,prod_files):
     print("LOGGING:Started searching for project included files")
-
     for path in proj:
         line_list=[]
         for line in open(path, errors="replace"):
             line_list.append(line)
         dir_ = os.getcwd()
         os.chdir(os.path.dirname(str(path)))
+        #Handle each function file and find if there is a sess run and place lines accordingly.
         (new_line_list,found,produced_files_one_file)=find_epoch_size(line_list,str(path))
-
+        #Keep produced file names.
         for produced_file in produced_files_one_file:
             prod_files.append(produced_file)
         import ntpath
@@ -62,6 +63,7 @@ def parse_file(path,tf_run_app,proj):
     new_line_list=create_new_file(line_list,path,file,tf_run_app)
     dir_ = os.getcwd()
     os.chdir(os.path.dirname(str(path)))
+    #Start the transformation of the main file,in case a sess run is presented.
     (new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
     os.chdir(str(dir_))
     produced_files=handle_imported_files(proj,produced_files)
@@ -94,8 +96,8 @@ def check_if_already_executed(path,proj):
 
 
 def find_epoch_size(line_list,file_path):
+    #Multiple variables needed for the file handling.
     new_line_list = []
-    cnt=0
     found_model_line=0
     num_of_space=0
     found_sess=False
@@ -105,7 +107,6 @@ def find_epoch_size(line_list,file_path):
     found_run=False
     produced_files=[]
     multiple_line_comm=False
-    multiple_line_sentence_space=-1
     session_counter=0
     added_lines=0
     before_sess_run=0
@@ -119,16 +120,23 @@ def find_epoch_size(line_list,file_path):
     multiple_line_sentence_space=0
     files_replace=[]
     done_with_continuous=True
+    #######################################
+
     for ind_,line in enumerate(line_list):
         new_line_list.append(line)
+        #Number of spaces before the first letter(indentation)
         line_space=len(line) - len(line.lstrip(' '))
+        #In case of empty line,continue with the next line.
         if line.isspace() == True or line.replace(" ","").startswith("#")==True:
             continue
+            #if line has less right or left parenthesis and we are not alredy in multiple line,make variable true
+            #and save line counter of the multiple line sentence
         if (line.replace(" ","").endswith("\\") or line.count("(")!=line.count(")")) and multiple_line_comm==False:
             multiple_line_comm=True
             multiple_line_sentence_counter=len(new_line_list)-1
             multiple_line_sentence_space=line_space
             done_with_continuous=False
+        #Check if we are in multiple line sentence  and if this mutiple line is sentence based on the indentation
         elif multiple_line_comm==True and multiple_line_sentence_space>=line_space:
             new_line_list[-1]=new_line_list[-1]+"\n"
             done_with_continuous=True
@@ -139,11 +147,11 @@ def find_epoch_size(line_list,file_path):
                 multiple_line_sentence_counter = len(new_line_list) - 1
                 multiple_line_sentence_space = line_space
                 done_with_continuous = False
-                #print("NOTBACKTONORMA:=", line)
         if ind_ == len(line_list) - 1:
             last_line = True
+            #Found total session indicated that we have found a largest session containing the steps,the indentation changed,
+            #thus the file opened for session(to write session epochs) needs to be closed
         if found_total_session==True:
-            #print("LOGGING:Found total session it is Line=",line)
             if first_for_space>=line_space and (last_line==True or for_counter!=0) or first_for_space>line_space:
                 found_total_session = False
                 added_lines+=1
@@ -152,14 +160,24 @@ def find_epoch_size(line_list,file_path):
                 else:
                     new_line_list = new_line_list[:-1] + [close_] + new_line_list[-1:]
                     close_=""
+        #If we found a .run line and it is not part of a multiline command,we have to set the value
+        #to false.
         if found_run==True and multiple_line_comm==False:
             found_run=False
+        #Case of .run:
         if ".run" in line:
+            #Store some information for the sess.run line.It requires different handling for commands extending beyond
+            #one line.
             if multiple_line_comm==False:
+                #If false,keep current line information.
+                #Indentation
                 num_of_space = len(line) - len(line.lstrip(' '))
+                #Line text
                 line_of_sess_run=line
                 found_run=True
+                #Added lines counter
                 added_lines = len(new_line_list) - ind_ - 1
+                #Keep current index.
                 before_sess_run=ind_+added_lines
             else:
                 num_of_space = multiple_line_sentence_space
@@ -167,38 +185,44 @@ def find_epoch_size(line_list,file_path):
                 found_run = True
                 before_sess_run = multiple_line_sentence_counter
         if found_run==True:
+            #If continuous line command reached line where brackets are closed.
             if done_with_continuous==False and line not in line_of_sess_run:
                 line_of_sess_run+=line
-                #print("Continuous line for sess run ", line_of_sess_run)
             if "feed_dict" in line:
                 found_model_line = 1
+        #If we found sess run with a feed dict
         if found_model_line == 1:
             if (line.replace("\n", "").endswith(')')== True or "}" in line):
                 line_of_sess_run=line_of_sess_run.replace("\n", "").replace(" ", "")
+                #Line that contains feed dict,we handle it and retrieve variables such as optimizer,input,batch variable
                 line_list_for_feed = handle_feed_dict(line_of_sess_run, num_of_space)
+                #If this is the last line and it does not end with a dot,meaning next line is part of this line.
                 if ind_+1 >=len(line_list) or line_list[ind_ + 1][0].replace(" ","") != ".":
                     added_lines = len(new_line_list) - ind_-1
                     temp_ind = ind_ + added_lines
                     prev_line_space=len(new_line_list[temp_ind]) - len(new_line_list[temp_ind].lstrip(' '))
-                    #before_sess_run
-                    #prev_line_space = len(new_line_list[before_sess_run]) - len(new_line_list[before_sess_run].lstrip(' '))
                     is_co_train=False
                     session_counter+=1
                     for_counter=0
                     write_ind=0
                     write_space=0
                     first_time=False
+                    #First time we encounter a run,start of a new session.
                     if found_total_session==False:
                         (number_of_fors,session_for_ind,first_for_space,session_fors)=find_number_of_fors(temp_ind,new_line_list)
                     no_rep=False
                     temp_ind=before_sess_run-1
                     while end_loop(for_counter,new_line_list[temp_ind],number_of_fors,found_total_session) ==False and no_rep==False:
+                        #If feed dict is encountered in previous lines before current sess run and the indentation
+                        # of this sess run is different,we need to make the variable for co
+                        #train as true.That indicates that there is another neural network being trained in the same loop
+                        # as part of the annett-o entity for training loop.We will need to name the training steps that
+                        #are primary/simple with a different name in order to distinguish them.
                         if "feed_dict=" in new_line_list[temp_ind] and num_of_space!=prev_line_space \
                                 and ")" in new_line_list[temp_ind]:
                             is_co_train=True
                         if "_sEssIOn_" in new_line_list[temp_ind]:
                             file_replace=new_line_list[temp_ind].split('\'')[1].split('.')[0]
-                            #print("FOUND SESSION WITH REGEXP=",new_line_list[temp_ind])
                             reg = r'\[[\s\S]*\]'
                             new_line_list[temp_ind] = re.sub(reg, '[' + str(session_counter) + ']',
                                                              new_line_list[temp_ind])
@@ -279,18 +303,22 @@ def find_number_of_fors(ind_,line_list):
     prev_num=-1
     prev_ind=-1
     for ind,line in enumerate(line_list):
+        #Iterate until the line the sess run occured.
         if ind<=ind_:
             num_of_space = len(line) - len(line.lstrip(' '))
             tmp_line=line.replace(" ","")
-            #maybe need fix,covers only with/if case.
+            #Any change of the indentation needs to be monitored.
             if tmp_line.startswith("if") or tmp_line.startswith("with"):
                 prev_num=num_of_space
                 prev_ind=ind-1
+            #Fors_list_len has the number of spaces per each for.
             if fors_list_len!=[] and num_of_space<=fors_list_len[-1] and line.isspace()==False:
                 del fors_list_len[-1]
                 session_for -= 1
+            #We need to store basic information regarding the training of the network.
+            #We must find the number of spaces per space(we will store the previous number of spaces of the last for),
+            #the number of fors before sess.run and other information.
             if num_of_space <= for_space and line.isspace()==False and first_time==False:
-                #print("DEBUG:Find:Exited for = ", line,' __num_of_space= ',num_of_space," ____for_space= ",for_space)
                 first_time = True
                 for_counter = 0
                 ret_for_space = num_of_space
@@ -298,7 +326,6 @@ def find_number_of_fors(ind_,line_list):
                 for_space=-1
                 session_for = 0
             if line.replace(" ","").startswith("for")==True:
-                #print("File=",line)
                 if first_time==True:
                     first_time=False
                     ret_for_space=num_of_space
@@ -315,6 +342,7 @@ def find_number_of_fors(ind_,line_list):
                 for_counter+=1
         else:
             break
+    #No for before sess.run
     if ret_for_ind==None:
         #print("LOGGING:Returning index for first for is none,no for presented.Line is ",line_list[prev_ind])
         ret_for_space=prev_num
@@ -325,15 +353,25 @@ def find_number_of_fors(ind_,line_list):
 
 
 def handle_feed_dict(line,num_of_space):
+    #If feed dict is not present,it means there is a variable as a second argument.
     if "feed_dict=" not in line.replace(" ",""):
         feed_dict=line.replace(" ", "").split(",")[-1].replace(")","")
+    #Else split the line based on feed dict.
     else:
         feed_dict = line.split("feed_dict=")[1]
+        #If } is present,then argument of feed dict is of type
+        #feed_dict={a,x,v...,b}
         if "}" in feed_dict:
             feed_dict=feed_dict.split("}")[0].replace(" ","")+"}"
+        #Else the variable name is feed_dict
         else:
             feed_dict=feed_dict.replace(")","")
     before_list=[]
+    #We need to add some lines in order to be able tp retrieve the variables into feed dict.
+    #Thus we need just before the sess run to add the following lines.
+    #a)Open file
+    #b)Write dictionary elements into a file
+    #This is how we store the dictionary elements.
     before_list.append((num_of_space) * " " + "mYFiLe = open('FILE', 'w')\n")
     if "{" in feed_dict:
         before_list.append(num_of_space*" "+"FEED_DICT="+feed_dict+"\n")
@@ -387,7 +425,7 @@ def append_file_lines(name,line_of_sess_run,new_line_list,temp_list,line_list_fo
     new_line_list.append((num_of_space) * " " + "mYFiLe.close()\n")
     return(file,new_line_list)
 
-
+#Lines for creation of pbtxt file ,plus file as a list.
 def create_new_file(line_list,path,file,tf_run_app):
     new_line_list=[]
     current_folder=os.getcwd()
@@ -402,6 +440,8 @@ def create_new_file(line_list,path,file,tf_run_app):
         spaces_to_use=0
         only_once=False
         found_import_tf=False
+        #Based on case encountered,there is a different indentation/line number for the pbtxt file creation lines
+        #to be places.
         for ind, line in enumerate(line_list):
             if "import" in line and "tensorflow" in line:
                 found_import_tf=True
@@ -481,12 +521,17 @@ def create_code_for_pbtxt_and_tensorboard(path,file):
     return_list.append(str_6)
     return (return_list)
 
+#Function to check if the we must break tha main loop of the loop.
 def end_loop(cnt,line,number_of_fors,found_total_session):
+    #If this is the first for found
     if found_total_session==False:
+        #If the numbers of for before sess matched the ones we encounter while iterating over the line list
         if number_of_fors==cnt and number_of_fors!=0:
             return True
+    #If we hit the start of the writing for current session
     if ".total_session" in line and "= open(" in line:
         return True
+    #Previous session,closing of file used for previous session
     elif "total_session_abc.close()" in line:
         return True
     return False
