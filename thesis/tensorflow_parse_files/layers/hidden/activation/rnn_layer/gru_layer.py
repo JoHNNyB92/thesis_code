@@ -28,7 +28,7 @@ class gru_layer(rnn_layer):
 
     def __init__(self,node,name):
         super(gru_layer, self).__init__(node,name,False)
-        self.type="GRU"
+        self.type="GRULayer"
         self.name=name
         self.output_nodes = []
         self.find_input_node_complex()

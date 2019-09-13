@@ -7,4 +7,4 @@ class softmax(smooth):
 
     def __init__(self,node):
         super(softmax, self).__init__(node)
-        self.type="Softmax"
+        self.type="SoftMax"

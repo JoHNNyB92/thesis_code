@@ -13,7 +13,7 @@ class label_set(dataset):
         super(label_set, self).__init__(node)
         self.count=0
         self.name=node.get_name()+"_label_set"
-        self.type="LabelSet"
+        self.type="Labelset"
         for elem in self.node.get_output():
             for num in elem.dim:
                 '''
