@@ -11,4 +11,4 @@ class binary_cross_entropy(loss):
 
     def __init__(self, name,node):
         super(binary_cross_entropy, self).__init__(name, node)
-        self.type = "binaryCrossEntropy"
+        self.type = "BinaryCrossEntropy"
