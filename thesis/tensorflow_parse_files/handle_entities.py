@@ -287,7 +287,6 @@ class handle_entities:
         optKey=""
         for key in optimizer.keys():
             for sess in session.keys():
-                #print("1992INNER KEY OPTIMIZER=", sess)
                 trSession=session[sess]
                 for step in trSession.steps:
                     for opt in step.optimizer:

@@ -66,7 +66,9 @@ def parse_file(path,tf_run_app,proj):
     #Start the transformation of the main file,in case a sess run is presented.
     (new_line_list,_,produced_files)=find_epoch_size(new_line_list,path)
     os.chdir(str(dir_))
+    #Do the same for the files imported into
     produced_files=handle_imported_files(proj,produced_files)
+    #Execute file.
     result=execute_file(new_file,new_line_list,path_to_folder)
     if result=="error":
         print("ERROR:File contains inner error,cannot execute it.")

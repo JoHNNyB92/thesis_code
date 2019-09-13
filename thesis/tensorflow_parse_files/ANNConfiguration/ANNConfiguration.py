@@ -17,6 +17,6 @@ class ANNConfiguration:
 
     def __init__(self,name):
         self.name=name
-        self.type="AnnConfiguration"
+        self.type="ANNConfiguration"
         self.networks = {}
         self.training_strategy = {}

@@ -51,8 +51,8 @@ def new_init_new_evaluation(name,network):
     nodes.handler.entitiesHandler.data.init_new_network_evaluation(name,network)
 
 def new_ann_configuration(name):
-    #log(log_msg1+"ann configuration"+log_msg2+name)
-    nodes.handler.entitiesHandler.data.insert_annConfiguration(name)
+    log(log_msg1+"ann configuration"+log_msg2+name)
+    #nodes.handler.entitiesHandler.data.insert_annConfiguration(name)
 
 def new_network(name):
     #log(log_msg1+"network"+log_msg2+ name)

@@ -25,14 +25,14 @@ class annet_o_data_management:
 
     def init_new_network_evaluation(self,name,network):
         self.evaluationResult = evaluation_result(name)
-
+    '''
     def insert_annConfiguration(self,name):
         #Handle existing networks differently,depending on which network we have
         s=self.prefix_annet_o+name
         o=self.prefix_syntax+"type"
         p=self.prefix_annet_o+"ANNConfiguration"
         self.crud.insert(s,o,p)
-
+    '''
 
     def insert_network(self,name):
         s = self.prefix_annet_o + self.annConfiguration.name
