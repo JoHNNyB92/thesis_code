@@ -11,4 +11,4 @@ class categorical_cross_entropy(loss):
 
     def __init__(self,name,node,complex=False):
         super(categorical_cross_entropy, self).__init__(name, node,complex)
-        self.type="categorical"
+        self.type="CategoricalCrossEntropy"
