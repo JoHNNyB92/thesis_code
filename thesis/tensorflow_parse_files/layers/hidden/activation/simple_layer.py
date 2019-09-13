@@ -29,7 +29,7 @@ class simple_layer(layer):
         self.output_nodes = []
         self.find_output_node(self.name)
         self.matMul=MM
-        self.type="FullyConnected"
+        self.type="FullyConnectedLayer"
         self.input.append(self.matMul.get_name())
         self.next_layer=[]
         self.update_dicts()
