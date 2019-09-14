@@ -6,6 +6,9 @@ class maxpool_layer(layer):
     def update_dicts(self):
         super(maxpool_layer, self).update_dicts()
 
+    def insert_in_annetto(self):
+        super(maxpool_layer, self).insert_in_annetto()
+
     def find_input_layer(self):
         layer.find_input_layer(self,self.node.get_inputs()[0])
 

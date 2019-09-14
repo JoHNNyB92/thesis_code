@@ -218,7 +218,7 @@ def new_evaluates_using_io(evRes,pipe):
 
 def new_has_metric(evRes,metric):
     #log(log_msg1 + "has metric" + log_msg2 + evRes + "->" + str(metric))
-    nodes.handler.entitiesHandler.data.insert_has_metric(evRes, metric)
+    nodes.handler.entitiesHandler.data.insert_has_metric(map_to_entry_name[evRes],map_to_entry_name[metric])
 
 
 def new_with_tr_strategy(evRes,trStrat):

@@ -97,13 +97,13 @@ class annet_o_data_management:
         o = self.prefix_annet_o + "joinsLayer"
         p = self.prefix_annet_o + input
         self.crud.insert(s, o, p)
-
+    '''
     def insert_hasMetric(self,result,metric):
         s = self.prefix_annet_o +result
         o = self.prefix_annet_o + "hasMetric"
         p = self.prefix_annet_o + metric
         self.crud.insert(s, o, p)
-
+    '''
     def insert_hasActivation(self,name,activation):
         s = self.prefix_annet_o + name
         o = self.prefix_annet_o + "hasActivationFunction"

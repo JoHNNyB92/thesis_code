@@ -65,7 +65,7 @@ def begin_parsing(name,pbtxt_file,log_file,counter):
     rdfWrapper.new_init_new_network(part_name)
     #New evaluation function
     rdfWrapper.new_init_new_evaluation(part_name+"_eval",part_name)
-    result=parse_pbtxt(pbtxt_file,part_name)
+    result=parse_pbtxt(pbtxt_file)
     return (result,nodes.handler.entitiesHandler)
 
 #Function to insert into the annetto triple store database

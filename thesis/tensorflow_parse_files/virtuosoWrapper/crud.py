@@ -6,7 +6,7 @@ class crud:
         self.virtuosoDB = "http://localhost:8890/sparql-auth"
         self.password = "dba"
         self.username = "dba"
-        self.graph = "<http://localhost:8890/thesis_code_db>"
+        self.graph = "<http://localhost:8890/DAV_base2>"
         self.sparql = SPARQLWrapper(self.virtuosoDB)
         self.sparql.setHTTPAuth(DIGEST)
         self.sparql.setCredentials(self.username, self.password)
@@ -14,7 +14,7 @@ class crud:
     def insert(self,s,o,p):
         final_query="INSERT DATA { GRAPH " + self.graph + " { <"+s.replace(" ","")+"> <"+o.replace(" ","")+"> <"+p.replace(" ","")+"> } }"
         print_query="INSERT DATA { GRAPH " + self.graph + len("INSERT DATA { GRAPH \n" + str(self.graph))*" "+"\n{ \n<"+s.replace(" ","")+">\n<"+o.replace(" ","")+">\n<"+p.replace(" ","")+">\n}\n}"
-        rdfWrapper.log(print_query)
+        #rdfWrapper.log(print_query)
         rdfWrapper.log(len(final_query)*"-")
         rdfWrapper.log(log_msg_ins+final_query)
         self.sparql.setQuery(final_query)

@@ -185,7 +185,8 @@ with open('github/github.csv') as csv_file:
         with open("counter.txt", "r") as ins:
             for line in ins:
                 file_counter=int(line.replace("\n",""))
-        if True==True:
+        #if True==True:
+        if "..\git_repositories_temp/test_repository_splitted_1" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
