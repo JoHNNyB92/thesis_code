@@ -38,7 +38,7 @@ class handle_entities:
     def insert_to_evaluation_pipe(self,network):
         IOPipe=handler_functions.handle_dataset_pipe_1(self.data.annConfiguration.networks[network],"test")
         self.check_metric(IOPipe, network)
-        #self.data.evaluationResult.IOPipe=IOPipe
+        self.data.evaluationResult.IOPipe=IOPipe
         self.data.evaluationResult.ann_conf=self.data.annConfiguration
 
     #If some prerequisites are satisfied,we are into the basic handling of the result of the node encountered.
@@ -494,24 +494,18 @@ class handle_entities:
         return IOPipe_list
 
     def create_tr_step(self,optimizer,network,step):
-        #for opt in optimizer:
-            #optimizer_=self.data.annConfiguration.networks[self.current_network].optimizer[opt]
-            #self.data.annConfiguration.networks[network].optimizer[opt]=optimizer_
-        #input_layer=self.data.annConfiguration.networks[network].input_layer
-        #print("LOGGING:Input_layer ",[x.name for x in input_layer]," Optimizer ",optimizer)
         #TODO:Maybe needs check with input for batches,for the moment consider it to be the first one
         tr_step = handler_functions.handle_training_single(step.name, network, "",optimizer, step.epoch,step.batches[0], step.next)
         return tr_step
 
     def check_metric(self,IOPipe,network):
         if self.data.evaluationResult.metric!="":
-            res=self.check_evaluation(IOPipe)
-            print("res=",res)
-            if res==True:
-                self.data.evaluationResult.IOPipe = IOPipe
-            else:
-                for elem in IOPipe:
-                    self.data.annConfiguration.networks[network].hang_dp.append(elem)
+            #res=self.check_evaluation(IOPipe)
+            #if res==True:
+            self.data.evaluationResult.IOPipe = IOPipe
+            #else:
+            #for elem in IOPipe:
+            #self.data.annConfiguration.networks[network].hang_dp.append(elem)
         else:
             for elem in IOPipe:
                 self.data.annConfiguration.networks[network].hang_dp.append(elem)

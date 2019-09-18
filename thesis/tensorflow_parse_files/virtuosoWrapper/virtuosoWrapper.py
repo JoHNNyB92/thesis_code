@@ -54,17 +54,16 @@ def new_ann_configuration(name):
     log(log_msg1+"ann configuration"+log_msg2+name)
     #nodes.handler.entitiesHandler.data.insert_annConfiguration(name)
 
-def new_network(name):
+def new_has_training_strategy(annConf,trStrat):
+    nodes.handler.entitiesHandler.data.insert_has_training_strategy(annConf,trStrat)
+
+def new_network(annConf,name):
     #log(log_msg1+"network"+log_msg2+ name)
-    nodes.handler.entitiesHandler.data.insert_network(map_to_entry_name[name])
+    nodes.handler.entitiesHandler.data.insert_network(map_to_entry_name[annConf],map_to_entry_name[name])
 
 def new_training_strategy(name):
     #log(log_msg1+"training_strategy"+log_msg2+name )
     nodes.handler.entitiesHandler.data.insert_training_strategy(map_to_entry_name[name])
-
-def new_has_network(network):
-    #log(log_msg1 + "has network" + log_msg2 + network)
-    nodes.handler.entitiesHandler.data.insert_has_network(map_to_entry_name[network])
 
 def new_has_tr_strategy(trStrategy):
     #log(log_msg1 + "training_strategy" + log_msg2 + trStrategy)

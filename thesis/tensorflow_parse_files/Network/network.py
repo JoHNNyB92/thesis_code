@@ -2,6 +2,7 @@ import virtuosoWrapper.virtuosoWrapper as rdfWrapper
 class network:
     def insert_in_annetto_netwr(self):
         rdfWrapper.new_named_individual(self.name)
+        rdfWrapper.new_type(self.name, self.type)
         temp_dict_layer=self.layer.copy()
         for elem in temp_dict_layer.keys():
             for elem_out in self.output_layer:
@@ -14,9 +15,6 @@ class network:
             for objective_name in self.objective.keys():
                 self.objective[objective_name].insert_in_annetto()
                 rdfWrapper.new_network_has_objective(self.name, objective_name)
-
-        rdfWrapper.new_type(self.name, self.type)
-        rdfWrapper.new_network(self.name)
         for elem in self.input_layer:
             elem.insert_in_annetto()
             rdfWrapper.new_input_layer(self.name,elem.name)

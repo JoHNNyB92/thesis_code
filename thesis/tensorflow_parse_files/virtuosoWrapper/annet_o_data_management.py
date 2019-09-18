@@ -34,8 +34,8 @@ class annet_o_data_management:
         self.crud.insert(s,o,p)
     '''
 
-    def insert_network(self,name):
-        s = self.prefix_annet_o + self.annConfiguration.name
+    def insert_network(self,annConf,name):
+        s = self.prefix_annet_o + annConf
         o = self.prefix_annet_o + "hasNetwork"
         p = self.prefix_annet_o + name
         #TODO IF ANOTHER NETWORKS EXISTS>CHECK
@@ -138,7 +138,7 @@ class annet_o_data_management:
     def insert_num_of_units(self,layer,num):
         s = self.prefix_annet_o + layer
         o = self.prefix_annet_o + "layer_num_units"
-        p = self.prefix_annet_o + str(num)
+        p = str(num)
         self.crud.insert(s, o, p)
 
     def insert_has_layer(self,network,layer):
@@ -198,7 +198,7 @@ class annet_o_data_management:
     def insert_learning_rate(self,optimizer,learning_rate):
         s = self.prefix_annet_o + optimizer
         o = self.prefix_annet_o + "learning_rate"
-        p = self.prefix_annet_o + str(learning_rate)
+        p = str(learning_rate)
         self.crud.insert(s, o, p)
 
     def insert_optimizer(self,trStep,optimizer):
@@ -246,9 +246,10 @@ class annet_o_data_management:
         o = self.prefix_annet_o + "evaluatesNetwork"
         p = self.prefix_annet_o + str(network)
         self.crud.insert(s, o, p)
+
     def insert_eval_ann_conf(self,evRes,ann_conf):
         s = self.prefix_annet_o + evRes
-        o = self.prefix_annet_o + "hasPrimaryTrainingSession"
+        o = self.prefix_annet_o + "EvaluationResult"
         p = self.prefix_annet_o + str(ann_conf)
         self.crud.insert(s, o, p)
 
@@ -283,14 +284,8 @@ class annet_o_data_management:
         p = self.prefix_owl + "NamedIndividual"
         self.crud.insert(s, o, p)
 
-    def insert_has_network(self,network):
-        s = self.prefix_annet_o + self.AnnConfig
-        o = self.prefix_annet_o + "hasNetwork"
-        p = self.prefix_owl + network
-        self.crud.insert(s, o, p)
-
-    def insert_has_training_strategy(self,trStrat):
-        s = self.prefix_annet_o + self.AnnConfig
+    def insert_has_training_strategy(self,annConf,trStrat):
+        s = self.prefix_annet_o + annConf
         o = self.prefix_annet_o + "hasTrainingStrategy"
         p = self.prefix_annet_o + trStrat
         self.crud.insert(s, o, p)

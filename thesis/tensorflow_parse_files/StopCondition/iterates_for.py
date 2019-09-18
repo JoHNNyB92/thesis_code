@@ -8,6 +8,6 @@ class iterates_for:
         rdfWrapper.new_num_of_iterations(self.name, self.num_of_iterations)
 
     def __init__(self,name,value):
-        self.type="StopCondition"
+        self.type="IterateFor"
         self.name=name
         self.num_of_iterations=value
