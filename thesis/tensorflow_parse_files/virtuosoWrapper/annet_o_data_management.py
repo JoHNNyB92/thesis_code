@@ -72,7 +72,7 @@ class annet_o_data_management:
         p = self.prefix_annet_o + layer
         self.crud.insert(s, o, p)
 
-    def insert_evaluatesAnnConfig(self,result):
+    def insert_evaluatesAnnConfig(self,result,annConfig):
         s = self.prefix_annet_o + result
         o = self.prefix_annet_o + "evaluatesANNConf"
         p = self.prefix_annet_o + self.AnnConfig
@@ -138,7 +138,7 @@ class annet_o_data_management:
     def insert_num_of_units(self,layer,num):
         s = self.prefix_annet_o + layer
         o = self.prefix_annet_o + "layer_num_units"
-        p = str(num)
+        p = str(round(num,5))
         self.crud.insert(s, o, p)
 
     def insert_has_layer(self,network,layer):
@@ -198,7 +198,7 @@ class annet_o_data_management:
     def insert_learning_rate(self,optimizer,learning_rate):
         s = self.prefix_annet_o + optimizer
         o = self.prefix_annet_o + "learning_rate"
-        p = str(learning_rate)
+        p =str(learning_rate)
         self.crud.insert(s, o, p)
 
     def insert_optimizer(self,trStep,optimizer):
@@ -247,12 +247,6 @@ class annet_o_data_management:
         p = self.prefix_annet_o + str(network)
         self.crud.insert(s, o, p)
 
-    def insert_eval_ann_conf(self,evRes,ann_conf):
-        s = self.prefix_annet_o + evRes
-        o = self.prefix_annet_o + "EvaluationResult"
-        p = self.prefix_annet_o + str(ann_conf)
-        self.crud.insert(s, o, p)
-
     def insert_has_prim_tr_session(self,trStrat,sess):
         s = self.prefix_annet_o + trStrat
         o = self.prefix_annet_o + "hasPrimaryTrainingSession"
@@ -265,17 +259,17 @@ class annet_o_data_management:
         self.crud.insert(s, o, p)
 
     def insert_batch(self,annConf,batch):
-        value = str(batch)# + "^^<http://www.w3.org/2001/XMLSchema#int>"
+        value = int(batch)# + "^^<http://www.w3.org/2001/XMLSchema#int>"
         s = self.prefix_annet_o + annConf
         o = self.prefix_annet_o + "batch_size"
-        p = self.prefix_annet_o + str(value)
+        p = str(round(value,5))
         self.crud.insert(s, o, p)
 
     def insert_epoch(self,annConf,epoch):
-        value = str(epoch)# + "^^<http://www.w3.org/2001/XMLSchema#int>"
+        value = epoch# + "^^<http://www.w3.org/2001/XMLSchema#int>"
         s = self.prefix_annet_o + annConf
         o = self.prefix_annet_o + "number_of_epochs"
-        p = self.prefix_annet_o + str(value)
+        p = str(round(value,5))
         self.crud.insert(s, o, p)
 
     def insert_named_indiv(self,name):
@@ -329,7 +323,7 @@ class annet_o_data_management:
     def insert_stop_condition_number(self,cond,number):
         s = self.prefix_annet_o + cond
         o = self.prefix_annet_o + "iteratesFor"
-        p = self.prefix_annet_o + str(number)
+        p = str(round(number,5))
         self.crud.insert(s, o, p)
 
     def insert_primary_loop(self,loop,prLoopStep):

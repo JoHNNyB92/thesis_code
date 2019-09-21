@@ -9,11 +9,11 @@ class evaluation_result(network_evaluation):
             rdfWrapper.new_type(self.name,self.type)
             rdfWrapper.new_evaluates_ann_conf(self.name, self.ann_conf.name)
             for i,_ in enumerate(self.IOPipe):
+                self.IOPipe[i].insert_in_annetto()
                 rdfWrapper.new_evaluates_using_io(self.name,self.IOPipe[i].name)
             self.metric.insert_in_annetto()
             rdfWrapper.new_has_metric(self.name, self.metric.name)
             rdfWrapper.new_evaluates_network(self.name, self.network)
-            rdfWrapper.new_evaluates_using_io_pipe(self.name, self.network)
             rdfWrapper.new_with_tr_strategy(self.name, self.train_strategy.name)
         else:
             print("ERROR:Neural network w/o evaluation.")

@@ -165,6 +165,7 @@ def check_lists(pathList,suffix,produced_files,log=0):
     return retPathList
 
 #Beginning of thesis
+k=0
 with open('github/github.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
@@ -185,8 +186,10 @@ with open('github/github.csv') as csv_file:
         with open("counter.txt", "r") as ins:
             for line in ins:
                 file_counter=int(line.replace("\n",""))
-        #if True==True:
-        if "..\git_repositories_temp/test_repository_splitted_21" in code_repository:
+        if True==True:
+        #if k<7:
+        #k+=1
+        #if "..\git_repositories_temp/test_repository_splitted_21" in code_repository:
             function_files = []
             found_network=False
             from pathlib import Path
@@ -276,5 +279,3 @@ with open('github/github.csv') as csv_file:
                         f.write(str(file_counter))
                         f.close()
                         print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-
-            break

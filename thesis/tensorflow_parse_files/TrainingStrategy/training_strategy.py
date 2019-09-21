@@ -4,9 +4,8 @@ class training_strategy:
     def insert_in_annetto(self):
         #print("Annetto::TrainingStrategy-",self.name)
         rdfWrapper.new_named_individual(self.name)
-        self.training_model.insert_in_annetto()
         rdfWrapper.new_type(self.name, self.type)
-        rdfWrapper.new_training_strategy(self.name)
+        self.training_model.insert_in_annetto()
         for session in self.primary_training_session:
             session.insert_in_annetto()
             #TODO:FIND WHICH ONE IS FIRST

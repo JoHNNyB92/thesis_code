@@ -18,11 +18,12 @@ class dataset_pipe:
         if type=="train":
             self.name=node.get_name()+"_INP_"+count
         else:
+            #self.find_datasets(node)
             self.name = node.get_name() + "_EVP_"+count
         self.type = "DatasetPipe"
         self.node=node
 
-    def find_datasets(self,type,helper):
+    def find_datasets(self,helper):
         found = False
         children = [x.get_name() for x in helper.get_inputs()]
         test_found = False
@@ -31,8 +32,9 @@ class dataset_pipe:
             for elem in children:
                 if nodes.handler.entitiesHandler.node_map[elem].get_op() == "Placeholder" and test_found == False:
                     found = True
-                    self.input_layer = elem
-                    self.joins_dataset=elem
+                    #self.input_layer = elem
+                    print("YOLELELELEL=",elem)
+                    self.dataset=elem
                 else:
                     for x in nodes.handler.entitiesHandler.node_map[elem].get_inputs():
                         temp_new_children.append(x.get_name())

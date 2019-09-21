@@ -14,7 +14,7 @@ class ANNConfiguration:
         for trStrategy in nodes.handler.entitiesHandler.data.annConfiguration.training_strategy.keys():
             trStrategy_node = nodes.handler.entitiesHandler.data.annConfiguration.training_strategy[trStrategy]
             trStrategy_node.insert_in_annetto()
-            rdfWrapper.new_network(self.name,trStrategy)
+            rdfWrapper.new_has_training_strategy(self.name,trStrategy)
 
     def __init__(self,name):
         self.name=name

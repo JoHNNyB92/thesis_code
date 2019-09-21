@@ -65,10 +65,6 @@ def new_training_strategy(name):
     #log(log_msg1+"training_strategy"+log_msg2+name )
     nodes.handler.entitiesHandler.data.insert_training_strategy(map_to_entry_name[name])
 
-def new_has_tr_strategy(trStrategy):
-    #log(log_msg1 + "training_strategy" + log_msg2 + trStrategy)
-    nodes.handler.entitiesHandler.data.insert_has_training_strategy(map_to_entry_name[trStrategy])
-
 def new_next_layer(name ,next_layer):
     global file_counter
     if next_layer not in map_to_entry_name.keys():
@@ -203,7 +199,7 @@ def new_has_weights(model,weight):
 
 def new_evaluates_ann_conf(evRes,ann_conf):
     #log(log_msg1 + "evaluates ann conf" + log_msg2 + evRes + "->" + str(ann_conf))
-    nodes.handler.entitiesHandler.data.insert_eval_ann_conf(map_to_entry_name[evRes], map_to_entry_name[ann_conf])
+    nodes.handler.entitiesHandler.data.insert_evaluatesAnnConfig(map_to_entry_name[evRes], map_to_entry_name[ann_conf])
 
 def new_evaluates_network(evRes,network):
     #log(log_msg1 + "evaluates network" + log_msg2 + evRes + "->" + str(network))

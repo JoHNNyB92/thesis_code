@@ -16,10 +16,12 @@ class label_set(dataset):
         self.type="Labelset"
         for elem in self.node.get_output():
             for num in elem.dim:
+                print(
                 '''
                 We want to take the number of labels.With that,we want only the last dimension size.
                 Thus,we iterate and we assign the last one.
                 '''
+                )
                 if int(num.size) > 0:
                     self.count=int(num.size)
         print("LOGGIND:Found size", self.count)

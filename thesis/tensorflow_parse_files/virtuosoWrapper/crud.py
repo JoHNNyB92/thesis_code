@@ -6,7 +6,7 @@ class crud:
         self.virtuosoDB = "http://localhost:8890/sparql-auth"
         self.password = "dba"
         self.username = "dba"
-        self.graph = "<http://localhost:8890/DAV_base2>"
+        self.graph = "<http://localhost:8890/DAV_temp3>"
         self.sparql = SPARQLWrapper(self.virtuosoDB)
         self.sparql.setHTTPAuth(DIGEST)
         self.sparql.setCredentials(self.username, self.password)
